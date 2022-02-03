@@ -1,0 +1,9 @@
+.vscode/
+archive/
+build/
+data/
+out/
+
+# macOS
+.DS_Store
+._*
