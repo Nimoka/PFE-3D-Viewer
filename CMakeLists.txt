@@ -5,6 +5,30 @@ project(PFE3DViewer)
 cmake_minimum_required(VERSION 3.2.0)
 include(CheckCXXCompilerFlag)
 
+# CMake configuration ==========================================
+
+if (APPLE)
+	set(CMAKE_MACOSX_RPATH ON)
+	set(GL_SILENCE_DEPRECATION ON)
+	add_definitions(-DGL_SILENCE_DEPRECATION)
+endif()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+	CHECK_CXX_COMPILER_FLAG("-std=c++14" HAS_CPP14_FLAG)
+	CHECK_CXX_COMPILER_FLAG("-std=c++11" HAS_CPP11_FLAG)
+
+	if (HAS_CPP14_FLAG)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+	elseif (HAS_CPP11_FLAG)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	else()
+		message(FATAL_ERROR "Unsupported compiler -- requires C++11 support!")
+	endif()
+	if (NOT ${U_CMAKE_BUILD_TYPE} MATCHES DEBUG)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
+	endif()
+endif()
+
 # Libraries ====================================================
 
 set(EXTERNAL external)
@@ -35,30 +59,6 @@ include_directories(${IMGUI_DIR})
 
 include_directories(include)
 
-# Compiler =====================================================
-
-if (APPLE)
-	set(CMAKE_MACOSX_RPATH ON)
-	set(GL_SILENCE_DEPRECATION ON)
-	add_definitions(-DGL_SILENCE_DEPRECATION)
-endif()
-
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-	CHECK_CXX_COMPILER_FLAG("-std=c++14" HAS_CPP14_FLAG)
-	CHECK_CXX_COMPILER_FLAG("-std=c++11" HAS_CPP11_FLAG)
-
-	if (HAS_CPP14_FLAG)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-	elseif (HAS_CPP11_FLAG)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-	else()
-		message(FATAL_ERROR "Unsupported compiler -- requires C++11 support!")
-	endif()
-	if (NOT ${U_CMAKE_BUILD_TYPE} MATCHES DEBUG)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
-	endif()
-endif()
-
 # Executables ==================================================
 
 # Viewer -------------------------------------------------------
@@ -78,6 +78,5 @@ add_executable(${VIEWER_NAME}
 target_link_libraries(${VIEWER_NAME} PUBLIC glfw ${GLFW_LIBRARIES} imgui)
 target_include_directories(${VIEWER_NAME} PUBLIC ${GLFW_INCLUDE} ${IMGUI_INCLUDE} ${IMGUI_DIR}/backends/)
 
-if (APPLE)
-	target_link_libraries(${VIEWER_NAME} PRIVATE "-framework OpenGL" "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
-endif()
+find_package(OpenGL REQUIRED)
+target_link_libraries(${VIEWER_NAME} PUBLIC ${OPENGL_LIBRARIES})
