@@ -21,7 +21,7 @@ static void PrintGLFWError(int error, const char* description) {
 int InitializeGLFW() {
 	glfwSetErrorCallback(PrintGLFWError);
 	int err = glfwInit();
-	if (!err) {
+	if (err) {
 #if defined(__APPLE__)
 		glslVersion = "#version 150";
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
