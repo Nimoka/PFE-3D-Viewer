@@ -6,32 +6,42 @@
 #include <imgui_impl_opengl3.h>
 
 GLFWwindow *window;
-
+ImVec4 windowClearColor;
 int windowSize[2] = { 1280, 800 };
-ImVec4 windowClearColor = ImVec4(.2f, .2f, .2f, 1.f);
+
+const char *glslVersion;
 
 static void PrintGLFWError(int error, const char* description) {
 	std::cerr << "GLFW Error " << error << ": " << description << std::endl;
 }
 
-int main(int argc, char** argv) {
-	/* Initialize GLFW */
+int InitializeGLFW() {
 	glfwSetErrorCallback(PrintGLFWError);
-	if (!glfwInit())
-		return 1;
-
+	int err = glfwInit();
+	if (!err) {
 #if defined(__APPLE__)
-	const char* glslVersion = "#version 150";
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		glslVersion = "#version 150";
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #else
-	const char* glslVersion = "#version 130";
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+		glslVersion = "#version 130";
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
+	}
 
+	return err;
+}
+
+void CleanupGLFW() {
+	glfwTerminate();
+}
+
+int InitializeImGui() {
 	/* Create main window */
 	window = glfwCreateWindow(windowSize[0], windowSize[1], "3D Viewer", NULL, NULL);
 	if (window == NULL)
@@ -48,48 +58,65 @@ int main(int argc, char** argv) {
 	/* Setup Dear ImGui style */
 #ifdef DARK_MODE
 	ImGui::StyleColorsDark();
+	windowClearColor = ImVec4(.2f, .2f, .2f, 1.f);
 #else
 	ImGui::StyleColorsLight();
+	windowClearColor = ImVec4(.8f, .8f, .8f, 1.f);
 #endif
 
 	/* Setup Platform/Renderer backends */
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init(glslVersion);
 
+	return 0;
+}
+
+void CleanupImGui() {
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+	glfwDestroyWindow(window);
+}
+
+void StartNewImGuiFrame() {
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+}
+
+void RenderImGuiFrame() {
+	ImGui::Render();
+	glfwGetFramebufferSize(window, &windowSize[0], &windowSize[1]);
+	glViewport(0, 0, windowSize[0], windowSize[1]);
+	glClearColor(windowClearColor.x * windowClearColor.w,
+			windowClearColor.y * windowClearColor.w,
+			windowClearColor.z * windowClearColor.w,
+			windowClearColor.w);
+	glClear(GL_COLOR_BUFFER_BIT);
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	/* Swap frame buffers */
+	glfwSwapBuffers(window);
+}
+
+int main(int argc, char** argv) {
+	InitializeGLFW();
+	InitializeImGui();
+
 	/* Main loop */
 	while (!glfwWindowShouldClose(window)) {
 		/* Poll latest events */
 		glfwPollEvents();
 
-		/* Start new Dear ImGui frame */
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+		StartNewImGuiFrame();
 
 		// TODO: Implement interface
 
-		/* Rendering new frame */
-		ImGui::Render();
-		glfwGetFramebufferSize(window, &windowSize[0], &windowSize[1]);
-		glViewport(0, 0, windowSize[0], windowSize[1]);
-		glClearColor(windowClearColor.x * windowClearColor.w,
-				windowClearColor.y * windowClearColor.w,
-				windowClearColor.z * windowClearColor.w,
-				windowClearColor.w);
-		glClear(GL_COLOR_BUFFER_BIT);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		/* Swap frame buffers */
-		glfwSwapBuffers(window);
+		RenderImGuiFrame();
 	}
 
-	/* Cleanup */
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
-
-	glfwDestroyWindow(window);
-	glfwTerminate();
+	CleanupImGui();
+	CleanupGLFW();
 
 	return 0;
 }
