@@ -5,6 +5,9 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#define ERR_GLFW		1
+#define ERR_IMGUI		2
+
 GLFWwindow *window;
 ImVec4 windowClearColor;
 int windowSize[2] = { 1280, 800 };
@@ -100,8 +103,10 @@ void RenderImGuiFrame() {
 }
 
 int main(int argc, char** argv) {
-	InitializeGLFW();
-	InitializeImGui();
+	if (!InitializeGLFW())
+		return ERR_GLFW;
+	if (InitializeImGui())
+		return ERR_IMGUI;
 
 	/* Main loop */
 	while (!glfwWindowShouldClose(window)) {
