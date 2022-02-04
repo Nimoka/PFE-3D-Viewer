@@ -5,12 +5,16 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+// #define ENABLE_DARK_MODE
+#define ENABLE_HIGH_DPI
+
 #define ERR_GLFW		1
 #define ERR_IMGUI		2
 
 GLFWwindow *window;
 ImVec4 windowClearColor;
 int windowSize[2] = { 1280, 800 };
+float windowScale = 1.;
 
 const char *glslVersion;
 
@@ -22,18 +26,37 @@ int InitializeGLFW() {
 	glfwSetErrorCallback(PrintGLFWError);
 	int err = glfwInit();
 	if (err) {
-#if defined(__APPLE__)
+#ifdef __APPLE__
 		glslVersion = "#version 150";
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
+#ifdef ENABLE_HIGH_DPI
+		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
+#endif
 #else
+#if _WIN32
 		glslVersion = "#version 130";
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+#else
+		glslVersion = "#version 130";
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+#ifdef ENABLE_HIGH_DPI
+		float xscale, yscale;
+		glfwGetMonitorContentScale(monitor, &xscale, &yscale);
+		if (xscale > 1 || yscale > 1) {
+			highDPIscaleFactor = xscale;
+			glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+		}
+#endif
 #endif
 	}
 
@@ -59,17 +82,22 @@ int InitializeImGui() {
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
 	/* Setup Dear ImGui style */
-#ifdef DARK_MODE
+#ifdef ENABLE_DARK_MODE
 	ImGui::StyleColorsDark();
 	windowClearColor = ImVec4(.2f, .2f, .2f, 1.f);
 #else
 	ImGui::StyleColorsLight();
-	windowClearColor = ImVec4(.8f, .8f, .8f, 1.f);
+	windowClearColor = ImVec4(.95f, .95f, .95f, 1.f);
 #endif
 
 	/* Setup Platform/Renderer backends */
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init(glslVersion);
+
+#ifdef ENABLE_HIGH_DPI
+	ImGuiStyle &style = ImGui::GetStyle();
+	style.ScaleAllSizes(windowScale);
+#endif
 
 	return 0;
 }
