@@ -41,7 +41,8 @@ int InitializeGLFW() {
 		glslVersion = "#version 130";
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #else
 		glslVersion = "#version 130";
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -50,6 +51,7 @@ int InitializeGLFW() {
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 #ifdef ENABLE_HIGH_DPI
+		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
 		float xscale, yscale;
 		glfwGetMonitorContentScale(monitor, &xscale, &yscale);
 		if (xscale > 1 || yscale > 1) {
