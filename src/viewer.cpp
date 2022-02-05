@@ -1,12 +1,14 @@
 #include <iostream>
+#include <toml.hpp>
 
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+
 // #define ENABLE_DARK_MODE
-#define ENABLE_HIGH_DPI
+//#define ENABLE_HIGH_DPI
 
 #define ERR_GLFW		1
 #define ERR_IMGUI		2
@@ -15,6 +17,7 @@ GLFWwindow *window;
 ImVec4 windowClearColor;
 int windowSize[2] = { 1280, 800 };
 float windowScale = 1.;
+
 
 const char *glslVersion;
 
@@ -132,21 +135,29 @@ void RenderImGuiFrame() {
 	glfwSwapBuffers(window);
 }
 
+void ResizeWindow() {
+	/*Example, using toml to resize window*/
+	auto data = toml::parse("../src/config.toml");
+	auto& windowConfig = toml::find(data, "window");
+	int windowHeight = toml::find<int>(windowConfig, "windowHeight");
+	int windowWidth = toml::find<int>(windowConfig, "windowWidth");
+	windowSize[0] = windowWidth;
+	windowSize[1] = windowHeight;
+}
+
 int main(int argc, char** argv) {
 	if (!InitializeGLFW())
 		return ERR_GLFW;
 	if (InitializeImGui())
 		return ERR_IMGUI;
-
+	ResizeWindow();
 	/* Main loop */
 	while (!glfwWindowShouldClose(window)) {
 		/* Poll latest events */
 		glfwPollEvents();
-
 		StartNewImGuiFrame();
 
-		// TODO: Implement interface
-
+		// TODO: Implement interface	
 		RenderImGuiFrame();
 	}
 
