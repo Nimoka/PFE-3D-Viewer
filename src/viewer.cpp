@@ -6,6 +6,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <plyreader.h>
+#include <CLI/CLI.hpp>
 
 
 // #define ENABLE_DARK_MODE
@@ -14,10 +15,13 @@
 #define ERR_GLFW		1
 #define ERR_IMGUI		2
 
+CLI::App app{"3D model viewer"};
 GLFWwindow *window;
 ImVec4 windowClearColor;
 int windowSize[2] = { 1280, 800 };
 float windowScale = 1.;
+bool isBenchmark = false;
+std::string input_file;
 
 
 const char *glslVersion;
@@ -136,12 +140,13 @@ void RenderImGuiFrame() {
 	glfwSwapBuffers(window);
 }
 
-void ResizeWindow() {
-	/*Example, using toml to resize window*/
+void ResizeWindow(int windowWidth, int windowHeight) {
 	auto data = toml::parse("../src/config.toml");
+	// :TODO:RhenaudTheLukark:06/02/2022: Check if the file exists
 	auto& windowConfig = toml::find(data, "window");
-	int windowHeight = toml::find<int>(windowConfig, "windowHeight");
-	int windowWidth = toml::find<int>(windowConfig, "windowWidth");
+	// Only load the TOML's data if the data hasn't been provided by the command line
+	if (windowWidth < 0) windowWidth = toml::find<int>(windowConfig, "windowWidth");
+	if (windowHeight < 0) windowHeight = toml::find<int>(windowConfig, "windowHeight");
 	windowSize[0] = windowWidth;
 	windowSize[1] = windowHeight;
 }
@@ -155,8 +160,25 @@ void processInput(GLFWwindow* window) {
 			
 }
 
+// Function used to check whether a given file path points to a PLY file
+std::string endsWithPlyFunc(std::string &arg) {
+	if (arg.compare(arg.length() - 4, 4, ".ply"))
+        return "The file '" + arg + "' is not a PLY file!";
+    return std::string();
+}
+
 int main(int argc, char** argv) {
-		ResizeWindow();
+	CLI::Validator endsWithPly = CLI::Validator(endsWithPlyFunc, "PLY");
+
+	// Options
+	int windowWidth = -1, windowHeight = -1;
+	app.add_option("-i,--input", input_file, "PLY file to load")->required()->check(CLI::ExistingFile)->check(endsWithPly);
+	app.add_option("--width", windowWidth, "Window's width in pixels")->check(CLI::PositiveNumber);
+	app.add_option("--height", windowHeight, "Window's height in pixels")->check(CLI::PositiveNumber);
+	app.add_flag("-b,--benchmark", isBenchmark, "Run the program in benchmark mode");
+	CLI11_PARSE(app, argc, argv);
+
+	ResizeWindow(windowWidth, windowHeight);
 	if (!InitializeGLFW())
 		return ERR_GLFW;
 	if (InitializeImGui())
