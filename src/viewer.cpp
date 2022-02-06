@@ -165,16 +165,11 @@ int main(int argc, char** argv) {
 	/* Main loop */
 	while (!glfwWindowShouldClose(window)) {
 		//processInput(window);
-		/* Poll latest events */
-		
-		
+		/* Poll latest events */	
+
 		glfwPollEvents();
 		StartNewImGuiFrame();
-
-		// TODO: Implement interface	
-		ImGui::Begin("Test");
-		ImGui::Text("Du texte trop du lol ça marche ?");
-		ImGui::End();
+		// TODO: Implement interface			
 
 		RenderImGuiFrame();
 	}
