@@ -90,6 +90,7 @@ int InitializeImGui() {
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.IniFilename = NULL;
 
 	/* Setup Dear ImGui style */
 #ifdef ENABLE_DARK_MODE
