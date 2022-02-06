@@ -22,8 +22,6 @@ int windowSize[2] = { 1280, 800 };
 float windowScale = 1.;
 std::vector<GUIModule*> windowModules;
 
-Mesh* mesh = nullptr;
-
 const char *glslVersion;
 
 static void PrintGLFWError(int error, const char* description) {
