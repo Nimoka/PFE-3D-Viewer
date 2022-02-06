@@ -76,13 +76,6 @@ void CleanupGLFW() {
 }
 
 int InitializeImGui() {
-	/* Create main window */
-	window = glfwCreateWindow(windowSize[0], windowSize[1], "3D Viewer", NULL, NULL);
-	if (window == NULL)
-		return 1;
-	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1);
-
 	/* Setup Dear ImGui context */
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -140,8 +133,18 @@ void RenderImGuiFrame() {
 }
 
 int main(int argc, char** argv) {
+	/* Initialize GLFW */
 	if (!InitializeGLFW())
 		return ERR_GLFW;
+
+	/* Create GLFW window */
+	window = glfwCreateWindow(windowSize[0], windowSize[1], "3D Viewer", NULL, NULL);
+	if (window == NULL)
+		return ERR_GLFW;
+	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1);
+
+	/* Initialize ImGui context and style */
 	if (InitializeImGui())
 		return ERR_IMGUI;
 
