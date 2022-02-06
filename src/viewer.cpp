@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctype.h>
 #include <toml.hpp>
 
 #include <GLFW/glfw3.h>
@@ -6,7 +7,9 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <plyreader.h>
+
 #include <CLI/CLI.hpp>
+#include <filewithextension.h>
 
 
 // #define ENABLE_DARK_MODE
@@ -18,11 +21,11 @@
 CLI::App app{"3D model viewer"};
 GLFWwindow *window;
 ImVec4 windowClearColor;
-int windowSize[2] = { 1280, 800 };
+int windowSize[2] = { -1, -1 };
 float windowScale = 1.;
+std::string windowTitle = std::string{};
 bool isBenchmark = false;
-std::string input_file;
-
+std::string input_file, config_file = "../config.toml";
 
 const char *glslVersion;
 
@@ -79,7 +82,7 @@ void CleanupGLFW() {
 
 int InitializeImGui() {
 	/* Create main window */
-	window = glfwCreateWindow(windowSize[0], windowSize[1], "3D Viewer", NULL, NULL);
+	window = glfwCreateWindow(windowSize[0], windowSize[1], windowTitle.c_str(), NULL, NULL);
 	if (window == NULL)
 		return 1;
 	glfwMakeContextCurrent(window);
@@ -140,15 +143,45 @@ void RenderImGuiFrame() {
 	glfwSwapBuffers(window);
 }
 
-void ResizeWindow(int windowWidth, int windowHeight) {
-	auto data = toml::parse("../src/config.toml");
-	// :TODO:RhenaudTheLukark:06/02/2022: Check if the file exists
+int LoadCLI(int argc, char** argv) {
+	// Loads the various command line options
+	int windowWidth = -1, windowHeight = -1;
+	app.add_option("-i,--input", input_file, "PLY file to load")->required()->check(CLI::ExistingFile)->check(FileWithExtension("ply"));
+	app.add_option("-c,--config", config_file, "Config file to use")->check(CLI::ExistingFile)->check(FileWithExtension("toml"));;
+	app.add_option("--width", windowWidth, "Window's width in pixels")->check(CLI::PositiveNumber);
+	app.add_option("--height", windowHeight, "Window's height in pixels")->check(CLI::PositiveNumber);
+	app.add_option("-t,--title", windowTitle, "3D viewer's window title");
+	app.add_flag("-b,--benchmark", isBenchmark, "Run the program in benchmark mode");
+	try { 
+		(app).parse((argc), (argv));
+	} catch(const CLI::ParseError &e) { 
+		return (app).exit(e);
+	}
+
+	if (windowWidth != -1) windowSize[0] = windowWidth;
+	if (windowHeight != -1) windowSize[1] = windowHeight;
+	return 0;
+}
+
+void LoadTOML() {
+	auto data = toml::parse(config_file);
+	// TODO: Check if the file exists, check if each element exists
+	
 	auto& windowConfig = toml::find(data, "window");
 	// Only load the TOML's data if the data hasn't been provided by the command line
-	if (windowWidth < 0) windowWidth = toml::find<int>(windowConfig, "windowWidth");
-	if (windowHeight < 0) windowHeight = toml::find<int>(windowConfig, "windowHeight");
-	windowSize[0] = windowWidth;
-	windowSize[1] = windowHeight;
+	if (windowTitle.length() == 0) windowTitle = toml::find<std::string>(windowConfig, "title");
+	if (windowSize[0] < 0) windowSize[0] = toml::find<int>(windowConfig, "windowWidth");
+	if (windowSize[1] < 0) windowSize[1] = toml::find<int>(windowConfig, "windowHeight");
+
+	auto& runConfig = toml::find(data, "run");
+	if (!isBenchmark) isBenchmark = toml::find<bool>(runConfig, "isBenchmark");
+}
+
+// Default values if it hasn't been set by the command line nor the config file
+void LoadDefault() {
+	if (windowTitle.length() == 0) windowTitle = "3D Viewer";
+	if (windowSize[0] < 0) windowSize[0] = 1024;
+	if (windowSize[1] < 0) windowSize[1] = 800;
 }
 
 void processInput(GLFWwindow* window) {
@@ -160,25 +193,12 @@ void processInput(GLFWwindow* window) {
 			
 }
 
-// Function used to check whether a given file path points to a PLY file
-std::string endsWithPlyFunc(std::string &arg) {
-	if (arg.compare(arg.length() - 4, 4, ".ply"))
-        return "The file '" + arg + "' is not a PLY file!";
-    return std::string();
-}
-
 int main(int argc, char** argv) {
-	CLI::Validator endsWithPly = CLI::Validator(endsWithPlyFunc, "PLY");
-
-	// Options
-	int windowWidth = -1, windowHeight = -1;
-	app.add_option("-i,--input", input_file, "PLY file to load")->required()->check(CLI::ExistingFile)->check(endsWithPly);
-	app.add_option("--width", windowWidth, "Window's width in pixels")->check(CLI::PositiveNumber);
-	app.add_option("--height", windowHeight, "Window's height in pixels")->check(CLI::PositiveNumber);
-	app.add_flag("-b,--benchmark", isBenchmark, "Run the program in benchmark mode");
-	CLI11_PARSE(app, argc, argv);
-
-	ResizeWindow(windowWidth, windowHeight);
+	// Load the various levels of data (CLI, then TOML, then default)
+	int ret = LoadCLI(argc, argv);
+	if (ret) return ret;
+	LoadTOML();
+	LoadDefault();
 	if (!InitializeGLFW())
 		return ERR_GLFW;
 	if (InitializeImGui())

@@ -1,0 +1,9 @@
+# PFE
+
+[window]
+title = "Big window"
+windowWidth = 800
+windowHeight = 600
+
+[run]
+isBenchmark = false
