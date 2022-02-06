@@ -148,19 +148,19 @@ int main(int argc, char** argv) {
 	if (InitializeImGui())
 		return ERR_IMGUI;
 
-	PLYReader* plyReader1 = new PLYReader("../data/models/color_cube.ply");
+	PLYReader* plyReader1 = new PLYReader(DATA_DIR "models/color_cube.ply");
 	if (plyReader1->Load())
 		windowModules.push_back(new PlyContentModule("color_cube.ply", plyReader1->GetMesh()));
-	PLYReader* plyReader2 = new PLYReader("../data/models/matid_cube.ply");
+	PLYReader* plyReader2 = new PLYReader(DATA_DIR "models/matid_cube.ply");
 	if (plyReader2->Load())
 		windowModules.push_back(new PlyContentModule("matid_cube.ply", plyReader2->GetMesh()));
-	PLYReader* plyReader3 = new PLYReader("../data/models/basic_cube.ply");
+	PLYReader* plyReader3 = new PLYReader(DATA_DIR "models/basic_cube.ply");
 	if (plyReader3->Load())
 		windowModules.push_back(new PlyContentModule("basic_cube.ply", plyReader3->GetMesh()));
-	PLYReader* plyReader4 = new PLYReader("../data/models/gilet_union.ply");
+	PLYReader* plyReader4 = new PLYReader(DATA_DIR "models/gilet_union.ply");
 	if (plyReader4->Load())
 		windowModules.push_back(new PlyContentModule("gilet_union.ply", plyReader4->GetMesh()));
-	PLYReader* plyReader5 = new PLYReader("../data/models/doesntexists.ply");
+	PLYReader* plyReader5 = new PLYReader(DATA_DIR "models/doesntexists.ply");
 	if (plyReader5->Load())
 		windowModules.push_back(new PlyContentModule("Wait, it exists?", plyReader5->GetMesh()));
 

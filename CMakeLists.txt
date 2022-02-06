@@ -67,6 +67,8 @@ include_directories(include)
 
 # Executables ==================================================
 
+add_definitions(-DDATA_DIR="${PROJECT_SOURCE_DIR}/data/")
+
 # Viewer -------------------------------------------------------
 
 set(VIEWER_NAME 3DViewer)
