@@ -5,6 +5,7 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <plyreader.h>
 
 
 // #define ENABLE_DARK_MODE
@@ -49,18 +50,18 @@ int InitializeGLFW() {
 #else
 		glslVersion = "#version 130";
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 #ifdef ENABLE_HIGH_DPI
-		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-		float xscale, yscale;
-		glfwGetMonitorContentScale(monitor, &xscale, &yscale);
-		if (xscale > 1 || yscale > 1) {
-			highDPIscaleFactor = xscale;
-			glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
-		}
+GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+float xscale, yscale;
+glfwGetMonitorContentScale(monitor, &xscale, &yscale);
+if (xscale > 1 || yscale > 1) {
+	highDPIscaleFactor = xscale;
+	glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+}
 #endif
 #endif
 	}
@@ -100,7 +101,7 @@ int InitializeImGui() {
 	ImGui_ImplOpenGL3_Init(glslVersion);
 
 #ifdef ENABLE_HIGH_DPI
-	ImGuiStyle &style = ImGui::GetStyle();
+	ImGuiStyle& style = ImGui::GetStyle();
 	style.ScaleAllSizes(windowScale);
 #endif
 
@@ -125,9 +126,9 @@ void RenderImGuiFrame() {
 	glfwGetFramebufferSize(window, &windowSize[0], &windowSize[1]);
 	glViewport(0, 0, windowSize[0], windowSize[1]);
 	glClearColor(windowClearColor.x * windowClearColor.w,
-			windowClearColor.y * windowClearColor.w,
-			windowClearColor.z * windowClearColor.w,
-			windowClearColor.w);
+		windowClearColor.y * windowClearColor.w,
+		windowClearColor.z * windowClearColor.w,
+		windowClearColor.w);
 	glClear(GL_COLOR_BUFFER_BIT);
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -145,19 +146,36 @@ void ResizeWindow() {
 	windowSize[1] = windowHeight;
 }
 
+void processInput(GLFWwindow* window) {
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true); // to change: to open file
+
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+			
+}
+
 int main(int argc, char** argv) {
+		ResizeWindow();
 	if (!InitializeGLFW())
 		return ERR_GLFW;
 	if (InitializeImGui())
-		return ERR_IMGUI;
-	ResizeWindow();
+		return ERR_IMGUI;	
+	
 	/* Main loop */
 	while (!glfwWindowShouldClose(window)) {
+		//processInput(window);
 		/* Poll latest events */
+		
+		
 		glfwPollEvents();
 		StartNewImGuiFrame();
 
 		// TODO: Implement interface	
+		ImGui::Begin("Test");
+		ImGui::Text("Du texte trop du lol ça marche ?");
+		ImGui::End();
+
 		RenderImGuiFrame();
 	}
 
@@ -166,3 +184,4 @@ int main(int argc, char** argv) {
 
 	return 0;
 }
+
