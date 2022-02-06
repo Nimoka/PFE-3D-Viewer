@@ -1,11 +1,16 @@
 #include <iostream>
+#include <vector>
 
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-// #define ENABLE_DARK_MODE
+#include "plyreader.h"
+#include "guimodules/module.h"
+#include "guimodules/plycontent.h"
+
+#define ENABLE_DARK_MODE
 #define ENABLE_HIGH_DPI
 
 #define ERR_GLFW		1
@@ -15,6 +20,9 @@ GLFWwindow *window;
 ImVec4 windowClearColor;
 int windowSize[2] = { 1280, 800 };
 float windowScale = 1.;
+std::vector<GUIModule*> windowModules;
+
+Mesh* mesh = nullptr;
 
 const char *glslVersion;
 
@@ -138,6 +146,22 @@ int main(int argc, char** argv) {
 	if (InitializeImGui())
 		return ERR_IMGUI;
 
+	PLYReader* plyReader1 = new PLYReader("../data/models/color_cube.ply");
+	if (plyReader1->Load())
+		windowModules.push_back(new PlyContentModule("color_cube.ply", plyReader1->GetMesh()));
+	PLYReader* plyReader2 = new PLYReader("../data/models/matid_cube.ply");
+	if (plyReader2->Load())
+		windowModules.push_back(new PlyContentModule("matid_cube.ply", plyReader2->GetMesh()));
+	PLYReader* plyReader3 = new PLYReader("../data/models/basic_cube.ply");
+	if (plyReader3->Load())
+		windowModules.push_back(new PlyContentModule("basic_cube.ply", plyReader3->GetMesh()));
+	PLYReader* plyReader4 = new PLYReader("../data/models/gilet_union.ply");
+	if (plyReader4->Load())
+		windowModules.push_back(new PlyContentModule("gilet_union.ply", plyReader4->GetMesh()));
+	PLYReader* plyReader5 = new PLYReader("../data/models/doesntexists.ply");
+	if (plyReader5->Load())
+		windowModules.push_back(new PlyContentModule("Wait, it exists?", plyReader5->GetMesh()));
+
 	/* Main loop */
 	while (!glfwWindowShouldClose(window)) {
 		/* Poll latest events */
@@ -145,7 +169,8 @@ int main(int argc, char** argv) {
 
 		StartNewImGuiFrame();
 
-		// TODO: Implement interface
+		for (auto i: windowModules)
+			i->Render();
 
 		RenderImGuiFrame();
 	}

@@ -73,11 +73,15 @@ set(VIEWER_NAME 3DViewer)
 file(GLOB VIEWER_SOURCES
 		src/viewer.cpp
 		src/plyreader.cpp
+		src/utils.cpp
+		src/guimodules/*.cpp
 		${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
 		${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp)
 file(GLOB VIEWER_HEADERS
 		include/mesh.h
 		include/plyreader.h
+		include/utils.h
+		include/guimodules/*.h
 		${IMGUI_DIR}/backends/imgui_impl_glfw.h
 		${IMGUI_DIR}/backends/imgui_impl_opengl3.h
 		${IMGUI_DIR}/backends/imgui_impl_opengl3_loader.h)
