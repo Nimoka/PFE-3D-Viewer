@@ -196,20 +196,16 @@ void processInput(GLFWwindow* window) {
 }
 
 
-void showMainMenu()
-{
+void showMainMenu(){
     bool open = false, save = false;
-    if(ImGui::BeginMainMenuBar())
-    {
-        if (ImGui::BeginMenu("Menu"))
-        {
+    if(ImGui::BeginMainMenuBar()){
+        if (ImGui::BeginMenu("Menu")){
             if (ImGui::MenuItem("Open", NULL))
                 open = true;
-        if (ImGui::MenuItem("Save", NULL))
-                save = true;
-            
-        ImGui::EndMenu();
-        }
+        	if (ImGui::MenuItem("Save", NULL))
+                save = true;            
+        	ImGui::EndMenu();
+    	}
         ImGui::EndMainMenuBar();
     }    
  
@@ -219,14 +215,12 @@ void showMainMenu()
         ImGui::OpenPopup("Save File");
         
     // Only accepte .ply file 
-    if(file_dialog.showFileDialog("Open File", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".ply"))
-    {	
+    if(file_dialog.showFileDialog("Open File", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".ply")){	
 		//todo : pass the path to our program
         std::cout << file_dialog.selected_fn << std::endl;     
         std::cout << file_dialog.selected_path << std::endl;   
     }
-    if(file_dialog.showFileDialog("Save File", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".ply"))
-    {
+    if(file_dialog.showFileDialog("Save File", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".ply")){
 		//to do : pass the path to our program 
         std::cout << file_dialog.selected_fn << std::endl;      
         std::cout << file_dialog.selected_path << std::endl;    
