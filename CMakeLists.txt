@@ -74,12 +74,14 @@ add_definitions(-DDATA_DIR="${PROJECT_SOURCE_DIR}/data/")
 set(VIEWER_NAME 3DViewer)
 file(GLOB VIEWER_SOURCES
 		src/viewer.cpp
+		src/context.cpp
 		src/plyreader.cpp
 		src/utils.cpp
 		src/modules/*.cpp
 		${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
 		${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp)
 file(GLOB VIEWER_HEADERS
+		include/context.h
 		include/mesh.h
 		include/plyreader.h
 		include/utils.h

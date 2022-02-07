@@ -11,7 +11,7 @@ class GUIModule
 {
 public:
 	GUIModule() { this->id = Global::nextModuleID++; }
-	~GUIModule() {}
+	virtual ~GUIModule() {}
 	virtual void Render() = 0;
 
 	int GetID() { return this->id; }

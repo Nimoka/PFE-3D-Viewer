@@ -6,9 +6,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include "modules/module.h"
-#include "modules/plycontent.h"
-#include "plyreader.h"
+#include "context.h"
 
 #define ENABLE_DARK_MODE
 #define ENABLE_HIGH_DPI
@@ -20,7 +18,8 @@ GLFWwindow *window;
 ImVec4 windowClearColor;
 int windowSize[2] = { 1280, 800 };
 float windowScale = 1.;
-std::vector<GUIModule*> windowModules;
+
+Context* context;
 
 const char *glslVersion;
 
@@ -148,21 +147,14 @@ int main(int argc, char** argv) {
 	if (InitializeImGui())
 		return ERR_IMGUI;
 
-	PLYReader* plyReader1 = new PLYReader(DATA_DIR "models/color_cube.ply");
-	if (plyReader1->Load())
-		windowModules.push_back(new PLYContentModule("color_cube.ply", plyReader1->GetMesh()));
-	PLYReader* plyReader2 = new PLYReader(DATA_DIR "models/matid_cube.ply");
-	if (plyReader2->Load())
-		windowModules.push_back(new PLYContentModule("matid_cube.ply", plyReader2->GetMesh()));
-	PLYReader* plyReader3 = new PLYReader(DATA_DIR "models/basic_cube.ply");
-	if (plyReader3->Load())
-		windowModules.push_back(new PLYContentModule("basic_cube.ply", plyReader3->GetMesh()));
-	PLYReader* plyReader4 = new PLYReader(DATA_DIR "models/gilet_union.ply");
-	if (plyReader4->Load())
-		windowModules.push_back(new PLYContentModule("gilet_union.ply", plyReader4->GetMesh()));
-	PLYReader* plyReader5 = new PLYReader(DATA_DIR "models/doesntexists.ply");
-	if (plyReader5->Load())
-		windowModules.push_back(new PLYContentModule("Wait, it exists?", plyReader5->GetMesh()));
+	/* Create application context */
+	context = new Context();
+
+	context->LoadPLYFile(DATA_DIR "models/color_cube.ply");
+	context->LoadPLYFile(DATA_DIR "models/matid_cube.ply");
+	context->LoadPLYFile(DATA_DIR "models/basic_cube.ply");
+	context->LoadPLYFile(DATA_DIR "models/gilet_union.ply");
+	context->LoadPLYFile(DATA_DIR "models/doesntexists.ply");
 
 	/* Main loop */
 	while (!glfwWindowShouldClose(window)) {
@@ -171,11 +163,12 @@ int main(int argc, char** argv) {
 
 		StartNewImGuiFrame();
 
-		for (auto i: windowModules)
-			i->Render();
+		context->Render();
 
 		RenderImGuiFrame();
 	}
+
+	delete context;
 
 	CleanupImGui();
 	CleanupGLFW();
