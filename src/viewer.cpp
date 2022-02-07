@@ -6,9 +6,9 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include "modules/module.h"
+#include "modules/plycontent.h"
 #include "plyreader.h"
-#include "guimodules/module.h"
-#include "guimodules/plycontent.h"
 
 #define ENABLE_DARK_MODE
 #define ENABLE_HIGH_DPI

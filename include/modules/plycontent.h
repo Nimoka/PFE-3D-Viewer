@@ -1,7 +1,7 @@
 #ifndef GUIMODULES_PLYCONTENT_H
 #define GUIMODULES_PLYCONTENT_H
 
-#include "guimodules/module.h"
+#include "modules/module.h"
 #include "mesh.h"
 
 class PLYContentModule: public GUIModule

@@ -1,4 +1,4 @@
-#include "guimodules/plycontent.h"
+#include "modules/plycontent.h"
 
 PLYContentModule::PLYContentModule(std::string name, Mesh* mesh)
 : GUIModule() {
