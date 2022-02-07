@@ -15,7 +15,8 @@ Context::~Context() {
 void Context::LoadPLYFile(std::string filepath) {
 	PLYReader* reader = new PLYReader(filepath);
 	if (reader->Load()) {
-		this->modules.push_back(new PLYContentModule(filepath, reader->GetMesh()));
+		std::string filename = filepath.substr(filepath.rfind('/') + 1);
+		this->modules.push_back(new PLYContentModule(filename, reader->GetMesh()));
 		this->readers.push_back(reader);
 		return;
 	}
