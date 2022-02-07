@@ -70,6 +70,11 @@ include_directories(${TOMLPLUSPLUS_DIR})
 # CLI11 --------------------------------------------------------
 add_subdirectory(external/CLI11)
 
+# FileBrowser --------------------------------------------------
+set(FILEBROWSER_DIR ${EXTERNAL}/FileBrowser)
+add_library(FileBrowser ${FILEBROWSER_DIR}/ImGuiFileBrowser.cpp)
+include_directories(${FILEBROWSER_DIR})
+
 # Includes =====================================================
 
 include_directories(include)
@@ -95,7 +100,7 @@ file(GLOB VIEWER_HEADERS
 add_executable(${VIEWER_NAME}
 		${VIEWER_SOURCES}
 		${VIEWER_HEADERS})
-target_link_libraries(${VIEWER_NAME} PUBLIC glfw ${GLFW_LIBRARIES} imgui miniply CLI11::CLI11)
+target_link_libraries(${VIEWER_NAME} PUBLIC glfw ${GLFW_LIBRARIES} imgui miniply FileBrowser CLI11::CLI11)
 target_include_directories(${VIEWER_NAME} PUBLIC ${GLFW_INCLUDE} ${IMGUI_INCLUDE} ${IMGUI_DIR}/backends/ ${MINIPLY_DIR} ${CLI11_DIR})
 
 find_package(OpenGL REQUIRED)
