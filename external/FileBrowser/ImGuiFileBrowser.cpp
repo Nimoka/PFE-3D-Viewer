@@ -231,7 +231,8 @@ namespace imgui_addons
 
         ImGui::BeginChild("##NavigationWindow", nw_size, true, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
 
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
+        //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.22f, 0.13f, 0.02f,1.0f));
         for(std::vector<std::string>::size_type i = 0; i < current_dirlist.size(); i++)
         {
             if( ImGui::Button(current_dirlist[i].c_str()) )
@@ -284,7 +285,7 @@ namespace imgui_addons
                 else
                 {
                     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 1.0f, 1.0f, 0.01f));
-                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f,1.0f));
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f,1.0f));                    
                     ImGui::ArrowButtonEx("##Right", ImGuiDir_Right, ImVec2(frame_height, frame_height), ImGuiItemFlags_Disabled);
                     ImGui::SameLine(0,0);
                     ImGui::PopStyleColor(2);
@@ -348,7 +349,7 @@ namespace imgui_addons
         ImGui::Columns(num_cols);
 
         //Output directories in yellow
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.882f, 0.745f, 0.078f,1.0f));        
         int items = 0;
         for (std::vector<const Info*>::size_type i = 0; i < filtered_dirs.size(); i++)
         {
