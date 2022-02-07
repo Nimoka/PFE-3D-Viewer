@@ -10,7 +10,7 @@
 class GUIModule
 {
 public:
-	GUIModule() { this->id = Global::moduleIdCounter++; }
+	GUIModule() { this->id = Global::nextModuleID++; }
 	~GUIModule() {}
 	virtual void Render() = 0;
 

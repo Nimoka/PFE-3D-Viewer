@@ -2,7 +2,7 @@
 #define UTILS_H
 
 namespace Global {
-	extern int moduleIdCounter;
+	extern int nextModuleID;
 };
 
 #endif // UTILS_H
