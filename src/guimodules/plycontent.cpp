@@ -1,6 +1,6 @@
 #include "guimodules/plycontent.h"
 
-PlyContentModule::PlyContentModule(std::string name, Mesh* mesh)
+PLYContentModule::PLYContentModule(std::string name, Mesh* mesh)
 : GUIModule() {
 	this->mesh = mesh;
 	this->title = name;
@@ -8,7 +8,7 @@ PlyContentModule::PlyContentModule(std::string name, Mesh* mesh)
 	this->Init();
 }
 
-PlyContentModule::PlyContentModule(PlyContentModule* module)
+PLYContentModule::PLYContentModule(PLYContentModule* module)
 : GUIModule() {
 	this->title = module->GetTitle();
 	this->mesh = module->GetMesh();
@@ -16,17 +16,17 @@ PlyContentModule::PlyContentModule(PlyContentModule* module)
 	this->Init();
 }
 
-PlyContentModule::~PlyContentModule() {}
+PLYContentModule::~PLYContentModule() {}
 
-Mesh* PlyContentModule::GetMesh() {
+Mesh* PLYContentModule::GetMesh() {
 	return this->mesh;
 }
 
-void PlyContentModule::Init() {
+void PLYContentModule::Init() {
 	this->tableFlags = ImGuiTableFlags_Borders;
 }
 
-void PlyContentModule::Render() {
+void PLYContentModule::Render() {
 	if (this->mesh != nullptr) {
 		if (ImGui::Begin(std::string(this->title + "###" + std::to_string(this->id)).c_str())) {
 			ImGui::Text("Vertices:");

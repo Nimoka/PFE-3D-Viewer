@@ -4,12 +4,12 @@
 #include "guimodules/module.h"
 #include "mesh.h"
 
-class PlyContentModule: public GUIModule
+class PLYContentModule: public GUIModule
 {
 public:
-	PlyContentModule(std::string name, Mesh* mesh);
-	PlyContentModule(PlyContentModule* module);
-	~PlyContentModule();
+	PLYContentModule(std::string name, Mesh* mesh);
+	PLYContentModule(PLYContentModule* module);
+	~PLYContentModule();
 
 	void Init();
 	void Render();
