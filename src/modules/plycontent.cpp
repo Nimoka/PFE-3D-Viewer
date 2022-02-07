@@ -30,7 +30,8 @@ void PLYContentModule::Render() {
 	if (this->mesh != nullptr) {
 		if (ImGui::Begin(std::string(this->title + "###" + std::to_string(this->id)).c_str())) {
 			ImGui::Text("Vertices:");
-			if (ImGui::BeginTable("Vertices", (this->mesh->haveColors ? 6 : 3), this->tableFlags)) {
+			if (ImGui::BeginTable("Vertices", (this->mesh->haveColors ? 7 : 4), this->tableFlags)) {
+				ImGui::TableNextColumn();
 				ImGui::TableNextColumn();
 				ImGui::TableHeader("x");
 				ImGui::TableNextColumn();
@@ -52,6 +53,8 @@ void PLYContentModule::Render() {
 				for (int i = 0; i < max; i++) {
 					ImGui::TableNextRow();
 					ImGui::TableNextColumn();
+					ImGui::Text("%u", i);
+					ImGui::TableNextColumn();
 					ImGui::Text("%.2f", this->mesh->verticesPosition[3 * i]);
 					ImGui::TableNextColumn();
 					ImGui::Text("%.2f", this->mesh->verticesPosition[3 * i + 1]);
@@ -68,10 +71,13 @@ void PLYContentModule::Render() {
 				}
 			}
 			ImGui::EndTable();
+			if (this->mesh->nbVertices > 10)
+				ImGui::Text("(truncated to first 10 vertices)");
 
 			ImGui::Text("Faces:");
 			if (ImGui::BeginTable("Faces",
-					(this->mesh->haveMaterials ? 4 : 3), this->tableFlags)) {
+					(this->mesh->haveMaterials ? 5 : 4), this->tableFlags)) {
+				ImGui::TableNextColumn();
 				ImGui::TableNextColumn();
 				ImGui::TableHeader("v0");
 				ImGui::TableNextColumn();
@@ -89,6 +95,8 @@ void PLYContentModule::Render() {
 				for (int i = 0; i < max; i++) {
 					ImGui::TableNextRow();
 					ImGui::TableNextColumn();
+					ImGui::Text("%u", i);
+					ImGui::TableNextColumn();
 					ImGui::Text("%u", this->mesh->facesVertices[3 * i]);
 					ImGui::TableNextColumn();
 					ImGui::Text("%u", this->mesh->facesVertices[3 * i + 1]);
@@ -101,6 +109,8 @@ void PLYContentModule::Render() {
 				}
 			}
 			ImGui::EndTable();
+			if (this->mesh->nbFaces > 10)
+				ImGui::Text("(truncated to first 10 faces)");
 		}
 		ImGui::End();
 	}
