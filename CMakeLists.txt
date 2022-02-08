@@ -62,12 +62,14 @@ add_library(miniply ${MINIPLY_DIR}/miniply.cpp)
 target_include_directories(miniply PUBLIC ${MINIPLY_DIR})
 
 
-# Toml11 -------------------------------------------------------
-set(TOMLPLUSPLUS_DIR ${EXTERNAL}/toml11)
-include_directories(${TOMLPLUSPLUS_DIR})
+# TOML11 -------------------------------------------------------
+
+set(TOML11_DIR ${EXTERNAL}/toml11)
+include_directories(${TOML11_DIR})
 
 
 # CLI11 --------------------------------------------------------
+
 add_subdirectory(external/CLI11)
 
 # FileBrowser --------------------------------------------------
@@ -100,8 +102,8 @@ file(GLOB VIEWER_HEADERS
 add_executable(${VIEWER_NAME}
 		${VIEWER_SOURCES}
 		${VIEWER_HEADERS})
-target_link_libraries(${VIEWER_NAME} PUBLIC glfw ${GLFW_LIBRARIES} imgui miniply FileBrowser CLI11::CLI11)
-target_include_directories(${VIEWER_NAME} PUBLIC ${GLFW_INCLUDE} ${IMGUI_INCLUDE} ${IMGUI_DIR}/backends/ ${MINIPLY_DIR} ${CLI11_DIR})
+target_link_libraries(${VIEWER_NAME} PUBLIC glfw ${GLFW_LIBRARIES} imgui miniply FileBrowser CLI11)
+target_include_directories(${VIEWER_NAME} PUBLIC ${GLFW_INCLUDE} ${IMGUI_INCLUDE} ${IMGUI_DIR}/backends/ ${MINIPLY_DIR} ${TOML11_DIR} ${CLI11_DIR})
 
 find_package(OpenGL REQUIRED)
 target_link_libraries(${VIEWER_NAME} PUBLIC ${OPENGL_LIBRARIES})
