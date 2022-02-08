@@ -10,3 +10,6 @@
 [submodule "CLI11"]
 	path = external/CLI11
 	url = https://github.com/CLIUtils/CLI11
+[submodule "external/toml11"]
+	path = external/toml11
+	url = https://github.com/ToruNiina/toml11.git
