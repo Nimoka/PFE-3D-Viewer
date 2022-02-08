@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 #include <vector>
 
@@ -17,7 +18,6 @@
 GLFWwindow *window;
 ImVec4 windowClearColor;
 int windowSize[2] = { 1280, 800 };
-float windowScale = 1.;
 
 Context* context;
 
@@ -42,7 +42,7 @@ int InitializeGLFW() {
 		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
 #endif
 #else
-#if _WIN32
+#ifdef _WIN32
 		glslVersion = "#version 130";
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -54,15 +54,6 @@ int InitializeGLFW() {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-#ifdef ENABLE_HIGH_DPI
-		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-		float xscale, yscale;
-		glfwGetMonitorContentScale(monitor, &xscale, &yscale);
-		if (xscale > 1 || yscale > 1) {
-			highDPIscaleFactor = xscale;
-			glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
-		}
 #endif
 #endif
 	}
@@ -94,11 +85,6 @@ int InitializeImGui() {
 	/* Setup Platform/Renderer backends */
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init(glslVersion);
-
-#ifdef ENABLE_HIGH_DPI
-	ImGuiStyle &style = ImGui::GetStyle();
-	style.ScaleAllSizes(windowScale);
-#endif
 
 	return 0;
 }
