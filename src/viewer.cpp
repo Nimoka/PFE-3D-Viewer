@@ -27,7 +27,7 @@ ImVec4 windowClearColor;
 int windowSize[2] = { -1, -1 };
 std::string windowTitle = std::string{};
 bool isBenchmark = false;
-std::string input_file, config_file = "../config.toml";
+std::string input_file, config_file = DATA_DIR "configs/default.toml";
 
 Context* context;
 
