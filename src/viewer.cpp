@@ -28,7 +28,6 @@ int windowSize[2] = { -1, -1 };
 std::string windowTitle = std::string{};
 bool isBenchmark = false;
 std::string input_file, config_file = "../config.toml";
-imgui_addons::ImGuiFileBrowser file_dialog;
 
 Context* context;
 
@@ -178,38 +177,6 @@ void processInput(GLFWwindow* window) {
 		glfwSetWindowShouldClose(window, true);
 }
 
-void showMainMenu(){
-	bool open = false, save = false;
-	if (ImGui::BeginMainMenuBar()) {
-		if (ImGui::BeginMenu("Menu")) {
-			if (ImGui::MenuItem("Open", NULL))
-				open = true;
-			if (ImGui::MenuItem("Save", NULL))
-				save = true;
-			ImGui::EndMenu();
-		}
-		ImGui::EndMainMenuBar();
-	}
-
-	if (open)
-		ImGui::OpenPopup("Open File");
-	if (save)
-		ImGui::OpenPopup("Save File");
-
-	// Only accept .ply file
-	if (file_dialog.showFileDialog("Open File", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".ply")) {
-		// TODO: pass the path to our program
-		std::cout << file_dialog.selected_fn << std::endl;
-		std::cout << file_dialog.selected_path << std::endl;
-	}
-	if (file_dialog.showFileDialog("Save File", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".ply")){
-		// TODO: pass the path to our program
-		std::cout << file_dialog.selected_fn << std::endl;
-		std::cout << file_dialog.selected_path << std::endl;
-		std::cout << file_dialog.ext << std::endl;
-	}
-}
-
 int main(int argc, char** argv) {
 	// Load the various levels of data (CLI, then TOML, then default)
 	int ret = LoadCLI(argc, argv);
@@ -233,14 +200,14 @@ int main(int argc, char** argv) {
 	/* Create application context */
 	context = new Context();
 
-	context->LoadPLYFile(DATA_DIR "models/color_cube.ply");
-	context->LoadPLYFile(DATA_DIR "models/matid_cube.ply");
-	context->LoadPLYFile(DATA_DIR "models/basic_cube.ply");
-	context->LoadPLYFile(DATA_DIR "models/gilet_union.ply");
-	context->LoadPLYFile(DATA_DIR "models/doesntexists.ply");
+	// context->LoadPLYFile(DATA_DIR "models/color_cube.ply");
+	// context->LoadPLYFile(DATA_DIR "models/matid_cube.ply");
+	// context->LoadPLYFile(DATA_DIR "models/basic_cube.ply");
+	// context->LoadPLYFile(DATA_DIR "models/gilet_union.ply");
+	// context->LoadPLYFile(DATA_DIR "models/doesntexists.ply");
 
 	/* Main loop */
-	while (!glfwWindowShouldClose(window)) {
+	while (!glfwWindowShouldClose(window) && !context->IsReadyToDie()) {
 		/* Poll latest events */
 		// processInput(window);
 

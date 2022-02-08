@@ -1,13 +1,14 @@
-#ifndef GUIMODULES_PLYCONTENT_H
-#define GUIMODULES_PLYCONTENT_H
+#ifndef MODULES_PLYCONTENT_H
+#define MODULES_PLYCONTENT_H
 
-#include "modules/module.h"
+#include "context.h"
 #include "mesh.h"
+#include "modules/module.h"
 
 class PLYContentModule: public GUIModule
 {
 public:
-	PLYContentModule(std::string name, Mesh* mesh);
+	PLYContentModule(Context* context, std::string name, Mesh* mesh);
 	PLYContentModule(PLYContentModule* module);
 	~PLYContentModule();
 
@@ -21,4 +22,4 @@ private:
 	ImGuiTableFlags tableFlags;
 };
 
-#endif // GUIMODULES_PLYCONTENT_H
+#endif // MODULES_PLYCONTENT_H

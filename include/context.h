@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 
+#include <ImGuiFileBrowser.h>
+
 #include "modules/module.h"
 #include "plyreader.h"
 
@@ -13,9 +15,14 @@ public:
 	Context();
 	~Context();
 
+	void CreateOpenPLYFileSelectionDialog();
+	void CreateSavePLYFileSelectionDialog();
 	void LoadPLYFile(std::string filepath);
 
 	void Render();
+	void Update();
+
+	bool IsReadyToDie();
 
 	int GetNewModuleID();
 
@@ -25,7 +32,11 @@ private:
 	std::vector<GUIModule*> modules;
 	std::vector<PLYReader*> readers;
 
+	imgui_addons::ImGuiFileBrowser* fileDialog;
+
 	int nextModuleID;
+
+	bool readyToDie;
 };
 
 #endif // CONTEXT_H

@@ -1,7 +1,7 @@
 #include "modules/plycontent.h"
 
-PLYContentModule::PLYContentModule(std::string name, Mesh* mesh)
-: GUIModule() {
+PLYContentModule::PLYContentModule(Context* context, std::string name, Mesh* mesh)
+: GUIModule(context) {
 	this->mesh = mesh;
 	this->title = name;
 
@@ -9,7 +9,7 @@ PLYContentModule::PLYContentModule(std::string name, Mesh* mesh)
 }
 
 PLYContentModule::PLYContentModule(PLYContentModule* module)
-: GUIModule() {
+: GUIModule(module->GetContext()) {
 	this->title = module->GetTitle();
 	this->mesh = module->GetMesh();
 
