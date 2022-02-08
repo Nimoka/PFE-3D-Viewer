@@ -130,7 +130,7 @@ void RenderImGuiFrame() {
 int LoadCLI(int argc, char** argv) {
 	// Loads the various command line options
 	int windowWidth = -1, windowHeight = -1;
-	app.add_option("-i,--input", input_file, "PLY file to load")->required()->check(CLI::ExistingFile)->check(FileWithExtension("ply"));
+	//app.add_option("-i,--input", input_file, "PLY file to load")->required()->check(CLI::ExistingFile)->check(FileWithExtension("ply"));
 	app.add_option("-c,--config", config_file, "Config file to use")->check(CLI::ExistingFile)->check(FileWithExtension("toml"));;
 	app.add_option("--width", windowWidth, "Window's width in pixels")->check(CLI::PositiveNumber);
 	app.add_option("--height", windowHeight, "Window's height in pixels")->check(CLI::PositiveNumber);
@@ -147,10 +147,42 @@ int LoadCLI(int argc, char** argv) {
 	return 0;
 }
 
-void LoadTOML() {
-	auto data = toml::parse(config_file);
-	// TODO: Check if the file exists, check if each element exists
+void CheckTOMLPath(const std::string& path){
+	std::ifstream ifs;
+	ifs.open(path);
+	if(!ifs){
+		throw std::runtime_error(" Can not find the toml file");
+	}
+}
 
+bool CheckTOMLElem(const std::string& path, const std::string& element){
+	int offset;
+	std::string line;
+	std::ifstream tomlFile;
+	tomlFile.open(path);
+	while(!tomlFile.eof()){
+		getline(tomlFile,line);
+		if(offset = line.find(element,0) != std::string::npos){
+			tomlFile.close();
+			return true;
+		}
+	}
+	throw std::runtime_error("Can not find element " + element);
+	return false;
+
+}
+
+void LoadTOML() {
+	try{
+		CheckTOMLPath(config_file);
+		CheckTOMLElem(config_file,"title");
+		CheckTOMLElem(config_file,"windowWidth");
+		CheckTOMLElem(config_file,"windowHeight");
+	}catch(std::exception & e){
+		std::cout<<"Problem in toml file:"<<e.what()<<std::endl;
+		exit(EXIT_FAILURE);
+	}
+	auto data = toml::parse(config_file);
 	auto& windowConfig = toml::find(data, "window");
 	// Only load the TOML's data if the data hasn't been provided by the command line
 	if (windowTitle.length() == 0) windowTitle = toml::find<std::string>(windowConfig, "title");
