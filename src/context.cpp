@@ -1,0 +1,47 @@
+#include "context.h"
+
+#include "modules/plycontent.h"
+
+Context::Context() {
+}
+
+Context::~Context() {
+	for (auto i: this->modules)
+		delete i;
+	for (auto i: this->readers)
+		delete i;
+}
+
+void Context::LoadPLYFile(std::string filepath) {
+	PLYReader* reader = new PLYReader(filepath);
+	if (reader->Load()) {
+		std::string filename = filepath.substr(filepath.rfind('/') + 1);
+		this->modules.push_back(new PLYContentModule(filename, reader->GetMesh()));
+		this->readers.push_back(reader);
+		return;
+	}
+	delete reader;
+	// TODO: Throw exception
+}
+
+void Context::Render() {
+	this->RenderMenuBar();
+	for (auto i: this->modules)
+		i->Render();
+}
+
+int Context::GetNewModuleID() {
+	return this->nextModuleID++;
+}
+
+void Context::RenderMenuBar() {
+	if (ImGui::BeginMainMenuBar()) {
+		if (ImGui::BeginMenu("File")) {
+			if (ImGui::MenuItem("Open document...", u8"Ctrl+O")) {}
+			if (ImGui::MenuItem("Close document", u8"Ctrl+W")) {}
+			if (ImGui::MenuItem("Quit", u8"Ctrl+Q")) {}
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
+	}
+}

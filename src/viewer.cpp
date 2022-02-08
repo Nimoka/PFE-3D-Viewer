@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 #include <ctype.h>
 #include <toml.hpp>
@@ -12,6 +13,7 @@
 #include <filewithextension.h>
 #include <ImGuiFileBrowser.h>
 
+#include "context.h"
 
 // #define ENABLE_DARK_MODE
 #define ENABLE_HIGH_DPI
@@ -27,6 +29,8 @@ std::string windowTitle = std::string{};
 bool isBenchmark = false;
 std::string input_file, config_file = "../config.toml";
 imgui_addons::ImGuiFileBrowser file_dialog;
+
+Context* context;
 
 const char *glslVersion;
 
@@ -73,18 +77,12 @@ void CleanupGLFW() {
 }
 
 int InitializeImGui() {
-	/* Create main window */
-	window = glfwCreateWindow(windowSize[0], windowSize[1], windowTitle.c_str(), NULL, NULL);
-	if (window == NULL)
-		return 1;
-	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1);
-
 	/* Setup Dear ImGui context */
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.IniFilename = NULL;
 
 	/* Setup Dear ImGui style */
 #ifdef ENABLE_DARK_MODE
@@ -220,8 +218,26 @@ int main(int argc, char** argv) {
 	LoadDefault();
 	if (!InitializeGLFW())
 		return ERR_GLFW;
+
+	/* Create GLFW window */
+	window = glfwCreateWindow(windowSize[0], windowSize[1], "3D Viewer", NULL, NULL);
+	if (window == NULL)
+		return ERR_GLFW;
+	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1);
+
+	/* Initialize ImGui context and style */
 	if (InitializeImGui())
 		return ERR_IMGUI;
+
+	/* Create application context */
+	context = new Context();
+
+	context->LoadPLYFile(DATA_DIR "models/color_cube.ply");
+	context->LoadPLYFile(DATA_DIR "models/matid_cube.ply");
+	context->LoadPLYFile(DATA_DIR "models/basic_cube.ply");
+	context->LoadPLYFile(DATA_DIR "models/gilet_union.ply");
+	context->LoadPLYFile(DATA_DIR "models/doesntexists.ply");
 
 	/* Main loop */
 	while (!glfwWindowShouldClose(window)) {
@@ -230,10 +246,13 @@ int main(int argc, char** argv) {
 
 		glfwPollEvents();
 		StartNewImGuiFrame();
-		// TODO: Implement interface
-		showMainMenu();
+
+		context->Render();
+
 		RenderImGuiFrame();
 	}
+
+	delete context;
 
 	CleanupImGui();
 	CleanupGLFW();
