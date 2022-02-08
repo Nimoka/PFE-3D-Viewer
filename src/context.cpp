@@ -37,9 +37,9 @@ int Context::GetNewModuleID() {
 void Context::RenderMenuBar() {
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
-			if (ImGui::MenuItem("Open document…", "Ctrl+O")) {}
-			if (ImGui::MenuItem("Close document", "Ctrl+W")) {}
-			if (ImGui::MenuItem("Quit", "Ctrl+Q")) {}
+			if (ImGui::MenuItem("Open document...", u8"Ctrl+O")) {}
+			if (ImGui::MenuItem("Close document", u8"Ctrl+W")) {}
+			if (ImGui::MenuItem("Quit", u8"Ctrl+Q")) {}
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
