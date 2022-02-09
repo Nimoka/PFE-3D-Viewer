@@ -68,6 +68,7 @@ set(TOML11_DIR ${EXTERNAL}/toml11)
 include_directories(${TOML11_DIR})
 
 
+
 # CLI11 --------------------------------------------------------
 
 add_subdirectory(external/CLI11)
@@ -90,19 +91,20 @@ add_definitions(-DDATA_DIR="${PROJECT_SOURCE_DIR}/data/")
 set(VIEWER_NAME 3DViewer)
 file(GLOB VIEWER_SOURCES
 		src/viewer.cpp
+		src/glad.c
 		src/context.cpp
 		src/filewithextension.cpp
 		src/plyreader.cpp
-		src/utils.cpp
+		src/utils.cpp		
 		src/modules/*.cpp
 		${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
 		${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp)
 file(GLOB VIEWER_HEADERS
-		include/context.h
+		include/context.h	
 		include/filewithextension.h
-		include/mesh.h
+		include/mesh.h	
 		include/plyreader.h
-		include/utils.h
+		include/utils.h	
 		include/modules/*.h
 		${IMGUI_DIR}/backends/imgui_impl_glfw.h
 		${IMGUI_DIR}/backends/imgui_impl_opengl3.h
