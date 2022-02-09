@@ -200,7 +200,7 @@ void LoadDefault() {
 	if (windowSize[1] < 0) windowSize[1] = 800;
 }
 
-void processInput(GLFWwindow* window) {
+void ProcessInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 		// TODO: Open file
@@ -241,7 +241,7 @@ int main(int argc, char** argv) {
 	/* Main loop */
 	while (!glfwWindowShouldClose(window) && !context->IsReadyToDie()) {
 		/* Poll latest events */
-		// processInput(window);
+		// ProcessInput(window);
 
 		glfwPollEvents();
 		StartNewImGuiFrame();
