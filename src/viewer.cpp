@@ -130,8 +130,7 @@ void RenderImGuiFrame() {
 int LoadCLI(int argc, char** argv) {
 	// Loads the various command line options
 	int windowWidth = -1, windowHeight = -1;
-	// app.add_option("-i,--input", input_file, "PLY file to load")->required()->check(CLI::ExistingFile)->check(FileWithExtension("ply"));
-	app.add_option("-i,--input", input_file, "PLY file to load")->check(CLI::ExistingFile)->check(FileWithExtension("ply"));
+	app.add_option("-i,--input", input_file, "PLY file to load")->required()->check(CLI::ExistingFile)->check(FileWithExtension("ply"));
 	app.add_option("-c,--config", config_file, "Config file to use")->check(CLI::ExistingFile)->check(FileWithExtension("toml"));
 	app.add_option("--width", windowWidth, "Window's width in pixels")->check(CLI::PositiveNumber);
 	app.add_option("--height", windowHeight, "Window's height in pixels")->check(CLI::PositiveNumber);
@@ -202,12 +201,11 @@ void LoadDefault() {
 	if (windowSize[1] < 0) windowSize[1] = 800;
 }
 
-void ProcessInput(GLFWwindow* window) {
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-		// TODO: Open file
+void ProcessKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (mods == GLFW_MOD_CONTROL && key == GLFW_KEY_O && action == GLFW_PRESS)
+		context->CreateOpenPLYFileSelectionDialog();
 
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 }
 
@@ -227,6 +225,9 @@ int main(int argc, char** argv) {
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
 
+	/* Set GLFW callbacks */
+	glfwSetKeyCallback(window, ProcessKeyboardInput);
+
 	/* Initialize ImGui context and style */
 	if (InitializeImGui())
 		return ERR_IMGUI;
@@ -240,9 +241,8 @@ int main(int argc, char** argv) {
 	/* Main loop */
 	while (!glfwWindowShouldClose(window) && !context->IsReadyToDie()) {
 		/* Poll latest events */
-		ProcessInput(window);
-
 		glfwPollEvents();
+
 		StartNewImGuiFrame();
 
 		context->Render();
