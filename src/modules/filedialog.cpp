@@ -32,15 +32,15 @@ void FileDialogModule::Init() {
 }
 
 void FileDialogModule::Render() {
-	ImGui::OpenPopup(this->title.c_str());
-	if (this->dialog->showFileDialog(this->title, this->mode, ImVec2(700, 310), this->formats)) {
+	std::string fullName = this->title + "###" + std::to_string(this->id);
+	ImGui::OpenPopup(fullName.c_str());
+	if (this->dialog->showFileDialog(fullName, this->mode, ImVec2(700, 400), this->formats)) {
 		this->SendResults();
 		this->readyToDie = true;
 	}
 }
 
 void FileDialogModule::SendResults() {
-	std::cout << this->dialog->selected_path << std::endl;
 	if (this->mode == imgui_addons::ImGuiFileBrowser::DialogMode::OPEN)
 		((Context*) this->context)->LoadPLYFile(this->dialog->selected_path);
 }
