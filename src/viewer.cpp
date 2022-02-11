@@ -15,7 +15,7 @@
 
 #include "context.h"
 
-// #define ENABLE_DARK_MODE
+#define ENABLE_DARK_MODE
 #define ENABLE_HIGH_DPI
 
 #define ERR_GLFW		1
@@ -27,7 +27,7 @@ ImVec4 windowClearColor;
 int windowSize[2] = { -1, -1 };
 std::string windowTitle = std::string{};
 bool isBenchmark = false;
-std::string input_file, config_file = DATA_DIR "configs/default.toml";
+std::string input_file = "", config_file = DATA_DIR "configs/default.toml";
 
 Context* context;
 
@@ -130,8 +130,9 @@ void RenderImGuiFrame() {
 int LoadCLI(int argc, char** argv) {
 	// Loads the various command line options
 	int windowWidth = -1, windowHeight = -1;
-	//app.add_option("-i,--input", input_file, "PLY file to load")->required()->check(CLI::ExistingFile)->check(FileWithExtension("ply"));
-	app.add_option("-c,--config", config_file, "Config file to use")->check(CLI::ExistingFile)->check(FileWithExtension("toml"));;
+	// app.add_option("-i,--input", input_file, "PLY file to load")->required()->check(CLI::ExistingFile)->check(FileWithExtension("ply"));
+	app.add_option("-i,--input", input_file, "PLY file to load")->check(CLI::ExistingFile)->check(FileWithExtension("ply"));
+	app.add_option("-c,--config", config_file, "Config file to use")->check(CLI::ExistingFile)->check(FileWithExtension("toml"));
 	app.add_option("--width", windowWidth, "Window's width in pixels")->check(CLI::PositiveNumber);
 	app.add_option("--height", windowHeight, "Window's height in pixels")->check(CLI::PositiveNumber);
 	app.add_option("-t,--title", windowTitle, "3D viewer's window title");
@@ -150,35 +151,35 @@ int LoadCLI(int argc, char** argv) {
 void CheckTOMLPath(const std::string& path){
 	std::ifstream ifs;
 	ifs.open(path);
-	if(!ifs){
-		throw std::runtime_error(" Can not find the toml file");
+	if (!ifs){
+		throw std::runtime_error("Can’t find the TOML file ‘" + path + "’.");
 	}
 }
 
-bool CheckTOMLElem(const std::string& path, const std::string& element){
-	int offset;
+bool CheckTOMLElem(const std::string& path, const std::string& element) {
+	// TRICKY: Why open the file for each element checking?
 	std::string line;
 	std::ifstream tomlFile;
 	tomlFile.open(path);
-	while(!tomlFile.eof()){
-		getline(tomlFile,line);
-		if(offset = line.find(element,0) != std::string::npos){
+	while (!tomlFile.eof()) {
+		getline(tomlFile, line);
+		if(line.find(element, 0) != std::string::npos){
 			tomlFile.close();
 			return true;
 		}
 	}
-	throw std::runtime_error("Can not find element " + element);
+	throw std::runtime_error("Can’t find element ‘" + element + "’ in file ‘" + path + "’.");
 	return false;
-
 }
 
 void LoadTOML() {
-	try{
+	// TODO: Restart checking from the beginning, there may be a better way to do this (maybe directly with TOML11)
+	try {
 		CheckTOMLPath(config_file);
 		CheckTOMLElem(config_file,"title");
 		CheckTOMLElem(config_file,"windowWidth");
 		CheckTOMLElem(config_file,"windowHeight");
-	}catch(std::exception & e){
+	} catch (std::exception & e) {
 		std::cout<<"Problem in toml file:"<<e.what()<<std::endl;
 		exit(EXIT_FAILURE);
 	}
@@ -195,6 +196,7 @@ void LoadTOML() {
 
 // Default values if it hasn't been set by the command line nor the config file
 void LoadDefault() {
+	// TODO: Set the default values at the beginning with no checkings
 	if (windowTitle.length() == 0) windowTitle = "3D Viewer";
 	if (windowSize[0] < 0) windowSize[0] = 1024;
 	if (windowSize[1] < 0) windowSize[1] = 800;
@@ -219,7 +221,7 @@ int main(int argc, char** argv) {
 		return ERR_GLFW;
 
 	/* Create GLFW window */
-	window = glfwCreateWindow(windowSize[0], windowSize[1], "3D Viewer", NULL, NULL);
+	window = glfwCreateWindow(windowSize[0], windowSize[1], windowTitle.c_str(), NULL, NULL);
 	if (window == NULL)
 		return ERR_GLFW;
 	glfwMakeContextCurrent(window);
@@ -232,16 +234,13 @@ int main(int argc, char** argv) {
 	/* Create application context */
 	context = new Context();
 
-	// context->LoadPLYFile(DATA_DIR "models/color_cube.ply");
-	// context->LoadPLYFile(DATA_DIR "models/matid_cube.ply");
-	// context->LoadPLYFile(DATA_DIR "models/basic_cube.ply");
-	// context->LoadPLYFile(DATA_DIR "models/gilet_union.ply");
-	// context->LoadPLYFile(DATA_DIR "models/doesntexists.ply");
+	if (input_file.length())
+		context->LoadPLYFile(input_file);
 
 	/* Main loop */
 	while (!glfwWindowShouldClose(window) && !context->IsReadyToDie()) {
 		/* Poll latest events */
-		// ProcessInput(window);
+		ProcessInput(window);
 
 		glfwPollEvents();
 		StartNewImGuiFrame();
