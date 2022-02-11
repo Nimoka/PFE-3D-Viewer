@@ -77,8 +77,6 @@ set(FILEBROWSER_DIR ${EXTERNAL}/FileBrowser)
 add_library(FileBrowser ${FILEBROWSER_DIR}/ImGuiFileBrowser.cpp)
 include_directories(${FILEBROWSER_DIR})
 
-# gtest --------------------------------------------------------
-add_subdirectory(external/googletest)
 
 # Includes =====================================================
 
@@ -113,8 +111,8 @@ file(GLOB VIEWER_HEADERS
 add_executable(${VIEWER_NAME}
 		${VIEWER_SOURCES}
 		${VIEWER_HEADERS})
-target_link_libraries(${VIEWER_NAME} PUBLIC glfw ${GLFW_LIBRARIES} imgui miniply FileBrowser CLI11 gtest)
-target_include_directories(${VIEWER_NAME} PUBLIC ${GLFW_INCLUDE} ${IMGUI_INCLUDE} ${IMGUI_DIR}/backends/ ${MINIPLY_DIR} ${TOML11_DIR} ${CLI11_DIR} ${GTEST_DIR})
+target_link_libraries(${VIEWER_NAME} PUBLIC glfw ${GLFW_LIBRARIES} imgui miniply FileBrowser CLI11 )
+target_include_directories(${VIEWER_NAME} PUBLIC ${GLFW_INCLUDE} ${IMGUI_INCLUDE} ${IMGUI_DIR}/backends/ ${MINIPLY_DIR} ${TOML11_DIR} ${CLI11_DIR})
 
 find_package(OpenGL REQUIRED)
 target_link_libraries(${VIEWER_NAME} PUBLIC ${OPENGL_LIBRARIES})
