@@ -75,12 +75,6 @@ set(FILEBROWSER_DIR ${EXTERNAL}/FileBrowser)
 add_library(FileBrowser ${FILEBROWSER_DIR}/ImGuiFileBrowser.cpp)
 include_directories(${FILEBROWSER_DIR})
 
-# Catch2 -------------------------------------------------------
-
-set(CATCH2_DIR ${EXTERNAL}/Catch2)
-add_subdirectory(${CATCH2_DIR})
-include_directories(${CATCH2_DIR}/src/catch2)
-
 # Includes =====================================================
 
 include_directories(include)
