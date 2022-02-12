@@ -1,9 +1,4 @@
-# PFE
-
 [window]
-title = "Big window"
-windowWidth = 800
-windowHeight = 600
-
-[run]
-isBenchmark = false
+# title = "3D Viewer (default)"
+width = 1280
+height = 800
