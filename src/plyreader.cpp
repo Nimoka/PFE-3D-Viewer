@@ -12,8 +12,9 @@ PLYReader::PLYReader(std::string filepath) {
 
 PLYReader::PLYReader(PLYReader *reader) {
 	this->filepath = reader->GetFilepath();
-	this->mesh = reader->GetMesh()->Duplicate();
 	this->isLoaded = reader->IsLoaded();
+	if ((this->isLoaded) && (this->mesh != nullptr))
+		this->mesh = reader->GetMesh()->Duplicate();
 }
 
 PLYReader::~PLYReader() {
