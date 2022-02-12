@@ -9,17 +9,15 @@ include(CheckCXXCompilerFlag)
 
 if (APPLE)
 	set(CMAKE_MACOSX_RPATH ON)
+	set(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
 	set(GL_SILENCE_DEPRECATION ON)
 	add_definitions(-DGL_SILENCE_DEPRECATION)
 endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-	CHECK_CXX_COMPILER_FLAG("-std=c++14" HAS_CPP14_FLAG)
 	CHECK_CXX_COMPILER_FLAG("-std=c++11" HAS_CPP11_FLAG)
 
-	if (HAS_CPP14_FLAG)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-	elseif (HAS_CPP11_FLAG)
+	if (HAS_CPP11_FLAG)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 	else()
 		message(FATAL_ERROR "Unsupported compiler -- requires C++11 support!")
@@ -61,22 +59,27 @@ set(MINIPLY_DIR ${EXTERNAL}/miniply)
 add_library(miniply ${MINIPLY_DIR}/miniply.cpp)
 target_include_directories(miniply PUBLIC ${MINIPLY_DIR})
 
-
 # TOML11 -------------------------------------------------------
 
 set(TOML11_DIR ${EXTERNAL}/toml11)
 include_directories(${TOML11_DIR})
 
-
 # CLI11 --------------------------------------------------------
 
-add_subdirectory(external/CLI11)
+set(CLI11_DIR ${EXTERNAL}/CLI11)
+add_subdirectory(${CLI11_DIR})
 
 # FileBrowser --------------------------------------------------
+
 set(FILEBROWSER_DIR ${EXTERNAL}/FileBrowser)
 add_library(FileBrowser ${FILEBROWSER_DIR}/ImGuiFileBrowser.cpp)
 include_directories(${FILEBROWSER_DIR})
 
+# Catch2 -------------------------------------------------------
+
+set(CATCH2_DIR ${EXTERNAL}/Catch2)
+add_subdirectory(${CATCH2_DIR})
+include_directories(${CATCH2_DIR}/src/catch2)
 
 # Includes =====================================================
 
@@ -111,8 +114,15 @@ file(GLOB VIEWER_HEADERS
 add_executable(${VIEWER_NAME}
 		${VIEWER_SOURCES}
 		${VIEWER_HEADERS})
-target_link_libraries(${VIEWER_NAME} PUBLIC glfw ${GLFW_LIBRARIES} imgui miniply FileBrowser CLI11 )
+target_link_libraries(${VIEWER_NAME} PUBLIC glfw ${GLFW_LIBRARIES} imgui miniply FileBrowser CLI11)
 target_include_directories(${VIEWER_NAME} PUBLIC ${GLFW_INCLUDE} ${IMGUI_INCLUDE} ${IMGUI_DIR}/backends/ ${MINIPLY_DIR} ${TOML11_DIR} ${CLI11_DIR})
 
 find_package(OpenGL REQUIRED)
 target_link_libraries(${VIEWER_NAME} PUBLIC ${OPENGL_LIBRARIES})
+
+# Tests ========================================================
+
+if (BUILD_TESTING)
+	set(TESTS tests)
+	add_subdirectory(${TESTS})
+endif()
