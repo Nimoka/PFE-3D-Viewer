@@ -3,5 +3,5 @@
 [ -d build ] || mkdir build
 cd build
 
-cmake ..
+cmake .. -DBUILD_TESTING=OFF
 make
