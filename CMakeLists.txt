@@ -118,6 +118,16 @@ target_link_libraries(${VIEWER_NAME} PUBLIC ${OPENGL_LIBRARIES})
 # Tests ========================================================
 
 if (BUILD_TESTING)
+	# Libraries ================================================
+
+	# Catch2 ---------------------------------------------------
+
+	set(CATCH2_DIR ${EXTERNAL}/Catch2)
+	add_subdirectory(${CATCH2_DIR})
+	include_directories(${CATCH2_DIR}/src/catch2)
+
+	# Executables ==============================================
+
 	set(TESTS tests)
 	add_subdirectory(${TESTS})
 endif()
