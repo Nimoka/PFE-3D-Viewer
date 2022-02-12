@@ -144,7 +144,7 @@ int Context::LoadCLIContext(int argc, char** argv) {
 
 	// Configuration file
 	if (!configurationFile.empty()) {
-		if (this->LoadTOMLContext(configurationFile))
+		if (!this->LoadTOMLContext(configurationFile))
 			return ERROR_CLI_MISS_TOML;
 	}
 
