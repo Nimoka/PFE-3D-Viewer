@@ -13,6 +13,8 @@ struct Mesh
 
 	bool haveColors = false;
 	bool haveMaterials = false;
+
+	Mesh* Duplicate();
 };
 
 #endif // MESH_H

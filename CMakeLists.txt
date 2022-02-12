@@ -96,6 +96,7 @@ file(GLOB VIEWER_SOURCES
 		src/viewer.cpp
 		src/context.cpp
 		src/filewithextension.cpp
+		src/mesh.cpp
 		src/plyreader.cpp
 		src/utils.cpp
 		src/modules/*.cpp
