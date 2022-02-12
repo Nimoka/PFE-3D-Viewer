@@ -1,8 +1,13 @@
-set(TESTS_VIEWER_LIST
-		plyreader)
+# PLY Reader ---------------------------------------------------
 
-foreach (TEST ${TESTS_VIEWER_LIST})
-	add_executable(${TEST} ${TEST}.cpp)
-	target_link_libraries(${TEST} PRIVATE Catch2::Catch2)
-	add_test(${TEST} ${TEST})
-endforeach()
+add_executable(plyreader
+		plyreader.cpp
+		${ROOT_DIR}/src/mesh.cpp
+		${ROOT_DIR}/src/plyreader.cpp
+		${ROOT_DIR}/include/mesh.h
+		${ROOT_DIR}/include/plyreader.h)
+target_include_directories(plyreader PUBLIC
+		${ROOT_DIR}/include
+		${ROOT_DIR}/${MINIPLY_DIR})
+target_link_libraries(plyreader PRIVATE Catch2::Catch2 miniply)
+add_test(plyreader plyreader)
