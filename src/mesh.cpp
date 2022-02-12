@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 Mesh* Mesh::Duplicate() {
-	Mesh* newMesh;
+	Mesh* newMesh = new Mesh();
 
 	int nbElements = 3 * this->nbVertices;
 
