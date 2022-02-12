@@ -7,6 +7,8 @@ include(CheckCXXCompilerFlag)
 
 # CMake configuration ==========================================
 
+set(ROOT_DIR ${CMAKE_SOURCE_DIR})
+
 if (APPLE)
 	set(CMAKE_MACOSX_RPATH ON)
 	set(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
