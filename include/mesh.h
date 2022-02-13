@@ -14,6 +14,8 @@ struct Mesh
 	bool haveColors = false;
 	bool haveMaterials = false;
 
+	~Mesh();
+
 	Mesh* Duplicate();
 };
 

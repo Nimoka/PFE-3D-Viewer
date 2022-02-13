@@ -2,6 +2,17 @@
 
 #include <stdlib.h>
 
+Mesh::~Mesh() {
+	if (this->verticesPosition != nullptr)
+		delete this->verticesPosition;
+	if (this->verticesColor != nullptr)
+		delete this->verticesColor;
+	if (this->facesVertices != nullptr)
+		delete this->facesVertices;
+	if (this->facesMaterial != nullptr)
+		delete this->facesMaterial;
+}
+
 Mesh* Mesh::Duplicate() {
 	Mesh* newMesh = new Mesh();
 
