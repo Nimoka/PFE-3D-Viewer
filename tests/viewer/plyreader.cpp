@@ -5,7 +5,7 @@
 #include "plyreader.h"
 
 static void TestRealFilePLYReaderCreation() {
-	std::string filepath = DATA_DIR "models/color_cube.ply";
+	std::string filepath = DATA_DIR "models/cube_rgbm.ply";
 	Mesh* mesh;
 
 	// Create a reader with a filepath
@@ -49,7 +49,7 @@ static void TestEmptyPLYReaderCreation() {
 	REQUIRE(reader->GetMesh() == nullptr);
 
 	// Load a file using its path
-	std::string filepath = DATA_DIR "models/color_cube.ply";
+	std::string filepath = DATA_DIR "models/cube_rgbm.ply";
 	assert(reader->LoadFile(filepath));
 	REQUIRE(reader->IsLoaded());
 	REQUIRE(!reader->GetFilepath().compare(filepath));
@@ -65,7 +65,7 @@ static void TestEmptyPLYReaderCreation() {
 }
 
 static void TestUnknownFilePLYReaderCreation() {
-	std::string filepath = DATA_DIR "models/color_cube.ply";
+	std::string filepath = DATA_DIR "models/cube_rgbm.ply";
 	Mesh* mesh;
 
 	// Create a first reader and load the file
