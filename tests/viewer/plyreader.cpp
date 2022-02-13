@@ -4,6 +4,43 @@
 
 #include "plyreader.h"
 
+int expectedNbVertices = 8;
+int expectedNbFaces = 12;
+float expectedPositions[24] = {
+		0., 0., 0.,
+		0., 0., 1.,
+		0., 1., 1.,
+		0., 1., 0.,
+		1., 0., 0.,
+		1., 0., 1.,
+		1., 1., 1.,
+		1., 1., 0. };
+float expectedColors[24] = {
+		1., 1., 1.,
+		1., 1., .2,
+		1., .2, .2,
+		1., .2, 1.,
+		.2, 1., 1.,
+		.2, 1., .2,
+		.2, .2, .2,
+		.2, .2, 1. };
+int expectedVertices[36] = {
+		0, 1, 2,
+		0, 2, 3,
+		1, 6, 2,
+		1, 5, 6,
+		5, 1, 0,
+		6, 5, 7,
+		0, 4, 5,
+		7, 5, 4,
+		3, 7, 4,
+		3, 4, 0,
+		7, 3, 2,
+		7, 2, 6 };
+int expectedMaterials[12] = {
+		1, 2, 3, 4, 5, 6,
+		6, 5, 4, 3, 2, 1 };
+
 static void TestRealFilePLYReaderCreation() {
 	std::string filepath = DATA_DIR "models/cube_rgbm.ply";
 	Mesh* mesh;
@@ -107,11 +144,182 @@ static void TestUnknownFilePLYReaderCreation() {
 	delete reader1;
 }
 
+static void TestDifferentHeadersLoadings() {
+	{
+		std::string filepath = DATA_DIR "models/cube_rgbm.ply";
+
+		// Create a reader and load a file
+		PLYReader* reader = new PLYReader(filepath);
+		assert(reader->Load());
+
+		// Check the data structure
+		REQUIRE(reader->GetMesh()->haveColors);
+		REQUIRE(reader->GetMesh()->haveMaterials);
+
+		delete reader;
+	}
+	{
+		std::string filepath = DATA_DIR "models/cube_rgb.ply";
+
+		// Create a reader and load a file
+		PLYReader* reader = new PLYReader(filepath);
+		assert(reader->Load());
+
+		// Check the data structure
+		REQUIRE(reader->GetMesh()->haveColors);
+		REQUIRE(!reader->GetMesh()->haveMaterials);
+
+		delete reader;
+	}
+	{
+		std::string filepath = DATA_DIR "models/cube_m.ply";
+
+		// Create a reader and load a file
+		PLYReader* reader = new PLYReader(filepath);
+		assert(reader->Load());
+
+		// Check the data structure
+		REQUIRE(!reader->GetMesh()->haveColors);
+		REQUIRE(reader->GetMesh()->haveMaterials);
+
+		delete reader;
+	}
+	{
+		std::string filepath = DATA_DIR "models/cube.ply";
+
+		// Create a reader and load a file
+		PLYReader* reader = new PLYReader(filepath);
+		assert(reader->Load());
+
+		// Check the data structure
+		REQUIRE(!reader->GetMesh()->haveColors);
+		REQUIRE(!reader->GetMesh()->haveMaterials);
+
+		delete reader;
+	}
+}
+
+static void TestMultipleLoadings() {
+	std::string filepath1 = DATA_DIR "models/cube_rgbm.ply";
+	std::string filepath2 = DATA_DIR "models/cube_m.ply";
+
+	// Create a reader and load a file
+	PLYReader* reader = new PLYReader(filepath1);
+	assert(reader->Load());
+	assert(reader->GetMesh() != nullptr);
+	assert(reader->GetMesh()->haveColors);
+	assert(reader->GetMesh()->haveMaterials);
+
+	// Load a second file
+	assert(reader->LoadFile(filepath2));
+
+	// Check if the second file was loaded and replaced the previous one
+	REQUIRE(!reader->GetMesh()->haveColors);
+	REQUIRE(reader->GetMesh()->haveMaterials);
+
+	delete reader;
+}
+
+static void TestDifferentHeadersLoadingData() {
+	{
+		std::string filepath = DATA_DIR "models/cube_rgbm.ply";
+
+		// Create a reader and load a file
+		PLYReader* reader = new PLYReader(filepath);
+		assert(reader->Load());
+		Mesh* mesh = reader->GetMesh();
+
+		// Check the data
+		REQUIRE(mesh->nbVertices == expectedNbVertices);
+		for (int i = 0; i < 24; i++)
+			REQUIRE(mesh->verticesPosition[i] == expectedPositions[i]);
+		for (int i = 0; i < 24; i++)
+			REQUIRE(mesh->verticesColor[i] == expectedColors[i]);
+		REQUIRE(mesh->nbFaces == expectedNbFaces);
+		for (int i = 0; i < 32; i++)
+			REQUIRE(mesh->facesVertices[i] == expectedVertices[i]);
+		for (int i = 0; i < 12; i++)
+			REQUIRE(mesh->facesMaterial[i] == expectedMaterials[i]);
+
+		delete reader;
+	}
+	{
+		std::string filepath = DATA_DIR "models/cube_rgb.ply";
+
+		// Create a reader and load a file
+		PLYReader* reader = new PLYReader(filepath);
+		assert(reader->Load());
+		Mesh* mesh = reader->GetMesh();
+
+		// Check the data structure
+		REQUIRE(mesh->nbVertices == expectedNbVertices);
+		for (int i = 0; i < 24; i++)
+			REQUIRE(mesh->verticesPosition[i] == expectedPositions[i]);
+		for (int i = 0; i < 24; i++)
+			REQUIRE(mesh->verticesColor[i] == expectedColors[i]);
+		REQUIRE(mesh->nbFaces == expectedNbFaces);
+		for (int i = 0; i < 32; i++)
+			REQUIRE(mesh->facesVertices[i] == expectedVertices[i]);
+
+		delete reader;
+	}
+	{
+		std::string filepath = DATA_DIR "models/cube_m.ply";
+
+		// Create a reader and load a file
+		PLYReader* reader = new PLYReader(filepath);
+		assert(reader->Load());
+		Mesh* mesh = reader->GetMesh();
+
+		// Check the data structure
+		REQUIRE(mesh->nbVertices == expectedNbVertices);
+		for (int i = 0; i < 24; i++)
+			REQUIRE(mesh->verticesPosition[i] == expectedPositions[i]);
+		REQUIRE(mesh->nbFaces == expectedNbFaces);
+		for (int i = 0; i < 32; i++)
+			REQUIRE(mesh->facesVertices[i] == expectedVertices[i]);
+		for (int i = 0; i < 12; i++)
+			REQUIRE(mesh->facesMaterial[i] == expectedMaterials[i]);
+
+		delete reader;
+	}
+	{
+		std::string filepath = DATA_DIR "models/cube.ply";
+
+		// Create a reader and load a file
+		PLYReader* reader = new PLYReader(filepath);
+		assert(reader->Load());
+		Mesh* mesh = reader->GetMesh();
+
+		// Check the data structure
+		REQUIRE(mesh->nbVertices == expectedNbVertices);
+		for (int i = 0; i < 24; i++)
+			REQUIRE(mesh->verticesPosition[i] == expectedPositions[i]);
+		REQUIRE(mesh->nbFaces == expectedNbFaces);
+		for (int i = 0; i < 32; i++)
+			REQUIRE(mesh->facesVertices[i] == expectedVertices[i]);
+
+		delete reader;
+	}
+}
+
+static void TestMultipleLoadingsData() {
+	
+}
+
 TEST_CASE("Testing viewer’s PLY reader") {
 	SECTION("Reader creation") {
 		TestRealFilePLYReaderCreation();
 		TestEmptyPLYReaderCreation();
 		TestUnknownFilePLYReaderCreation();
+	}
+	SECTION("Reader loading") {
+		TestDifferentHeadersLoadings();
+		TestMultipleLoadings();
+	}
+	SECTION("Reader data") {
+		TestDifferentHeadersLoadingData();
+		TestMultipleLoadingsData();
 	}
 }
 
