@@ -38,6 +38,7 @@ void FileDialogModule::Render() {
 		this->SendResults();
 		this->Kill();
 	}
+	// TODO: Find how to kill the module when ‘Cancel’ is pressed
 }
 
 void FileDialogModule::SendResults() {
