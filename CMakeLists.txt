@@ -12,9 +12,10 @@ set(ROOT_DIR ${CMAKE_SOURCE_DIR})
 if (APPLE)
 	set(CMAKE_MACOSX_RPATH ON)
 	set(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
+	set(CMAKE_PREFIX_PATH /usr/local/opt/)
 	set(GL_SILENCE_DEPRECATION ON)
 	add_definitions(-DGL_SILENCE_DEPRECATION)
-endif()
+endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 	CHECK_CXX_COMPILER_FLAG("-std=c++11" HAS_CPP11_FLAG)
@@ -27,7 +28,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"
 	if (NOT ${U_CMAKE_BUILD_TYPE} MATCHES DEBUG)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
 	endif()
-endif()
+endif ()
 
 # Libraries ====================================================
 
@@ -77,6 +78,23 @@ set(FILEBROWSER_DIR ${EXTERNAL}/FileBrowser)
 add_library(FileBrowser ${FILEBROWSER_DIR}/ImGuiFileBrowser.cpp)
 include_directories(${FILEBROWSER_DIR})
 
+# glbinding ----------------------------------------------------
+
+#set(GLBINDING_DIR ${EXTERNAL}/glbinding)
+#set(GLBINDING_INCLUDE_DIR ${GLBINDING_DIR}/source/include)
+#add_subdirectory(${GLBINDING_DIR})
+#include_directories(${GLBINDING_INCLUDE_DIR})
+
+# globjects ----------------------------------------------------
+
+#set(GLOBJECTS_DIR ${EXTERNAL}/globjects)
+#set(GLOBJECTS_INCLUDE_DIR ${GLOBJECTS_DIR}/sources/globjects/include)
+#add_subdirectory(${GLOBJECTS_DIR})
+#include_directories(${GLOBJECTS_INCLUDE_DIR})
+
+find_package(glbinding REQUIRED)
+find_package(globjects REQUIRED)
+
 # Includes =====================================================
 
 include_directories(include)
@@ -89,7 +107,7 @@ add_definitions(-DDATA_DIR="${PROJECT_SOURCE_DIR}/data/")
 
 set(VIEWER_NAME 3DViewer)
 file(GLOB VIEWER_SOURCES
-		src/viewer.cpp
+		src/main.cpp
 		src/context.cpp
 		src/filewithextension.cpp
 		src/mesh.cpp
@@ -111,11 +129,25 @@ file(GLOB VIEWER_HEADERS
 add_executable(${VIEWER_NAME}
 		${VIEWER_SOURCES}
 		${VIEWER_HEADERS})
-target_link_libraries(${VIEWER_NAME} PUBLIC glfw ${GLFW_LIBRARIES} imgui miniply FileBrowser CLI11)
-target_include_directories(${VIEWER_NAME} PUBLIC ${GLFW_INCLUDE} ${IMGUI_INCLUDE} ${IMGUI_DIR}/backends/ ${MINIPLY_DIR} ${TOML11_DIR} ${CLI11_DIR})
+target_link_libraries(${VIEWER_NAME} PUBLIC
+		glfw
+		${GLFW_LIBRARIES}
+		imgui
+		miniply
+		FileBrowser
+		CLI11
+		glbinding::glbinding globjects::globjects)
+target_include_directories(${VIEWER_NAME} PUBLIC
+		${GLFW_INCLUDE}
+		${IMGUI_INCLUDE}
+		${IMGUI_DIR}/backends/
+		${MINIPLY_DIR}
+		${TOML11_DIR}
+		${CLI11_DIR})
 
 find_package(OpenGL REQUIRED)
-target_link_libraries(${VIEWER_NAME} PUBLIC ${OPENGL_LIBRARIES})
+target_link_libraries(${VIEWER_NAME} PUBLIC
+		${OPENGL_LIBRARIES})
 
 # Tests ========================================================
 
@@ -132,4 +164,4 @@ if (BUILD_TESTING)
 
 	set(TESTS tests)
 	add_subdirectory(${TESTS})
-endif()
+endif ()
