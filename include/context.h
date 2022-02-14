@@ -8,6 +8,7 @@
 #include "imgui.h"
 #include "ImGuiFileBrowser.h"
 
+#include "modules/imguidemo.h"
 #include "modules/module.h"
 #include "plyreader.h"
 
@@ -37,6 +38,9 @@ public:
 	void CreateOpenPLYFileSelectionDialog();
 	void CreateSavePLYFileSelectionDialog();
 	void LoadPLYFile(std::string filepath);
+
+	/* Debug commands */
+	void ToggleImGuiDemoModule();
 
 	/* Customization */
 	void SetDarkMode();
@@ -74,6 +78,8 @@ private:
 	std::vector<GUIModule*> modules;
 	std::vector<PLYReader*> readers;
 	imgui_addons::ImGuiFileBrowser* fileDialog;
+
+	ImGuiDemoModule* imguiDemo;
 
 	int nextModuleID;
 

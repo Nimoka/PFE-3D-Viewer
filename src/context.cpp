@@ -97,6 +97,10 @@ int Context::Init() {
 	this->debugMode = false;
 	this->SetLightMode();
 
+	/* Create modules */
+
+	this->imguiDemo = nullptr;
+
 	return 0;
 }
 
@@ -236,6 +240,16 @@ void Context::LoadPLYFile(std::string filepath) {
 	// TODO: Throw exception
 }
 
+void Context::ToggleImGuiDemoModule() {
+	if (this->imguiDemo == nullptr) {
+		this->imguiDemo = new ImGuiDemoModule(this);
+		this->modules.push_back(this->imguiDemo);
+	} else {
+		this->imguiDemo->Kill();
+		this->imguiDemo = nullptr;
+	}
+}
+
 void Context::SetDarkMode() {
 	ImGui::StyleColorsDark();
 	windowClearColor = ImVec4(.2f, .2f, .2f, 1.f);
@@ -327,6 +341,13 @@ void Context::RenderMenuBar() {
 			if (ImGui::MenuItem("Quit", "Ctrl+Q"))
 				this->readyToDie = true;
 			ImGui::EndMenu();
+		}
+		if (this->debugMode) {
+			if (ImGui::BeginMenu("Debug")) {
+				if (ImGui::MenuItem("Show ImGui demo", "", (this->imguiDemo != nullptr)))
+					this->ToggleImGuiDemoModule();
+				ImGui::EndMenu();
+			}
 		}
 		ImGui::EndMainMenuBar();
 	}
