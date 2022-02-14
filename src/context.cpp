@@ -318,11 +318,6 @@ int Context::GetNewModuleID() {
 	return this->nextModuleID++;
 }
 
-void Context::KillFileDialogPlease() {
-	if (this->fileDialog != nullptr)
-		delete this->fileDialog;
-}
-
 void Context::AskForUpdate() {
 	this->needToUpdate = true;
 }

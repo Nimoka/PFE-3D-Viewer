@@ -56,7 +56,6 @@ public:
 	void ProcessMouseScroll(double x, double y);
 
 	int GetNewModuleID();
-	void KillFileDialogPlease();
 	void AskForUpdate();
 
 	GLFWwindow* GetWindow();

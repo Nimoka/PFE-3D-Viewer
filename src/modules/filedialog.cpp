@@ -36,9 +36,7 @@ void FileDialogModule::Render() {
 	ImGui::OpenPopup(fullName.c_str());
 	if (this->dialog->showFileDialog(fullName, this->mode, ImVec2(700, 400), this->formats)) {
 		this->SendResults();
-		((Context*) this->context)->KillFileDialogPlease();
-		this->readyToDie = true;
-		((Context*) this->context)->AskForUpdate();
+		this->Kill();
 	}
 }
 
