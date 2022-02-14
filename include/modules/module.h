@@ -11,21 +11,20 @@
 class GUIModule
 {
 public:
-	GUIModule(void* context) {
-		this->id = Global::nextModuleID++;
-		this->context = context;
-		this->readyToDie = false;
-	}
+	GUIModule(void* context);
 	virtual ~GUIModule() {}
+
 	virtual void Render() = 0;
 
-	bool IsReadyToDie() { return this->readyToDie; }
+	void Kill();
 
-	int GetID() { return this->id; }
-	std::string GetTitle() { return this->title; }
-	void* GetContext() { return this->context; }
+	bool IsReadyToDie();
 
-	void SetTitle(std::string value) { this->title = value; }
+	int GetID();
+	std::string GetTitle();
+	void* GetContext();
+
+	void SetTitle(std::string value);
 
 protected:
 	int id;
