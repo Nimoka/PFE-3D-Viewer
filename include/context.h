@@ -10,6 +10,7 @@
 
 #include "modules/imguidemo.h"
 #include "modules/module.h"
+#include "modules/viewer.h"
 #include "plyreader.h"
 
 #define DEFAULT_WINDOW_TITLE	"3D Viewer"
@@ -74,6 +75,7 @@ private:
 	bool debugMode;
 	bool darkMode;
 
+	ViewerModule* viewer;
 	std::vector<GUIModule*> modules;
 	std::vector<PLYReader*> readers;
 	imgui_addons::ImGuiFileBrowser* fileDialog;

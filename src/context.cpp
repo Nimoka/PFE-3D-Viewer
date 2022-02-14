@@ -25,6 +25,8 @@ Context::~Context() {
 		delete i;
 	if (this->fileDialog != nullptr)
 		delete this->fileDialog;
+	if (this->viewer != nullptr)
+		delete this->viewer;
 
 	/* Cleanup ImGui */
 
@@ -99,6 +101,8 @@ int Context::Init() {
 
 	/* Create modules */
 
+	this->viewer = new ViewerModule(this);
+	this->fileDialog = nullptr;
 	this->imguiDemo = nullptr;
 
 	return 0;
@@ -295,6 +299,9 @@ void Context::ProcessMouseScroll(double x, double y) {}
 
 void Context::Render() {
 	this->RenderMenuBar();
+
+	this->viewer->Render();
+
 	for (auto i: this->modules)
 		i->Render();
 
