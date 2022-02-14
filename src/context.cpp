@@ -94,6 +94,7 @@ int Context::Init() {
 	/* Load default values (hard-coded) */
 
 	this->benchmarkMode = false;
+	this->debugMode = false;
 	this->SetLightMode();
 
 	return 0;
@@ -121,6 +122,8 @@ int Context::LoadCLIContext(int argc, char** argv) {
 			->check(CLI::PositiveNumber);
 	app.add_option("-t, --title", windowTitle, "Window title");
 	app.add_flag("-b, --benchmark", this->benchmarkMode, "Run the program in benchmark mode");
+	app.add_flag("--debug", this->debugMode, "Enable debug mode (tools in menu bar)");
+	app.add_flag("--dark", this->darkMode, "Enable dark mode");
 
 	/* Parse CLI options */
 
@@ -161,10 +164,14 @@ int Context::LoadCLIContext(int argc, char** argv) {
 		this->SetWindowSize(DEFAULT_WINDOW_WIDTH, windowHeight);
 	}
 
+	// Window’s style
+	if (this->darkMode)
+		this->SetDarkMode();
+
 	// PLY file to load
 	if (!inputFile.empty())
 		this->LoadPLYFile(inputFile);
-	
+
 	return 0;
 }
 
@@ -232,11 +239,13 @@ void Context::LoadPLYFile(std::string filepath) {
 void Context::SetDarkMode() {
 	ImGui::StyleColorsDark();
 	windowClearColor = ImVec4(.2f, .2f, .2f, 1.f);
+	this->darkMode = true;
 }
 
 void Context::SetLightMode() {
 	ImGui::StyleColorsLight();
 	windowClearColor = ImVec4(.95f, .95f, .95f, 1.f);
+	this->darkMode = false;
 }
 
 void Context::SetWindowTitle(std::string title) {

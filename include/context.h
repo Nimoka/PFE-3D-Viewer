@@ -68,6 +68,8 @@ private:
 	std::string glslVersion;
 
 	bool benchmarkMode;
+	bool debugMode;
+	bool darkMode;
 
 	std::vector<GUIModule*> modules;
 	std::vector<PLYReader*> readers;
