@@ -85,6 +85,12 @@ include_directories(${FILEBROWSER_DIR})
 #add_subdirectory(${GLBINDING_DIR})
 #include_directories(${GLBINDING_INCLUDE_DIR})
 
+# Eigen --------------------------------------------------------
+
+set(EIGEN_DIR ${EXTERNAL}/eigen)
+add_subdirectory(${EIGEN_DIR})
+include_directories(${EIGEN_DIR})
+
 # globjects ----------------------------------------------------
 
 #set(GLOBJECTS_DIR ${EXTERNAL}/globjects)
@@ -136,6 +142,7 @@ target_link_libraries(${VIEWER_NAME} PUBLIC
 		miniply
 		FileBrowser
 		CLI11
+		eigen
 		glbinding::glbinding globjects::globjects)
 target_include_directories(${VIEWER_NAME} PUBLIC
 		${GLFW_INCLUDE}
@@ -143,7 +150,8 @@ target_include_directories(${VIEWER_NAME} PUBLIC
 		${IMGUI_DIR}/backends/
 		${MINIPLY_DIR}
 		${TOML11_DIR}
-		${CLI11_DIR})
+		${CLI11_DIR}
+		${EIGEN_DIR})
 
 find_package(OpenGL REQUIRED)
 target_link_libraries(${VIEWER_NAME} PUBLIC
