@@ -2,6 +2,7 @@
 #define MODULES_VIEWER_H
 
 #include <imgui.h>
+#include <string>
 
 #include "mesh.h"
 #include "modules/module.h"
