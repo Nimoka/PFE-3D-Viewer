@@ -22,3 +22,6 @@
 [submodule "external/eigen"]
 	path = external/eigen
 	url = https://gitlab.com/libeigen/eigen.git
+[submodule "external/globjects"]
+	path = external/globjects
+	url = https://github.com/cginternals/globjects.git
