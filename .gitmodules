@@ -16,9 +16,6 @@
 [submodule "external/Catch2"]
 	path = external/Catch2
 	url = https://github.com/catchorg/Catch2.git
-[submodule "external/globjects"]
-	path = external/globjects
-	url = https://github.com/cginternals/globjects.git
 [submodule "external/glbinding"]
 	path = external/glbinding
 	url = https://github.com/cginternals/glbinding.git
