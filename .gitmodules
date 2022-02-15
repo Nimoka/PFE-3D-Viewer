@@ -7,9 +7,9 @@
 [submodule "external/miniply"]
 	path = external/miniply
 	url = https://github.com/vilya/miniply.git
-[submodule "CLI11"]
+[submodule "external/CLI11"]
 	path = external/CLI11
-	url = https://github.com/CLIUtils/CLI11
+	url = https://github.com/CLIUtils/CLI11.git
 [submodule "external/toml11"]
 	path = external/toml11
 	url = https://github.com/ToruNiina/toml11.git
