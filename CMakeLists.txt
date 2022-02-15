@@ -91,15 +91,20 @@ set(EIGEN_DIR ${EXTERNAL}/eigen)
 add_subdirectory(${EIGEN_DIR})
 include_directories(${EIGEN_DIR})
 
-# globjects ----------------------------------------------------
-
-#set(GLOBJECTS_DIR ${EXTERNAL}/globjects)
-#set(GLOBJECTS_INCLUDE_DIR ${GLOBJECTS_DIR}/sources/globjects/include)
-#add_subdirectory(${GLOBJECTS_DIR})
-#include_directories(${GLOBJECTS_INCLUDE_DIR})
+# glbinding ----------------------------------------------------
 
 find_package(glbinding REQUIRED)
-find_package(globjects REQUIRED)
+
+# globjects ----------------------------------------------------
+
+if (BUILD_LIBS)
+	set(GLOBJECTS_DIR ${EXTERNAL}/globjects)
+	set(GLOBJECTS_INCLUDE_DIR ${GLOBJECTS_DIR}/sources/globjects/include)
+	add_subdirectory(${GLOBJECTS_DIR})
+	include_directories(${GLOBJECTS_INCLUDE_DIR})
+else ()
+	find_package(globjects REQUIRED)
+endif ()
 
 # Includes =====================================================
 
@@ -132,9 +137,11 @@ file(GLOB VIEWER_HEADERS
 		${IMGUI_DIR}/backends/imgui_impl_glfw.h
 		${IMGUI_DIR}/backends/imgui_impl_opengl3.h
 		${IMGUI_DIR}/backends/imgui_impl_opengl3_loader.h)
+
 add_executable(${VIEWER_NAME}
 		${VIEWER_SOURCES}
 		${VIEWER_HEADERS})
+
 target_link_libraries(${VIEWER_NAME} PUBLIC
 		glfw
 		${GLFW_LIBRARIES}
@@ -143,7 +150,15 @@ target_link_libraries(${VIEWER_NAME} PUBLIC
 		FileBrowser
 		CLI11
 		eigen
-		glbinding::glbinding globjects::globjects)
+		glbinding::glbinding)
+if (BUILD_LIBS)
+	target_link_libraries(${VIEWER_NAME} PUBLIC
+			globjects)
+else ()
+	target_link_libraries(${VIEWER_NAME} PUBLIC
+			globjects::globjects)
+endif ()
+
 target_include_directories(${VIEWER_NAME} PUBLIC
 		${GLFW_INCLUDE}
 		${IMGUI_INCLUDE}
@@ -152,6 +167,10 @@ target_include_directories(${VIEWER_NAME} PUBLIC
 		${TOML11_DIR}
 		${CLI11_DIR}
 		${EIGEN_DIR})
+if (BUILD_LIBS)
+	target_include_directories(${VIEWER_NAME} PUBLIC
+			${GLOBJECTS_INCLUDE_DIR})
+endif ()
 
 find_package(OpenGL REQUIRED)
 target_link_libraries(${VIEWER_NAME} PUBLIC
