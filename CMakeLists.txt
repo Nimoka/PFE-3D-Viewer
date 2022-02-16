@@ -5,6 +5,16 @@ project(PFE3DViewer)
 cmake_minimum_required(VERSION 3.2.0)
 include(CheckCXXCompilerFlag)
 
+# Disclaimers ==================================================
+
+if (BUILD_LIBS)
+	message("DISCLAIMER: While we can’t compile glbinding and globjects at")
+	message("    the same time, BUILD_LIBS is not working, so not available.")
+	message("    BUILD_LIBS was set to OFF.")
+	message("    Installed libraries will be used instead.")
+	set(BUILD_LIBS OFF)
+endif ()
+
 # CMake configuration ==========================================
 
 set(ROOT_DIR ${CMAKE_SOURCE_DIR})
@@ -148,13 +158,14 @@ target_link_libraries(${VIEWER_NAME} PUBLIC
 		miniply
 		FileBrowser
 		CLI11
-		eigen
-		glbinding::glbinding)
+		eigen)
 if (BUILD_LIBS)
 	target_link_libraries(${VIEWER_NAME} PUBLIC
+			glbinding
 			globjects)
 else ()
 	target_link_libraries(${VIEWER_NAME} PUBLIC
+			glbinding::glbinding
 			globjects::globjects)
 endif ()
 
