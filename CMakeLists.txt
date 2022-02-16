@@ -133,6 +133,7 @@ file(GLOB VIEWER_SOURCES
 		src/filewithextension.cpp
 		src/mesh.cpp
 		src/plyreader.cpp
+		src/scene.cpp
 		src/utils.cpp
 		src/modules/*.cpp
 		${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
@@ -143,6 +144,7 @@ file(GLOB VIEWER_HEADERS
 		include/filewithextension.h
 		include/mesh.h
 		include/plyreader.h
+		include/scene.h
 		include/utils.h
 		include/modules/*.h
 		${IMGUI_DIR}/backends/imgui_impl_glfw.h
