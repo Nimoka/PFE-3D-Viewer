@@ -25,3 +25,6 @@
 [submodule "external/globjects"]
 	path = external/globjects
 	url = https://github.com/cginternals/globjects.git
+[submodule "external/glm"]
+	path = external/glm
+	url = https://github.com/g-truc/glm.git
