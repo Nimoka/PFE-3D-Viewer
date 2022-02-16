@@ -8,6 +8,7 @@ include(CheckCXXCompilerFlag)
 # CMake configuration ==========================================
 
 set(ROOT_DIR ${CMAKE_SOURCE_DIR})
+set(BUILD_DIR ${ROOT_DIR}/build)
 
 if (APPLE)
 	set(CMAKE_MACOSX_RPATH ON)
@@ -36,7 +37,7 @@ set(EXTERNAL external)
 
 # GLFW ---------------------------------------------------------
 
-set(GLFW_DIR ${EXTERNAL}/glfw)
+set(GLFW_DIR ${ROOT_DIR}/${EXTERNAL}/glfw)
 set(GLFW_INCLUDE ${GLFW_DIR}/include)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "")
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "")
@@ -47,61 +48,59 @@ include_directories(${GLFW_INCLUDE})
 
 # Dear ImGui ---------------------------------------------------
 
-set(IMGUI_DIR ${EXTERNAL}/imgui)
-add_library(imgui ${IMGUI_DIR}/imgui.cpp
-		${IMGUI_DIR}/imgui_demo.cpp
-		${IMGUI_DIR}/imgui_draw.cpp
-		${IMGUI_DIR}/imgui_tables.cpp
-		${IMGUI_DIR}/imgui_widgets.cpp)
-target_include_directories(imgui PUBLIC ${IMGUI_DIR})
-include_directories(${IMGUI_DIR})
+set(IMGUI_DIR ${ROOT_DIR}/${EXTERNAL}/imgui)
+set(IMGUI_INCLUDE ${IMGUI_DIR})
+file(GLOB IMGUI_SOURCES ${IMGUI_DIR}/*.cpp)
+add_library(imgui ${IMGUI_SOURCES})
+target_include_directories(imgui PUBLIC ${IMGUI_INCLUDE})
+include_directories(${IMGUI_INCLUDE})
 
 # miniply ------------------------------------------------------
 
-set(MINIPLY_DIR ${EXTERNAL}/miniply)
+set(MINIPLY_DIR ${ROOT_DIR}/${EXTERNAL}/miniply)
 add_library(miniply ${MINIPLY_DIR}/miniply.cpp)
 target_include_directories(miniply PUBLIC ${MINIPLY_DIR})
 
 # TOML11 -------------------------------------------------------
 
-set(TOML11_DIR ${EXTERNAL}/toml11)
+set(TOML11_DIR ${ROOT_DIR}/${EXTERNAL}/toml11)
 include_directories(${TOML11_DIR})
 
 # CLI11 --------------------------------------------------------
 
-set(CLI11_DIR ${EXTERNAL}/CLI11)
+set(CLI11_DIR ${ROOT_DIR}/${EXTERNAL}/CLI11)
 add_subdirectory(${CLI11_DIR})
 
 # FileBrowser --------------------------------------------------
 
-set(FILEBROWSER_DIR ${EXTERNAL}/FileBrowser)
+set(FILEBROWSER_DIR ${ROOT_DIR}/${EXTERNAL}/FileBrowser)
 add_library(FileBrowser ${FILEBROWSER_DIR}/ImGuiFileBrowser.cpp)
 include_directories(${FILEBROWSER_DIR})
 
-# glbinding ----------------------------------------------------
-
-#set(GLBINDING_DIR ${EXTERNAL}/glbinding)
-#set(GLBINDING_INCLUDE_DIR ${GLBINDING_DIR}/source/include)
-#add_subdirectory(${GLBINDING_DIR})
-#include_directories(${GLBINDING_INCLUDE_DIR})
-
 # Eigen --------------------------------------------------------
 
-set(EIGEN_DIR ${EXTERNAL}/eigen)
+set(EIGEN_DIR ${ROOT_DIR}/${EXTERNAL}/eigen)
 add_subdirectory(${EIGEN_DIR})
 include_directories(${EIGEN_DIR})
 
 # glbinding ----------------------------------------------------
 
-find_package(glbinding REQUIRED)
+if (BUILD_LIBS)
+	set(GLBINDING_DIR ${ROOT_DIR}/${EXTERNAL}/glbinding)
+	set(GLBINDING_INCLUDE ${GLBINDING_DIR}/source/glbinding/include)
+	add_subdirectory(${GLBINDING_DIR})
+	include_directories(${GLBINDING_INCLUDE})
+else ()
+	find_package(glbinding REQUIRED)
+endif ()
 
 # globjects ----------------------------------------------------
 
 if (BUILD_LIBS)
-	set(GLOBJECTS_DIR ${EXTERNAL}/globjects)
-	set(GLOBJECTS_INCLUDE_DIR ${GLOBJECTS_DIR}/sources/globjects/include)
+	set(GLOBJECTS_DIR ${ROOT_DIR}/${EXTERNAL}/globjects)
+	set(GLOBJECTS_INCLUDE ${GLOBJECTS_DIR}/source/globjects/include)
 	add_subdirectory(${GLOBJECTS_DIR})
-	include_directories(${GLOBJECTS_INCLUDE_DIR})
+	include_directories(${GLOBJECTS_INCLUDE})
 else ()
 	find_package(globjects REQUIRED)
 endif ()
@@ -169,7 +168,7 @@ target_include_directories(${VIEWER_NAME} PUBLIC
 		${EIGEN_DIR})
 if (BUILD_LIBS)
 	target_include_directories(${VIEWER_NAME} PUBLIC
-			${GLOBJECTS_INCLUDE_DIR})
+			${GLOBJECTS_INCLUDE})
 endif ()
 
 find_package(OpenGL REQUIRED)
