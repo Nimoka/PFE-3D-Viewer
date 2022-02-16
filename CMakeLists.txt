@@ -136,6 +136,7 @@ file(GLOB VIEWER_SOURCES
 		src/scene.cpp
 		src/utils.cpp
 		src/modules/*.cpp
+		src/renderers/*.cpp
 		${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
 		${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp)
 file(GLOB VIEWER_HEADERS
@@ -147,6 +148,7 @@ file(GLOB VIEWER_HEADERS
 		include/scene.h
 		include/utils.h
 		include/modules/*.h
+		include/renderers/*.h
 		${IMGUI_DIR}/backends/imgui_impl_glfw.h
 		${IMGUI_DIR}/backends/imgui_impl_opengl3.h
 		${IMGUI_DIR}/backends/imgui_impl_opengl3_loader.h)
