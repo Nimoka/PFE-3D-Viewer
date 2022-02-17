@@ -39,10 +39,12 @@ void ViewerModule::Render() {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
 	ImGui::Begin(std::string(this->title + "###" + std::to_string(this->id)).c_str(), nullptr, this->flags);
-	if (this->renderer != nullptr)
+	if (this->renderer != nullptr) {
+		this->renderer->Render();
 		ImGui::Image((ImTextureID) this->renderer->GetTextureIDPointer(), size, ImVec2(0, 1), ImVec2(1, 0));
-	else
+	} else {
 		ImGui::Text("No renderer");
+	}
 	ImGui::End();
 
 	ImGui::PopStyleVar();
