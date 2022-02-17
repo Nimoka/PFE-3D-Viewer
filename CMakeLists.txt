@@ -93,27 +93,6 @@ set(EIGEN_DIR ${ROOT_DIR}/${EXTERNAL}/eigen)
 add_subdirectory(${EIGEN_DIR})
 include_directories(${EIGEN_DIR})
 
-# glbinding ----------------------------------------------------
-
-if (BUILD_LIBS)
-	set(GLBINDING_DIR ${ROOT_DIR}/${EXTERNAL}/glbinding)
-	set(GLBINDING_INCLUDE ${GLBINDING_DIR}/source/glbinding/include)
-	add_subdirectory(${GLBINDING_DIR})
-	include_directories(${GLBINDING_INCLUDE})
-else ()
-	find_package(glbinding REQUIRED)
-endif ()
-
-# globjects ----------------------------------------------------
-
-if (BUILD_LIBS)
-	set(GLOBJECTS_DIR ${ROOT_DIR}/${EXTERNAL}/globjects)
-	set(GLOBJECTS_INCLUDE ${GLOBJECTS_DIR}/source/globjects/include)
-	add_subdirectory(${GLOBJECTS_DIR})
-	include_directories(${GLOBJECTS_INCLUDE})
-else ()
-	find_package(globjects REQUIRED)
-endif ()
 
 # Includes =====================================================
 
@@ -165,15 +144,6 @@ target_link_libraries(${VIEWER_NAME} PUBLIC
 		FileBrowser
 		CLI11
 		eigen)
-if (BUILD_LIBS)
-	target_link_libraries(${VIEWER_NAME} PUBLIC
-			glbinding
-			globjects)
-else ()
-	target_link_libraries(${VIEWER_NAME} PUBLIC
-			glbinding::glbinding
-			globjects::globjects)
-endif ()
 
 target_include_directories(${VIEWER_NAME} PUBLIC
 		${GLFW_INCLUDE}
