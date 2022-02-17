@@ -100,6 +100,8 @@ void PLYContentModule::Init() {
 				this->maxMatID = this->mesh->facesMaterial[i];
 		}
 	}
+
+	this->nbUnusedVertices = this->mesh->ContainsUnusedVertices();
 }
 
 void PLYContentModule::Render() {
@@ -107,6 +109,8 @@ void PLYContentModule::Render() {
 		if (ImGui::Begin(std::string(this->title + "###" + std::to_string(this->id)).c_str())) {
 			ImGui::Text("Informations:");
 			ImGui::Text("  Nb vertices: %u", this->mesh->nbVertices);
+			if (this->nbUnusedVertices)
+				ImGui::Text("    (%u unused)", this->nbUnusedVertices);
 			ImGui::Text("  Nb faces: %u", this->mesh->nbFaces);
 			ImGui::Text("  Have colors: %s", (this->mesh->haveColors ? "yes" : "no"));
 			ImGui::Text("  Have materials: %s", (this->mesh->haveMaterials ? "yes" : "no"));
@@ -208,6 +212,41 @@ void PLYContentModule::Render() {
 			ImGui::EndTable();
 			if (this->mesh->nbFaces > MAX_CONTENT)
 				ImGui::Text("(truncated to first %u faces)", MAX_CONTENT);
+
+			ImGui::Text("Normals:");
+			ImGui::Text("  Vertices' normals:");
+			if (this->mesh->verticesNormals == nullptr) {
+				if (ImGui::Button("Compute"))
+					this->mesh->ComputeNormals();
+			} else {
+				if (ImGui::BeginTable("Vertices' normals", 4, this->tableFlags)) {
+					ImGui::TableNextColumn();
+					ImGui::TableNextColumn();
+					ImGui::TableHeader("x");
+					ImGui::TableNextColumn();
+					ImGui::TableHeader("y");
+					ImGui::TableNextColumn();
+					ImGui::TableHeader("z");
+
+					int max = MAX_CONTENT;
+					if (this->mesh->nbVertices < max)
+						max = this->mesh->nbVertices;
+					for (int i = 0; i < max; i++) {
+						ImGui::TableNextRow();
+						ImGui::TableNextColumn();
+						ImGui::Text("%u", i);
+						ImGui::TableNextColumn();
+						ImGui::Text("%.2f", this->mesh->verticesNormals[3 * i]);
+						ImGui::TableNextColumn();
+						ImGui::Text("%.2f", this->mesh->verticesNormals[3 * i + 1]);
+						ImGui::TableNextColumn();
+						ImGui::Text("%.2f", this->mesh->verticesNormals[3 * i + 2]);
+					}
+				}
+				ImGui::EndTable();
+				if (this->mesh->nbVertices > MAX_CONTENT)
+					ImGui::Text("(truncated to first %u faces)", MAX_CONTENT);
+			}
 		}
 		ImGui::End();
 	}

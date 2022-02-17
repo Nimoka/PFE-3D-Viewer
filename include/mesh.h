@@ -5,6 +5,7 @@ struct Mesh
 {
 	float* verticesPosition = nullptr;
 	float* verticesColor = nullptr;
+	float* verticesNormals = nullptr;
 	int* facesVertices = nullptr;
 	int* facesMaterial = nullptr;
 
@@ -15,6 +16,10 @@ struct Mesh
 	bool haveMaterials = false;
 
 	~Mesh();
+
+	void ComputeNormals();
+
+	int ContainsUnusedVertices();
 
 	Mesh* Duplicate();
 };

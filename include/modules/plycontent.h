@@ -26,6 +26,7 @@ private:
 	float minColorG, maxColorG;
 	float minColorB, maxColorB;
 	int minMatID, maxMatID;
+	int nbUnusedVertices;
 
 	ImGuiTableFlags tableFlags;
 };

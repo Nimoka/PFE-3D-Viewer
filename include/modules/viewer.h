@@ -6,6 +6,7 @@
 
 #include "mesh.h"
 #include "modules/module.h"
+#include "renderers/renderer.h"
 
 class ViewerModule: public GUIModule
 {
@@ -18,11 +19,13 @@ public:
 	void Render();
 
 	void SetMesh(Mesh* mesh);
+	void SetRenderer(Renderer* renderer);
 
 	Mesh* GetMesh();
+	Renderer* GetRenderer();
 
 private:
-	Mesh* mesh;
+	Renderer* renderer;
 
 	ImGuiWindowFlags flags;
 };

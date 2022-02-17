@@ -5,16 +5,6 @@ project(PFE3DViewer)
 cmake_minimum_required(VERSION 3.2.0)
 include(CheckCXXCompilerFlag)
 
-# Disclaimers ==================================================
-
-if (BUILD_LIBS)
-	message("DISCLAIMER: While we can’t compile glbinding and globjects at")
-	message("    the same time, BUILD_LIBS is not working, so not available.")
-	message("    BUILD_LIBS was set to OFF.")
-	message("    Installed libraries will be used instead.")
-	set(BUILD_LIBS OFF)
-endif ()
-
 # CMake configuration ==========================================
 
 set(ROOT_DIR ${CMAKE_SOURCE_DIR})
@@ -47,12 +37,13 @@ set(EXTERNAL external)
 
 # GLFW ---------------------------------------------------------
 
+set(GLFW_BUILD_EXAMPLES		OFF CACHE BOOL "")
+set(GLFW_BUILD_TESTS		OFF CACHE BOOL "")
+set(GLFW_BUILD_DOCS			OFF CACHE BOOL "")
+set(GLFW_INSTALL			OFF CACHE BOOL "")
+
 set(GLFW_DIR ${ROOT_DIR}/${EXTERNAL}/glfw)
 set(GLFW_INCLUDE ${GLFW_DIR}/include)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "")
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "")
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "")
-set(GLFW_INSTALL OFF CACHE BOOL "")
 add_subdirectory(${GLFW_DIR})
 include_directories(${GLFW_INCLUDE})
 
@@ -90,9 +81,40 @@ include_directories(${FILEBROWSER_DIR})
 # Eigen --------------------------------------------------------
 
 set(EIGEN_DIR ${ROOT_DIR}/${EXTERNAL}/eigen)
-add_subdirectory(${EIGEN_DIR})
 include_directories(${EIGEN_DIR})
 
+# glbinding ----------------------------------------------------
+
+set(BUILD_SHARED_LIBS		OFF CACHE BOOL "")
+set(OPTION_BUILD_TOOLS		OFF CACHE BOOL "")
+set(OPTION_BUILD_EXAMPLES	OFF CACHE BOOL "")
+
+if (BUILD_LIBS)
+	set(GLBINDING_DIR ${ROOT_DIR}/${EXTERNAL}/glbinding)
+	set(GLBINDING_INCLUDE
+			${GLBINDING_DIR}/source/glbinding/include
+			${GLBINDING_DIR}/source/glbinding-aux/include
+			${GLBINDING_DIR}/3rdparty/KHR/include)
+	add_subdirectory(${GLBINDING_DIR})
+	include_directories(${GLBINDING_INCLUDE})
+else ()
+	find_package(glbinding REQUIRED)
+endif ()
+
+## globjects ----------------------------------------------------
+#
+#if (BUILD_LIBS)
+#	set(GLOBJECTS_DIR ${ROOT_DIR}/${EXTERNAL}/globjects)
+#	set(GLOBJECTS_INCLUDE ${GLOBJECTS_DIR}/source/globjects/include)
+#	add_subdirectory(${GLOBJECTS_DIR})
+#	include_directories(${GLOBJECTS_INCLUDE})
+#else ()
+#	find_package(globjects REQUIRED)
+#endif ()
+
+# OpenGL -------------------------------------------------------
+
+find_package(OpenGL REQUIRED)
 
 # Includes =====================================================
 
@@ -106,26 +128,13 @@ add_definitions(-DDATA_DIR="${PROJECT_SOURCE_DIR}/data/")
 
 set(VIEWER_NAME 3DViewer)
 file(GLOB VIEWER_SOURCES
-		src/main.cpp
-		src/camera.cpp
-		src/context.cpp
-		src/filewithextension.cpp
-		src/mesh.cpp
-		src/plyreader.cpp
-		src/scene.cpp
-		src/utils.cpp
+		src/*.cpp
 		src/modules/*.cpp
 		src/renderers/*.cpp
 		${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
 		${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp)
 file(GLOB VIEWER_HEADERS
-		include/camera.h
-		include/context.h
-		include/filewithextension.h
-		include/mesh.h
-		include/plyreader.h
-		include/scene.h
-		include/utils.h
+		include/*.h
 		include/modules/*.h
 		include/renderers/*.h
 		${IMGUI_DIR}/backends/imgui_impl_glfw.h
@@ -139,13 +148,16 @@ add_executable(${VIEWER_NAME}
 target_link_libraries(${VIEWER_NAME} PUBLIC
 		glfw
 		${GLFW_LIBRARIES}
+		glbinding::glbinding
+		glbinding::glbinding-aux
 		imgui
 		miniply
 		FileBrowser
 		CLI11
-		eigen)
+		${OPENGL_LIBRARIES})
 
 target_include_directories(${VIEWER_NAME} PUBLIC
+		include/
 		${GLFW_INCLUDE}
 		${IMGUI_INCLUDE}
 		${IMGUI_DIR}/backends/
@@ -155,12 +167,10 @@ target_include_directories(${VIEWER_NAME} PUBLIC
 		${EIGEN_DIR})
 if (BUILD_LIBS)
 	target_include_directories(${VIEWER_NAME} PUBLIC
-			${GLOBJECTS_INCLUDE})
+			${GLBINDING_INCLUDE})
 endif ()
 
-find_package(OpenGL REQUIRED)
-target_link_libraries(${VIEWER_NAME} PUBLIC
-		${OPENGL_LIBRARIES})
+target_compile_definitions(${VIEWER_NAME} PRIVATE GLFW_INCLUDE_NONE)
 
 # Tests ========================================================
 

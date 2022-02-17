@@ -1,5 +1,7 @@
 #include "modules/viewer.h"
 
+#include "renderers/forward.h"
+
 ViewerModule::ViewerModule(void* context)
 : GUIModule(context) {
 	this->title = "Viewer";
@@ -10,7 +12,7 @@ ViewerModule::ViewerModule(void* context)
 ViewerModule::ViewerModule(ViewerModule* module)
 : GUIModule(module->GetContext()) {
 	this->title = module->GetTitle();
-	this->mesh = module->GetMesh();
+	this->renderer = module->GetRenderer();
 
 	this->Init();
 }
@@ -22,23 +24,41 @@ void ViewerModule::Init() {
 			| ImGuiWindowFlags_NoMove
 			| ImGuiWindowFlags_NoResize
 			| ImGuiWindowFlags_NoSavedSettings
-			| ImGuiWindowFlags_NoBackground;
+			| ImGuiWindowFlags_NoBackground
+			| ImGuiWindowFlags_NoBringToFrontOnFocus;
+
+	this->renderer = new ForwardRenderer();
 }
 
 void ViewerModule::Render() {
 	const ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImVec2 size = viewport->WorkSize;
 	ImGui::SetNextWindowPos(viewport->WorkPos);
-	ImGui::SetNextWindowSize(viewport->WorkSize);
+	ImGui::SetNextWindowSize(size);
 
 	ImGui::Begin(std::string(this->title + "###" + std::to_string(this->id)).c_str(), nullptr, this->flags);
-	ImGui::Text("Placeholder");
+	if (this->renderer != nullptr)
+		ImGui::Image((ImTextureID) this->renderer->GetTextureIDPointer(), size, ImVec2(0, 1), ImVec2(1, 0));
+	else
+		ImGui::Text("No renderer");
 	ImGui::End();
 }
 
+void ViewerModule::SetRenderer(Renderer* renderer) {
+	if (this->renderer != nullptr)
+		delete this->renderer;
+	this->renderer = renderer;
+}
+
 void ViewerModule::SetMesh(Mesh* mesh) {
-	this->mesh = mesh;
+	if (this->renderer != nullptr)
+		this->renderer->GetScene()->SetMesh(mesh);
+}
+
+Renderer* ViewerModule::GetRenderer() {
+	return this->renderer;
 }
 
 Mesh* ViewerModule::GetMesh() {
-	return this->mesh;
+	return this->renderer->GetScene()->GetMesh();
 }

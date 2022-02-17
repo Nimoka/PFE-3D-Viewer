@@ -81,6 +81,12 @@ int Context::Init() {
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
 
+	/* Initialize glbinding */
+
+	glbinding::Binding::initialize(glfwGetProcAddress, false);
+	// std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+	// std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+
 	/* Initialize Dear ImGui */
 
 	IMGUI_CHECKVERSION();
@@ -234,6 +240,7 @@ void Context::CreateOpenPLYFileSelectionDialog() {
 void Context::LoadPLYFile(std::string filepath) {
 	PLYReader* reader = new PLYReader(filepath);
 	if (reader->Load()) {
+		// reader->GetMesh()->ComputeNormals();
 		std::string filename = filepath.substr(filepath.rfind('/') + 1);
 		this->SetWindowTitle(filename);
 		this->modules.push_back(new PLYContentModule(this, filename, reader->GetMesh()));
