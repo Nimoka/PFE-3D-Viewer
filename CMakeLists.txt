@@ -94,6 +94,11 @@ add_subdirectory(${EIGEN_DIR})
 include_directories(${EIGEN_DIR})
 
 
+# glm ----------------------------------------------------------
+include_directories(external/glm)
+include_directories(external/stb)
+include_directories(include)
+
 # Includes =====================================================
 
 include_directories(include)
@@ -106,6 +111,7 @@ add_definitions(-DDATA_DIR="${PROJECT_SOURCE_DIR}/data/")
 
 set(VIEWER_NAME 3DViewer)
 file(GLOB VIEWER_SOURCES
+		src/glad.c
 		src/main.cpp
 		src/camera.cpp
 		src/context.cpp
