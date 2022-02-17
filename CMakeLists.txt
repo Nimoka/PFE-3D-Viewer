@@ -95,9 +95,11 @@ include_directories(${EIGEN_DIR})
 
 
 # glm ----------------------------------------------------------
-include_directories(external/glm)
-include_directories(external/stb)
-include_directories(include)
+include_directories(${ROOT_DIR}/${EXTERNAL}/glm)
+
+# stb ----------------------------------------------------------
+include_directories(${ROOT_DIR}/${EXTERNAL}/stb)
+
 
 # Includes =====================================================
 
