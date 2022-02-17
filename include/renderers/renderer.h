@@ -1,7 +1,7 @@
 #ifndef RENDERERS_RENDERER_H
 #define RENDERERS_RENDERER_H
 
-#include <globjects/Framebuffer.h>
+
 
 #include "scene.h"
 
@@ -19,7 +19,7 @@ public:
 	void SetScene(Scene* scene);
 
 protected:
-	globjects::Framebuffer* framebuffer;
+
 	Scene* scene;
 };
 
