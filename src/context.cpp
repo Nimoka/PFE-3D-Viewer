@@ -99,6 +99,10 @@ int Context::Init() {
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init(this->glslVersion.c_str());
 
+	// Setup ImGui style
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.WindowBorderSize = 0;
+
 	/* Load default values (hard-coded) */
 
 	this->benchmarkMode = false;
