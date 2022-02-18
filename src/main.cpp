@@ -120,12 +120,24 @@ int main(int argc, char** argv) {
 	if (!InitializeGLFW())
 		return ERROR_GLFW_INIT;	
 
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "3D viewer", NULL, NULL);
+	context = new Context(glslVersion);
+	context->Init();
+	
+	GLFWwindow* window = context->GetWindow();
+	glfwSetKeyCallback(window, ProcessKeyboardInput);
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
-
+	
+	{
+	int error = context->LoadCLIContext(argc, argv);
+	if (error) {
+		CleanupEverything();
+		return error;
+	}
+	}	
+	
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 	std::cout << "Failed to initialize GLAD" << std::endl;
@@ -275,7 +287,7 @@ int main(int argc, char** argv) {
 
 	//////////////////////////////////////////////////////////
 
-	IMGUI_CHECKVERSION();
+	/*IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO &io = ImGui::GetIO();
 	(void)io;
@@ -285,24 +297,9 @@ int main(int argc, char** argv) {
 
 	bool show_demo_window = true;
 	bool show_another_window = false;
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);*/
 
-	/*context = new Context(glslVersion);
-	context->Init();
-	{
-		);GLFWwindow* window = context->GetWindow();
-		glfwSetKeyCallback(window, ProcessKeyboardInput);
-		// glfwSetCursorPosCallback(window, ProcessMouseMovement);
-		// glfwSetMouseButtonCallback(window, ProcessMouseButton);
-		// glfwSetScrollCallback(window, ProcessMouseScroll
-	}
-	{
-	int error = context->LoadCLIContext(argc, argv);
-	if (error) {
-		CleanupEverything();
-		return error;
-	}
-	}
+	/*
 	context->Launch();
 	CleanupEverything();*/
 
@@ -361,7 +358,7 @@ int main(int argc, char** argv) {
 	// -------------------------------------------------------------------------------
 	/////////////////////////////////////////////
 
-		ImGui_ImplOpenGL3_NewFrame();
+		/*ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		if (show_demo_window)
@@ -397,14 +394,14 @@ int main(int argc, char** argv) {
 			1000.0f / ImGui::GetIO().Framerate,
 			ImGui::GetIO().Framerate);
 		ImGui::End();
-		ImGui::Render();
+		ImGui::Render();*/
 		//int display_w, display_h;
 		//glfwGetFramebufferSize(window, &display_w, &display_h);
 		//glViewport(0, 0, display_w, display_h);
 		//glClearColor(clear_color.x, clear_color.y, clear_color.z,
 		//             clear_color.w);
 		//glClear(GL_COLOR_BUFFER_BIT);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
