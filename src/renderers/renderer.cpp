@@ -3,27 +3,33 @@
 #include <iostream>
 
 Renderer::Renderer() {
-	std::cout << "Here" << std::endl;
-
 	/* Create render FBO */
 
 	glbinding::aux::enableGetErrorCallback();
 
-	// Create a framebuffer
+	// Create a frame buffer
 	glGenFramebuffers(1, &this->fboID);
 	glBindFramebuffer(GL_FRAMEBUFFER, this->fboID);
 
-	// Create the render texture
+	// Create a texture
 	glGenTextures(1, &this->textureID);
 	glBindTexture(GL_TEXTURE_2D, this->textureID);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 1920, 1080, 0, GL_RGBA, GL_FLOAT, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1280, 800, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
 
-	// Set the list of attached buffers
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->textureID, 0);
-	GLenum attachments[1] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, attachments);
+	// Set pool filtering to nearest (should be pixel perfect on screen)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-	// Return to first framebuffer
+	// Create a depth buffer
+	glGenRenderbuffers(1, &this->rboID);
+	glBindRenderbuffer(GL_RENDERBUFFER, this->rboID);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1280, 800);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this->rboID);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "Framebuffer initialization failed!" << std::endl;
+
+	// Switch back to default frame buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -31,16 +37,12 @@ Scene* Renderer::GetScene() {
 	return this->scene;
 }
 
-GLuint Renderer::GetFboID() {
+const GLuint& Renderer::GetFboID() const {
 	return this->fboID;
 }
 
-GLuint Renderer::GetTextureID() {
+const GLuint& Renderer::GetTextureID() const {
 	return this->textureID;
-}
-
-GLuint* Renderer::GetTextureIDPointer() {
-	return &this->textureID;
 }
 
 void Renderer::SetScene(Scene* scene) {

@@ -13,7 +13,7 @@ public:
 
 	void Init();
 
-	void Render();
+	void Render(ImVec2 size);
 
 private:
 	Shader shader;

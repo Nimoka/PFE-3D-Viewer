@@ -3,6 +3,8 @@
 
 #include "opengl.h"
 
+#include "imgui.h"
+
 #include "scene.h"
 
 class Renderer
@@ -11,12 +13,11 @@ public:
 	Renderer();
 	virtual ~Renderer() {}
 
-	virtual void Render() = 0;
+	virtual void Render(ImVec2 size) = 0;
 
 	Scene* GetScene();
-	GLuint GetFboID();
-	GLuint GetTextureID();
-	GLuint* GetTextureIDPointer();
+	const GLuint& GetFboID() const;
+	const GLuint& GetTextureID() const;
 
 	void SetScene(Scene* scene);
 
@@ -24,6 +25,7 @@ protected:
 	Scene* scene;
 
 	GLuint fboID;
+	GLuint rboID;
 	GLuint textureID;
 };
 

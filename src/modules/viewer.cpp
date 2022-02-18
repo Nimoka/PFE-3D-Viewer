@@ -24,8 +24,8 @@ void ViewerModule::Init() {
 			| ImGuiWindowFlags_NoMove
 			| ImGuiWindowFlags_NoResize
 			| ImGuiWindowFlags_NoSavedSettings
-			| ImGuiWindowFlags_NoBackground
-			| ImGuiWindowFlags_NoBringToFrontOnFocus;
+			| ImGuiWindowFlags_NoBackground;
+			// | ImGuiWindowFlags_NoBringToFrontOnFocus;
 
 	this->renderer = new ForwardRenderer();
 }
@@ -40,8 +40,8 @@ void ViewerModule::Render() {
 
 	ImGui::Begin(std::string(this->title + "###" + std::to_string(this->id)).c_str(), nullptr, this->flags);
 	if (this->renderer != nullptr) {
-		this->renderer->Render();
-		ImGui::Image((ImTextureID) this->renderer->GetTextureIDPointer(), size, ImVec2(0, 1), ImVec2(1, 0));
+		this->renderer->Render(size);
+		ImGui::Image((ImTextureID) this->renderer->GetTextureID(), size, ImVec2(0, 1), ImVec2(1, 0));
 	} else {
 		ImGui::Text("No renderer");
 	}
