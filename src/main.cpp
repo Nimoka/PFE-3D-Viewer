@@ -144,12 +144,8 @@ int main(int argc, char** argv) {
 	return -1;
 	}
 
-	// configure global opengl state
-	// -----------------------------
-	glEnable(GL_DEPTH_TEST);
-
-	// build and compile our shader zprogram
-	// ------------------------------------
+	
+	glEnable(GL_DEPTH_TEST);	
 	Shader ourShader=  Shader("data/shaders/glad.vs", "data/shaders/glad.fs");
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
@@ -358,51 +354,16 @@ int main(int argc, char** argv) {
 	// -------------------------------------------------------------------------------
 	/////////////////////////////////////////////
 
-		/*ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		if (show_demo_window)
-			ImGui::ShowDemoWindow(&show_demo_window);
-
-		static float f = 0.0f;
-		static int counter = 0;
-		ImGui::Begin("Hello, world!"); // Create a window called "Hello,
-								// world!" and append into it.
-		ImGui::Text(
-		"This is some useful text."); // Display some text (you can use
-									// a format strings too)
-		ImGui::Checkbox("Demo Window",
-				&show_demo_window); // Edit bools storing our window
-									// open/close state
-		ImGui::Checkbox("Another Window", &show_another_window);
-
-		ImGui::SliderFloat(
-		"float", &f, 0.0f,
-		1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::ColorEdit3(
-		"clear color",
-		(float *)&clear_color); // Edit 3 floats representing a color
-
-		if (ImGui::Button(
-			"Button")) // Buttons return true when clicked (most widgets
-					// return true when edited/activated)
-		counter++;
-		ImGui::SameLine();
-		ImGui::Text("counter = %d", counter);
-
+		ImGui::Begin("FPS"); 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
 			1000.0f / ImGui::GetIO().Framerate,
 			ImGui::GetIO().Framerate);
 		ImGui::End();
-		ImGui::Render();*/
-		//int display_w, display_h;
-		//glfwGetFramebufferSize(window, &display_w, &display_h);
-		//glViewport(0, 0, display_w, display_h);
-		//glClearColor(clear_color.x, clear_color.y, clear_color.z,
-		//             clear_color.w);
-		//glClear(GL_COLOR_BUFFER_BIT);
-		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+		ImGui::Render();		
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		}
