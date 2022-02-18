@@ -194,11 +194,7 @@ int main(int argc, char** argv) {
 	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 	// world space positions of our cubes
-	glm::vec3 cubePositions[] = {
-		glm::vec3( 0.0f,  0.0f,  0.0f),
-		glm::vec3( 2.0f,  5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),	
-	};
+	glm::vec3 cubePositions=glm::vec3( 0.0f,  0.0f,  0.0f);		
 	unsigned int VBO, VAO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -240,75 +236,41 @@ int main(int argc, char** argv) {
 
 
 	//////////////////////////////////////////////////////////
-
-	/*IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO &io = ImGui::GetIO();
-	(void)io;
-	ImGui::StyleColorsDark();
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init("#version 130");
-
-	bool show_demo_window = true;
-	bool show_another_window = false;
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);*/
+	/*IMGUI_CHECKVERSION();*/
 
 	/*
 	context->Launch();
 	CleanupEverything();*/
 
-	
-
-	  // render loop
-	// -----------
-	while (!glfwWindowShouldClose(window)){
-		// per-frame time logic
-		// --------------------
+	while (!glfwWindowShouldClose(window)){	
 		float currentFrame = static_cast<float>(glfwGetTime());
 		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
-
-		// input
-		// -----
+		lastFrame = currentFrame;	
 		processInput(window);
-
 		// render
 		// ------
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
-
 		// bind textures on corresponding texture units
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture1);
-		
+		glBindTexture(GL_TEXTURE_2D, texture1);		
 		// activate shader
-		ourShader.use();
-
-		// pass projection matrix to shader (note that in this case it could change every frame)
+		ourShader.use();	
 		glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		ourShader.setMat4("projection", projection);
-
 		// camera/view transformation
 		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		ourShader.setMat4("view", view);
 
 		// render boxes
-		glBindVertexArray(VAO);
-		for (unsigned int i = 0; i < 3; i++)
-		{
-			// calculate the model matrix for each object and pass it to shader before drawing
-			glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-			model = glm::translate(model, cubePositions[i]);
-			float angle = 20.0f * i;
-			model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-			ourShader.setMat4("model", model);
-
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
-
-	// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-	// -------------------------------------------------------------------------------
-	/////////////////////////////////////////////
+		glBindVertexArray(VAO);		
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, cubePositions);
+		float angle = 20.0f ;
+		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+		ourShader.setMat4("model", model);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
