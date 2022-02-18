@@ -117,14 +117,8 @@ glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
 
 
 int main(int argc, char** argv) {
-	/*if (!InitializeGLFW())
-		return ERROR_GLFW_INIT;
-	*/
-
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	if (!InitializeGLFW())
+		return ERROR_GLFW_INIT;	
 
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "3D viewer", NULL, NULL);
 	glfwMakeContextCurrent(window);
@@ -137,9 +131,6 @@ int main(int argc, char** argv) {
 	std::cout << "Failed to initialize GLAD" << std::endl;
 	return -1;
 	}
-	const unsigned int SCR_WIDTH = 800;
-	const unsigned int SCR_HEIGHT = 600;
-
 
 	// configure global opengl state
 	// -----------------------------
