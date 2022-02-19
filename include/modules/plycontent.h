@@ -19,15 +19,6 @@ public:
 private:
 	Mesh* mesh;
 
-	float minPosX, maxPosX;
-	float minPosY, maxPosY;
-	float minPosZ, maxPosZ;
-	float minColorR, maxColorR;
-	float minColorG, maxColorG;
-	float minColorB, maxColorB;
-	int minMatID, maxMatID;
-	int nbUnusedVertices;
-
 	ImGuiTableFlags tableFlags;
 };
 
