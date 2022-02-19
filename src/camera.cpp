@@ -2,7 +2,8 @@
 
 #define ORTHO_THRESOLD		1.e2f
 
-Eigen::Matrix4f OrthographicProjection(float l, float r, float b, float t, float n, float f) {
+Eigen::Matrix4f OrthographicProjection(float l, float r, float b, float t,
+		float n, float f) {
 	float rpl = r + l;
 	float tpb = t + b;
 	float fpn = f + n;
@@ -19,7 +20,8 @@ Eigen::Matrix4f OrthographicProjection(float l, float r, float b, float t, float
 	return m;
 }
 
-Eigen::Matrix4f PerspectiveProjection(float l, float r, float b, float t, float n, float f) {
+Eigen::Matrix4f PerspectiveProjection(float l, float r, float b, float t,
+		float n, float f) {
 	float rpl = r + l;
 	float tpb = t + b;
 	float fpn = f + n;
@@ -43,7 +45,8 @@ Eigen::Matrix4f Camera::Perspective(float fovy, float aspect,
 	Eigen::Matrix4f m;
 	m << 	(1. / (aspect * tanHalfFovy)), 0., 0., 0.,
 			0., (1. / (tanHalfFovy)), 0., 0.,
-			0., 0., (-(zFar + zNear) / (zFar - zNear)), ((-2. * zFar * zNear) / (zFar - zNear)),
+			0., 0., (-(zFar + zNear) / (zFar - zNear)),
+					((-2. * zFar * zNear) / (zFar - zNear)),
 			0., 0., -1., 0.;
 	return m;
 }
@@ -64,15 +67,19 @@ Eigen::Matrix4f Camera::LookAt(const Eigen::Vector3f& position,
 Eigen::Matrix4f Camera::ComputeViewMatrix() const {
 	Eigen::Vector3f sceneCamera = this->sceneCenter;
 	if (this->IsPerspective())
-		sceneCamera += this->sceneOrientation * Eigen::Vector3f::UnitZ() * this->sceneDistance;
+		sceneCamera += this->sceneOrientation * Eigen::Vector3f::UnitZ()
+				* this->sceneDistance;
 
-	return Eigen::Affine3f(this->sceneOrientation.inverse() * Eigen::Translation3f(-sceneCamera)).matrix();
+	return Eigen::Affine3f(this->sceneOrientation.inverse()
+			* Eigen::Translation3f(-sceneCamera)).matrix();
 }
 
 Eigen::Matrix4f Camera::ComputeProjectionMatrix() const {
 	float screenMinSize = MinScreenViewportSize();
-	float r = this->sceneRadius * this->screenViewport.sizes().x() / (screenMinSize);
-	float t = this->sceneRadius * this->screenViewport.sizes().y() / (screenMinSize);
+	float r = this->sceneRadius * this->screenViewport.sizes().x()
+			/ (screenMinSize);
+	float t = this->sceneRadius * this->screenViewport.sizes().y()
+			/ (screenMinSize);
 
 	if (this->IsPerspective()) {
 		r /= this->sceneDistance;
@@ -82,7 +89,8 @@ Eigen::Matrix4f Camera::ComputeProjectionMatrix() const {
 			std::max(this->minNear, this->sceneDistance + this->nearOffset),
 			this->sceneDistance + this->farOffset);
 	} else {
-		return OrthographicProjection(-r, r, -t, t, this->nearOffset, this->farOffset);
+		return OrthographicProjection(-r, r, -t, t, this->nearOffset,
+				this->farOffset);
 	}
 }
 

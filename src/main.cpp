@@ -60,7 +60,8 @@ void CleanupEverything() {
 	CleanupGLFW();
 }
 
-void ProcessKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void ProcessKeyboardInput(GLFWwindow* window, int key, int scancode, int action,
+		int mods) {
 	context->ProcessKeyboardInput(key, scancode, action, mods);
 }
 

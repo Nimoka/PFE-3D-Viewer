@@ -1,10 +1,10 @@
 #include "modules/imguidemo.h"
 
 ImGuiDemoModule::ImGuiDemoModule(void* context)
-: GUIModule(context) {}
+		: GUIModule(context) {}
 
 ImGuiDemoModule::ImGuiDemoModule(ImGuiDemoModule* module)
-: GUIModule(module->GetContext()) {}
+		: GUIModule(module->GetContext()) {}
 
 ImGuiDemoModule::~ImGuiDemoModule() {}
 

@@ -2,11 +2,10 @@
 
 #include "context.h"
 
-GUIModule::GUIModule(void* context) {
-	this->id = Global::nextModuleID++;
-	this->context = context;
-	this->readyToDie = false;
-}
+GUIModule::GUIModule(void* context)
+		: id(Global::nextModuleID++)
+		, context(context)
+		, readyToDie(false) {}
 
 void GUIModule::Kill() {
 	this->readyToDie = true;

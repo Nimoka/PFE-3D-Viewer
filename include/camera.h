@@ -13,8 +13,10 @@
 
 #include <Eigen/Geometry>
 
-Eigen::Matrix4f OrthographicProjection(float l, float r, float b, float t, float n, float f);
-Eigen::Matrix4f PerspectiveProjection(float l, float r, float b, float t, float n, float f);
+Eigen::Matrix4f OrthographicProjection(float l, float r, float b, float t,
+		float n, float f);
+Eigen::Matrix4f PerspectiveProjection(float l, float r, float b, float t,
+		float n, float f);
 
 class Camera
 {

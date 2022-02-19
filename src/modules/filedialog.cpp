@@ -4,9 +4,10 @@
 
 FileDialogModule::FileDialogModule(Context* context, std::string title,
 		std::string formats, bool isSaving)
-: GUIModule(context) {
+		: GUIModule(context)
+		, formats(formats) {
 	this->title = title;
-	this->formats = formats;
+
 	if (isSaving)
 		this->mode = imgui_addons::ImGuiFileBrowser::DialogMode::SAVE;
 	else
@@ -16,9 +17,9 @@ FileDialogModule::FileDialogModule(Context* context, std::string title,
 }
 
 FileDialogModule::FileDialogModule(FileDialogModule* module)
-: GUIModule(module->GetContext()) {
+		: GUIModule(module->GetContext())
+		, formats(module->GetFormats()) {
 	this->title = module->GetTitle();
-	this->formats = module->GetFormats();
 
 	this->Init();
 }
@@ -34,7 +35,8 @@ void FileDialogModule::Init() {
 void FileDialogModule::Render() {
 	std::string fullName = this->title + "###" + std::to_string(this->id);
 	ImGui::OpenPopup(fullName.c_str());
-	if (this->dialog->showFileDialog(fullName, this->mode, ImVec2(700, 400), this->formats)) {
+	if (this->dialog->showFileDialog(fullName,
+			this->mode, ImVec2(700, 400), this->formats)) {
 		this->SendResults();
 		this->Kill();
 	}
