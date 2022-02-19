@@ -2,8 +2,8 @@
 
 in vec3 vert_color;
 
-out vec4 out_color;
+layout(location = 0) out vec3 out_color;
 
 void main() {
-	out_color = vec4(vert_color, 1.f);
+	out_color = vec3(vert_color);
 }
