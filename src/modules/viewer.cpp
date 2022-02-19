@@ -57,8 +57,10 @@ void ViewerModule::SetRenderer(Renderer* renderer) {
 }
 
 void ViewerModule::SetMesh(Mesh* mesh) {
-	if (this->renderer != nullptr)
-		this->renderer->GetScene()->SetMesh(mesh);
+	if (this->renderer != nullptr) {
+		if (this->renderer->GetScene() != nullptr)
+			this->renderer->GetScene()->SetMesh(mesh);
+	}
 }
 
 Renderer* ViewerModule::GetRenderer() {
@@ -66,5 +68,9 @@ Renderer* ViewerModule::GetRenderer() {
 }
 
 Mesh* ViewerModule::GetMesh() {
-	return this->renderer->GetScene()->GetMesh();
+	if (this->renderer != nullptr) {
+		if (this->renderer->GetScene() != nullptr)
+			return this->renderer->GetScene()->GetMesh();
+	}
+	return nullptr;
 }
