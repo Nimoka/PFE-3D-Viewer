@@ -5,8 +5,6 @@
 Renderer::Renderer() {
 	/* Create render FBO */
 
-	glbinding::aux::enableGetErrorCallback();
-
 	// Create a frame buffer
 	glGenFramebuffers(1, &this->fboID);
 	glBindFramebuffer(GL_FRAMEBUFFER, this->fboID);
@@ -14,7 +12,10 @@ Renderer::Renderer() {
 	// Create a texture
 	glGenTextures(1, &this->textureID);
 	glBindTexture(GL_TEXTURE_2D, this->textureID);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1280, 800, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 128, 128, 0,
+			GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+			this->textureID, 0);
 
 	// Set pool filtering to nearest (should be pixel perfect on screen)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -23,8 +24,12 @@ Renderer::Renderer() {
 	// Create a depth buffer
 	glGenRenderbuffers(1, &this->rboID);
 	glBindRenderbuffer(GL_RENDERBUFFER, this->rboID);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1280, 800);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this->rboID);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 128, 128);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+			GL_RENDERBUFFER, this->rboID);
+
+	GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, drawBuffers);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "Framebuffer initialization failed!" << std::endl;
