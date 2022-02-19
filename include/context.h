@@ -39,6 +39,7 @@ public:
 	void CreateOpenPLYFileSelectionDialog();
 	void CreateSavePLYFileSelectionDialog();
 	void LoadPLYFile(std::string filepath);
+	void Quit();
 
 	/* Debug commands */
 	void ToggleImGuiDemoModule();

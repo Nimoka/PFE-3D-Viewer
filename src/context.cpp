@@ -265,6 +265,10 @@ void Context::ToggleImGuiDemoModule() {
 	}
 }
 
+void Context::Quit() {
+	this->readyToDie = true;
+}
+
 void Context::SetDarkMode() {
 	ImGui::StyleColorsDark();
 	windowClearColor = ImVec4(.2f, .2f, .2f, 1.f);
@@ -293,11 +297,20 @@ void Context::SetWindowSize(int width, int height) {
 	glfwSetWindowSize(this->window, width, height);
 }
 
-void Context::ProcessKeyboardInput(int key, int scancode, int action, int mods) {
+void Context::ProcessKeyboardInput(int key, int scancode, int action,
+		int mods) {
 	if (this->fileDialog == nullptr) {
-		if (mods == GLFW_MOD_CONTROL && key == GLFW_KEY_O && action == GLFW_PRESS) {
-			this->CreateOpenPLYFileSelectionDialog();
-			return;
+		if (action == GLFW_PRESS) {
+			if (mods == GLFW_MOD_CONTROL) {
+				switch (key) {
+					case GLFW_KEY_O:
+						this->CreateOpenPLYFileSelectionDialog();
+						return;
+					case GLFW_KEY_Q:
+						this->Quit();
+						return;
+				}
+			}
 		}
 	}
 }
