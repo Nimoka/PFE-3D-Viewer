@@ -3,17 +3,17 @@
 #include "renderers/forward.h"
 
 ViewerModule::ViewerModule(void* context)
-: GUIModule(context) {
+		: GUIModule(context) {
 	this->title = "Viewer";
+	this->renderer = new ForwardRenderer();
 
 	this->Init();
 }
 
 ViewerModule::ViewerModule(ViewerModule* module)
-: GUIModule(module->GetContext()) {
+		: GUIModule(module->GetContext())
+		, renderer(module->GetRenderer()) {
 	this->title = module->GetTitle();
-	this->renderer = module->GetRenderer();
-
 	this->Init();
 }
 
@@ -24,24 +24,27 @@ void ViewerModule::Init() {
 			| ImGuiWindowFlags_NoMove
 			| ImGuiWindowFlags_NoResize
 			| ImGuiWindowFlags_NoSavedSettings
-			| ImGuiWindowFlags_NoBackground;
-			// | ImGuiWindowFlags_NoBringToFrontOnFocus;
-
-	this->renderer = new ForwardRenderer();
+			| ImGuiWindowFlags_NoBackground
+			| ImGuiWindowFlags_NoBringToFrontOnFocus;
 }
 
 void ViewerModule::Render() {
 	const ImGuiViewport* viewport = ImGui::GetMainViewport();
 	ImVec2 size = viewport->WorkSize;
-	ImGui::SetNextWindowPos(viewport->WorkPos);
+	ImVec2 pos = viewport->WorkPos;
+
+	ImGui::SetNextWindowPos(pos);
 	ImGui::SetNextWindowSize(size);
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
-	ImGui::Begin(std::string(this->title + "###" + std::to_string(this->id)).c_str(), nullptr, this->flags);
+	ImGui::Begin(std::string(this->title + "###"
+			+ std::to_string(this->id)).c_str(), nullptr, this->flags);
 	if (this->renderer != nullptr) {
 		this->renderer->Render(size);
-		ImGui::Image((ImTextureID) this->renderer->GetTextureID(), size, ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image(
+				reinterpret_cast<ImTextureID>(this->renderer->GetTextureID()),
+				size, ImVec2(0, 1), ImVec2(1, 0));
 	} else {
 		ImGui::Text("No renderer");
 	}
