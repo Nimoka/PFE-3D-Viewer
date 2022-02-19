@@ -8,7 +8,8 @@ ForwardRenderer::ForwardRenderer()
 ForwardRenderer::~ForwardRenderer() {}
 
 void ForwardRenderer::Init() {
-	shader.loadFromFiles(DATA_DIR "shaders/simple.vert", DATA_DIR "shaders/simple.frag");
+	this->shader.loadFromFiles(DATA_DIR "shaders/simple.vert",
+			DATA_DIR "shaders/simple.frag");
 }
 
 void ForwardRenderer::Render(ImVec2 size) {
