@@ -11,10 +11,9 @@
 #include "modules/filedialog.h"
 #include "modules/plycontent.h"
 
-Context::Context(std::string glslVersion) {
-	this->glslVersion = glslVersion;
-	this->readyToDie = false;
-}
+Context::Context(std::string glslVersion)
+		: glslVersion(glslVersion)
+		, readyToDie(false) {}
 
 Context::~Context() {
 	/* Cleanup memory */
@@ -84,8 +83,10 @@ int Context::Init() {
 	/* Initialize glbinding */
 
 	glbinding::Binding::initialize(glfwGetProcAddress, false);
-	// std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
-	// std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+	// std::cout << "OpenGL version: "
+	// 		<< glGetString(GL_VERSION) << std::endl;
+	// std::cout << "GLSL version: "
+	// 		<< glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
 	/* Initialize Dear ImGui */
 
@@ -129,19 +130,27 @@ int Context::LoadCLIContext(int argc, char** argv) {
 
 	/* Set CLI options */
 
-	app.add_option("-i, --input", inputFile, "PLY file to load")
+	app.add_option("-i, --input", inputFile,
+			"PLY file to load")
 			->required()
 			->check(CLI::ExistingFile)->check(FileWithExtension("ply"));
-	app.add_option("-c, --config", configurationFile, "Configuration file")
+	app.add_option("-c, --config", configurationFile,
+			"Configuration file")
 			->check(CLI::ExistingFile)->check(FileWithExtension("toml"));
-	app.add_option("--width", windowWidth, "Window’s width (pixels)")
+	app.add_option("--width", windowWidth,
+			"Window’s width (pixels)")
 			->check(CLI::PositiveNumber);
-	app.add_option("--height", windowHeight, "Window’s height (pixels)")
+	app.add_option("--height", windowHeight,
+			"Window’s height (pixels)")
 			->check(CLI::PositiveNumber);
-	app.add_option("-t, --title", windowTitle, "Window title");
-	app.add_flag("-b, --benchmark", this->benchmarkMode, "Run the program in benchmark mode");
-	app.add_flag("--debug", this->debugMode, "Enable debug mode (tools in menu bar)");
-	app.add_flag("--dark", this->darkMode, "Enable dark mode");
+	app.add_option("-t, --title", windowTitle,
+			"Window title");
+	app.add_flag("-b, --benchmark", this->benchmarkMode,
+			"Run the program in benchmark mode");
+	app.add_flag("--debug", this->debugMode,
+			"Enable debug mode (tools in menu bar)");
+	app.add_flag("--dark", this->darkMode,
+			"Enable dark mode");
 
 	/* Parse CLI options */
 
@@ -234,20 +243,22 @@ bool Context::LoadTOMLContext(std::string filepath) {
 
 void Context::CreateOpenPLYFileSelectionDialog() {
 	this->fileDialog = new imgui_addons::ImGuiFileBrowser();
-	this->modules.push_back(new FileDialogModule(this, "Open file", ".ply", false));
+	this->modules.push_back(
+			new FileDialogModule(this, "Open file", ".ply", false));
 }
 
 // void Context::CreateSavePLYFileSelectionDialog() {
-// 	this->modules.push_back(new FileDialogModule(this, "Save file", ".ply", true));
+// 	this->modules.push_back(
+//			new FileDialogModule(this, "Save file", ".ply", true));
 // }
 
 void Context::LoadPLYFile(std::string filepath) {
 	PLYReader* reader = new PLYReader(filepath);
 	if (reader->Load()) {
-		// reader->GetMesh()->ComputeNormals();
 		std::string filename = filepath.substr(filepath.rfind('/') + 1);
 		this->SetWindowTitle(filename);
-		this->modules.push_back(new PLYContentModule(this, filename, reader->GetMesh()));
+		this->modules.push_back(
+				new PLYContentModule(this, filename, reader->GetMesh()));
 		this->readers.push_back(reader);
 		return;
 	}
@@ -370,7 +381,8 @@ void Context::RenderMenuBar() {
 		}
 		if (this->debugMode) {
 			if (ImGui::BeginMenu("Debug")) {
-				if (ImGui::MenuItem("Show ImGui demo", "", (this->imguiDemo != nullptr)))
+				if (ImGui::MenuItem("Show ImGui demo", "",
+						(this->imguiDemo != nullptr)))
 					this->ToggleImGuiDemoModule();
 				ImGui::EndMenu();
 			}
