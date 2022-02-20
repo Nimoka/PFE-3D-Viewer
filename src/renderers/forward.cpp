@@ -34,7 +34,7 @@ void ForwardRenderer::Render(ImVec2 size) {
 	glUniformMatrix4fv(this->shader.getUniformLocation("projection_matrix"), 1,
 			false, this->scene->GetCamera()->ComputeProjectionMatrix().data());
 	glUniformMatrix4fv(this->shader.getUniformLocation("view_matrix"), 1,
-			false, this->scene->GetViewMatrix().data());
+			false, this->scene->GetCamera()->ComputeViewMatrix().data());
 
 	this->scene->Render(&this->shader, size);
 

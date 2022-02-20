@@ -39,6 +39,8 @@ public:
 	void CreateOpenPLYFileSelectionDialog();
 	void CreateSavePLYFileSelectionDialog();
 	void LoadPLYFile(std::string filepath);
+	void MoveCamera(float polarAngle, float azimutalAngle);
+	void ZoomCamera(float intensity);
 	void Quit();
 
 	/* Debug commands */

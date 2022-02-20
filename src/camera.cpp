@@ -38,7 +38,7 @@ Eigen::Matrix4f PerspectiveProjection(float l, float r, float b, float t,
 	return m;
 }
 
-Eigen::Matrix4f Camera::Perspective(float fovy, float aspect,
+Eigen::Matrix4f Perspective(float fovy, float aspect,
 		float zNear, float zFar) {
 	float tanHalfFovy = tan(fovy / 2.f);
 
@@ -51,7 +51,7 @@ Eigen::Matrix4f Camera::Perspective(float fovy, float aspect,
 	return m;
 }
 
-Eigen::Matrix4f Camera::LookAt(const Eigen::Vector3f& position,
+Eigen::Matrix4f LookAt(const Eigen::Vector3f& position,
 		const Eigen::Vector3f& target, const Eigen::Vector3f& up) {
 	Eigen::Matrix3f R;
 	R.col(2) = (position - target).normalized();
@@ -64,14 +64,47 @@ Eigen::Matrix4f Camera::LookAt(const Eigen::Vector3f& position,
 	return m;
 }
 
-Eigen::Matrix4f Camera::ComputeViewMatrix() const {
-	Eigen::Vector3f sceneCamera = this->sceneCenter;
-	if (this->IsPerspective())
-		sceneCamera += this->sceneOrientation * Eigen::Vector3f::UnitZ()
-				* this->sceneDistance;
+Eigen::Vector3f PolarToCartesian(Eigen::Vector2f coordinates,
+		Eigen::Vector3f center, float distance) {
+	float x = center.x()
+			+ (distance * cos(coordinates.x()) * sin(coordinates.y()));
+	float y = center.y()
+			+ (distance * sin(coordinates.x()) * sin(coordinates.y()));
+	float z = center.z() + (distance * cos(coordinates.y()));
 
-	return Eigen::Affine3f(this->sceneOrientation.inverse()
-			* Eigen::Translation3f(-sceneCamera)).matrix();
+	return Eigen::Vector3f(x, y, z);
+}
+
+Camera::Camera()
+		: cameraPolarCoordinates(Eigen::Vector2f(0., 0.))
+		, sceneCenter(Eigen::Vector3f(0., 0., 0.))
+		, up(Eigen::Vector3f(0., 1., 0.)) {}
+
+void Camera::MoveCameraPolar(Eigen::Vector2f coordinates) {
+	this->cameraPolarCoordinates += coordinates;
+
+	if (this->cameraPolarCoordinates.x() > M_PI)
+		this->cameraPolarCoordinates.x() -= (2 * M_PI);
+	else if (this->cameraPolarCoordinates.x() < (-M_PI))
+		this->cameraPolarCoordinates.x() += (2 * M_PI);
+	if (this->cameraPolarCoordinates.y() > M_PI)
+		this->cameraPolarCoordinates.y() -= (2 * M_PI);
+	else if (this->cameraPolarCoordinates.y() < (-M_PI))
+		this->cameraPolarCoordinates.y() += (2 * M_PI);
+}
+
+void Camera::ZoomCameraPolar(float intensity) {
+	this->sceneDistance += intensity;
+
+	if (this->sceneDistance < .0001)
+		this->sceneDistance -= intensity;
+}
+
+Eigen::Matrix4f Camera::ComputeViewMatrix() const {
+	return LookAt(
+			PolarToCartesian(this->cameraPolarCoordinates,
+					this->sceneCenter, this->sceneDistance),
+			this->sceneCenter, this->up);
 }
 
 Eigen::Matrix4f Camera::ComputeProjectionMatrix() const {

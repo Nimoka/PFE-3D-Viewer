@@ -7,6 +7,7 @@
 #include "imgui_impl_opengl3.h"
 #include "toml.hpp"
 
+#include "camera.h"
 #include "filewithextension.h"
 #include "modules/filedialog.h"
 #include "modules/plycontent.h"
@@ -271,6 +272,40 @@ void Context::LoadPLYFile(std::string filepath) {
 	// TODO: Throw exception
 }
 
+void Context::MoveCamera(float polarAngle, float azimutalAngle) {
+	if (this->viewer != nullptr) {
+		Renderer* renderer = this->viewer->GetRenderer();
+		if (renderer != nullptr) {
+			Scene* scene = renderer->GetScene();
+			if (scene != nullptr) {
+				Camera* camera = scene->GetCamera();
+				if (camera != nullptr) {
+					camera->MoveCameraPolar(
+							Eigen::Vector2f(polarAngle, azimutalAngle));
+				}
+			}
+		}
+	}
+}
+
+void Context::ZoomCamera(float intensity) {
+	if (this->viewer != nullptr) {
+		Renderer* renderer = this->viewer->GetRenderer();
+		if (renderer != nullptr) {
+			Scene* scene = renderer->GetScene();
+			if (scene != nullptr) {
+				Camera* camera = scene->GetCamera();
+				if (camera != nullptr)
+					camera->ZoomCameraPolar(intensity);
+			}
+		}
+	}
+}
+
+void Context::Quit() {
+	this->readyToDie = true;
+}
+
 void Context::ToggleImGuiDemoModule() {
 	if (this->imguiDemo == nullptr) {
 		this->imguiDemo = new ImGuiDemoModule(this);
@@ -279,10 +314,6 @@ void Context::ToggleImGuiDemoModule() {
 		this->imguiDemo->Kill();
 		this->imguiDemo = nullptr;
 	}
-}
-
-void Context::Quit() {
-	this->readyToDie = true;
 }
 
 void Context::SetDarkMode() {
@@ -331,38 +362,38 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 		}
 	}
 
+	/* Camera movements */
+	{
+		float movementSpeed = .1;
 
-	if (this->viewer != nullptr) {
-		if (this->viewer->GetRenderer() != nullptr) {
-			if (this->viewer->GetRenderer()->GetScene() != nullptr) {
-				float speed = .1;
+		if (mods == GLFW_MOD_SHIFT)
+			movementSpeed *= 5;
 
-				if (mods == GLFW_MOD_SHIFT)
-					speed *= 5;
-
-				switch (key) {
-					case GLFW_KEY_LEFT:
-						this->viewer->GetRenderer()->GetScene()
-								->MoveCameraPosition(
-								Eigen::Vector3f(-speed, 0., 0.));
-						return;
-					case GLFW_KEY_RIGHT:
-						this->viewer->GetRenderer()->GetScene()
-								->MoveCameraPosition(
-								Eigen::Vector3f(speed, 0., 0.));
-						return;
-					case GLFW_KEY_UP:
-						this->viewer->GetRenderer()->GetScene()
-								->MoveCameraPosition(
-								Eigen::Vector3f(0., 0., speed));
-						return;
-					case GLFW_KEY_DOWN:
-						this->viewer->GetRenderer()->GetScene()
-								->MoveCameraPosition(
-								Eigen::Vector3f(0., 0., -speed));
-						return;
-				}
-			}
+		switch (key) {
+			case GLFW_KEY_LEFT:
+				// Move to the left
+				this->MoveCamera(0., -movementSpeed);
+				return;
+			case GLFW_KEY_RIGHT:
+				// Move to the right
+				this->MoveCamera(0., movementSpeed);
+				return;
+			case GLFW_KEY_UP:
+				// Move to the top
+				this->MoveCamera(movementSpeed, 0.);
+				return;
+			case GLFW_KEY_DOWN:
+				// Move to the bottom
+				this->MoveCamera(-movementSpeed, 0.);
+				return;
+			case GLFW_KEY_O:
+				// Zoom out
+				this->ZoomCamera(-movementSpeed);
+				return;
+			case GLFW_KEY_P:
+				// Zoom in
+				this->ZoomCamera(movementSpeed);
+				return;
 		}
 	}
 }

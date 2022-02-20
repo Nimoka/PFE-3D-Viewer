@@ -60,21 +60,12 @@ bool Scene::Render(Shader* shader, ImVec2 size) {
 	return true;
 }
 
-void Scene::MoveCameraPosition(Eigen::Vector3f direction) {
-	this->cameraPosition += direction;
-	this->UpdateViewMatrix();
-}
-
 Camera* Scene::GetCamera() {
 	return this->camera;
 }
 
 Mesh* Scene::GetMesh() {
 	return this->mesh;
-}
-
-Eigen::Matrix4f Scene::GetViewMatrix() {
-	return this->viewMatrix;
 }
 
 void Scene::SetCamera(Camera* camera) {
@@ -109,21 +100,13 @@ void Scene::Init() {
 	glBindVertexArray(0);
 
 	this->camera = new Camera();
+	this->camera->SetSceneCenter(this->mesh->GetBoundingBox().center());
 	this->camera->SetSceneRadius(this->mesh->GetBoundingBox()
 			.sizes().maxCoeff());
 	this->camera->SetSceneDistance(this->camera->GetSceneRadius() * 3.f);
 	this->camera->SetMinNear(0.1f);
 	this->camera->SetNearFarOffsets(-this->camera->GetSceneRadius() * 100.f,
 			this->camera->GetSceneRadius() * 100.f);
-
-
-	this->cameraPosition = Eigen::Vector3f(
-		-2 * this->mesh->GetBoundingBox().sizes().x(),
-		-2 * this->mesh->GetBoundingBox().sizes().y(),
-		2 * this->mesh->GetBoundingBox().sizes().z());
-	this->sceneCenter = this->mesh->GetBoundingBox().center();
-
-	this->UpdateViewMatrix();
 }
 
 void Scene::Clean() {
@@ -134,11 +117,4 @@ void Scene::Clean() {
 		delete this->camera;
 		this->camera = nullptr;
 	}
-}
-
-void Scene::UpdateViewMatrix() {
-	this->viewMatrix = this->camera->LookAt(
-			this->cameraPosition,
-			this->sceneCenter,
-			Eigen::Vector3f(0., 1., 0.));
 }
