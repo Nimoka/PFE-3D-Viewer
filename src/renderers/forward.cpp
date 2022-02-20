@@ -20,9 +20,19 @@ void ForwardRenderer::Render(ImVec2 size) {
 
 	glViewport(0, 0, size.x, size.y);
 
-	glClear(GL_COLOR_BUFFER_BIT);
-	glClear(GL_DEPTH_BUFFER_BIT);
-	glClearColor(0., 0., 1., 1.);
+	glClearColor(.1, .1, .5, 1.);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	this->shader.activate();
+
+	glUniformMatrix4fv(this->shader.getUniformLocation("projection_matrix"), 1,
+			false, this->scene->GetCamera()->ComputeProjectionMatrix().data());
+	glUniformMatrix4fv(this->shader.getUniformLocation("view_matrix"), 1,
+			false, this->scene->GetCamera()->ComputeViewMatrix().data());
+
+	this->scene->Render(&this->shader, size);
+
+	this->shader.deactivate();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

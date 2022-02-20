@@ -10,6 +10,7 @@
 #include "filewithextension.h"
 #include "modules/filedialog.h"
 #include "modules/plycontent.h"
+#include "scene.h"
 
 Context::Context(std::string glslVersion)
 		: glslVersion(glslVersion)
@@ -260,6 +261,10 @@ void Context::LoadPLYFile(std::string filepath) {
 		this->modules.push_back(
 				new PLYContentModule(this, filename, reader->GetMesh()));
 		this->readers.push_back(reader);
+
+		Scene* scene = new Scene(reader->GetMesh());
+		this->viewer->GetRenderer()->SetScene(scene);
+
 		return;
 	}
 	delete reader;
