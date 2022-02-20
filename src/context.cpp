@@ -329,6 +329,40 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 			}
 		}
 	}
+
+	if (this->viewer != nullptr) {
+		if (this->viewer->GetRenderer() != nullptr) {
+			if (this->viewer->GetRenderer()->GetScene() != nullptr) {
+				float speed = .1;
+
+				if (mods == GLFW_MOD_SHIFT)
+					speed *= 5;
+
+				switch (key) {
+					case GLFW_KEY_LEFT:
+						this->viewer->GetRenderer()->GetScene()
+								->MoveCameraPosition(
+								Eigen::Vector3f(-speed, 0., 0.));
+						return;
+					case GLFW_KEY_RIGHT:
+						this->viewer->GetRenderer()->GetScene()
+								->MoveCameraPosition(
+								Eigen::Vector3f(speed, 0., 0.));
+						return;
+					case GLFW_KEY_UP:
+						this->viewer->GetRenderer()->GetScene()
+								->MoveCameraPosition(
+								Eigen::Vector3f(0., 0., speed));
+						return;
+					case GLFW_KEY_DOWN:
+						this->viewer->GetRenderer()->GetScene()
+								->MoveCameraPosition(
+								Eigen::Vector3f(0., 0., -speed));
+						return;
+				}
+			}
+		}
+	}
 }
 
 void Context::ProcessMouseMovement(double x, double y) {}
