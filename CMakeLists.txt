@@ -7,6 +7,8 @@ include(CheckCXXCompilerFlag)
 
 # CMake configuration ==========================================
 
+set(BUILD_LIBS ON)
+
 set(ROOT_DIR ${CMAKE_SOURCE_DIR})
 set(BUILD_DIR ${ROOT_DIR}/build)
 
