@@ -114,6 +114,8 @@ Mesh::Mesh(MeshData* data) {
 				unusedPoints.begin();
 		if (haveColors) {
 			float maxIntensity = data->GetMaxColorIntesity();
+			if (maxIntensity > 131072.)
+				maxIntensity = 131072.;
 			Eigen::Vector3f color;
 			for (unsigned int i = 0; i < data->nbVertices; i++) {
 				// Set the new index of the vertex 
@@ -159,6 +161,8 @@ Mesh::Mesh(MeshData* data) {
 		// If there is no unused point, don’t spend time on checking
 		if (haveColors) {
 			float maxIntensity = data->GetMaxColorIntesity();
+			if (maxIntensity > 131072.)
+				maxIntensity = 131072.;
 			Eigen::Vector3f color;
 			for (unsigned int i = 0; i < this->nbVertices; i++) {
 				// Copy data
