@@ -16,7 +16,7 @@ bool GUIModule::IsReadyToDie() {
 	return this->readyToDie;
 }
 
-int GUIModule::GetID() {
+unsigned int GUIModule::GetID() {
 	return this->id;
 }
 

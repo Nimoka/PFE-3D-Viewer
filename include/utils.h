@@ -4,7 +4,7 @@
 #include <iostream>
 
 namespace Global {
-	extern int nextModuleID;
+	extern unsigned int nextModuleID;
 };
 
 bool FileExists(std::string path);

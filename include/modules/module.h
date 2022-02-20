@@ -20,14 +20,14 @@ public:
 
 	bool IsReadyToDie();
 
-	int GetID();
+	unsigned int GetID();
 	std::string GetTitle();
 	void* GetContext();
 
 	void SetTitle(std::string value);
 
 protected:
-	int id;
+	unsigned int id;
 	std::string title;
 	void* context;
 

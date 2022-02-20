@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-int Global::nextModuleID = 0;
+unsigned int Global::nextModuleID = 0;
 
 bool FileExists(std::string path) {
 	std::ifstream file(path.c_str());
