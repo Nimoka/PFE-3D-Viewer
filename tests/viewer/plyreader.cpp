@@ -153,8 +153,8 @@ static void TestDifferentHeadersLoadings() {
 		assert(reader->Load());
 
 		// Check the data structure
-		REQUIRE(reader->GetMesh()->haveColors);
-		REQUIRE(reader->GetMesh()->haveMaterials);
+		REQUIRE(reader->GetMesh()->HaveColors());
+		REQUIRE(reader->GetMesh()->HaveMaterials());
 
 		delete reader;
 	}
@@ -166,8 +166,8 @@ static void TestDifferentHeadersLoadings() {
 		assert(reader->Load());
 
 		// Check the data structure
-		REQUIRE(reader->GetMesh()->haveColors);
-		REQUIRE(!reader->GetMesh()->haveMaterials);
+		REQUIRE(reader->GetMesh()->HaveColors());
+		REQUIRE(!reader->GetMesh()->HaveMaterials());
 
 		delete reader;
 	}
@@ -179,8 +179,8 @@ static void TestDifferentHeadersLoadings() {
 		assert(reader->Load());
 
 		// Check the data structure
-		REQUIRE(!reader->GetMesh()->haveColors);
-		REQUIRE(reader->GetMesh()->haveMaterials);
+		REQUIRE(!reader->GetMesh()->HaveColors());
+		REQUIRE(reader->GetMesh()->HaveMaterials());
 
 		delete reader;
 	}
@@ -192,8 +192,8 @@ static void TestDifferentHeadersLoadings() {
 		assert(reader->Load());
 
 		// Check the data structure
-		REQUIRE(!reader->GetMesh()->haveColors);
-		REQUIRE(!reader->GetMesh()->haveMaterials);
+		REQUIRE(!reader->GetMesh()->HaveColors());
+		REQUIRE(!reader->GetMesh()->HaveMaterials());
 
 		delete reader;
 	}
@@ -207,15 +207,15 @@ static void TestMultipleLoadings() {
 	PLYReader* reader = new PLYReader(filepath1);
 	assert(reader->Load());
 	assert(reader->GetMesh() != nullptr);
-	assert(reader->GetMesh()->haveColors);
-	assert(reader->GetMesh()->haveMaterials);
+	assert(reader->GetMesh()->HaveColors());
+	assert(reader->GetMesh()->HaveMaterials());
 
 	// Load a second file
 	assert(reader->LoadFile(filepath2));
 
 	// Check if the second file was loaded and replaced the previous one
-	REQUIRE(!reader->GetMesh()->haveColors);
-	REQUIRE(reader->GetMesh()->haveMaterials);
+	REQUIRE(!reader->GetMesh()->HaveColors());
+	REQUIRE(reader->GetMesh()->HaveMaterials());
 
 	delete reader;
 }
@@ -232,14 +232,14 @@ static void TestDifferentHeadersLoadingData() {
 		// Check the data
 		REQUIRE(mesh->nbVertices == expectedNbVertices);
 		for (int i = 0; i < 24; i++)
-			REQUIRE(mesh->verticesPosition[i] == expectedPositions[i]);
+			REQUIRE(mesh->verticesData[i / 3].position[i % 3] == expectedPositions[i]);
 		for (int i = 0; i < 24; i++)
-			REQUIRE(mesh->verticesColor[i] == expectedColors[i]);
+			REQUIRE(mesh->verticesData[i / 3].color[i % 3] == expectedColors[i]);
 		REQUIRE(mesh->nbFaces == expectedNbFaces);
 		for (int i = 0; i < 32; i++)
 			REQUIRE(mesh->facesVertices[i] == expectedVertices[i]);
 		for (int i = 0; i < 12; i++)
-			REQUIRE(mesh->facesMaterial[i] == expectedMaterials[i]);
+			REQUIRE(mesh->facesMaterials[i] == expectedMaterials[i]);
 
 		delete reader;
 	}
@@ -254,9 +254,9 @@ static void TestDifferentHeadersLoadingData() {
 		// Check the data structure
 		REQUIRE(mesh->nbVertices == expectedNbVertices);
 		for (int i = 0; i < 24; i++)
-			REQUIRE(mesh->verticesPosition[i] == expectedPositions[i]);
+			REQUIRE(mesh->verticesData[i / 3].position[i % 3] == expectedPositions[i]);
 		for (int i = 0; i < 24; i++)
-			REQUIRE(mesh->verticesColor[i] == expectedColors[i]);
+			REQUIRE(mesh->verticesData[i / 3].color[i % 3] == expectedColors[i]);
 		REQUIRE(mesh->nbFaces == expectedNbFaces);
 		for (int i = 0; i < 32; i++)
 			REQUIRE(mesh->facesVertices[i] == expectedVertices[i]);
@@ -274,12 +274,12 @@ static void TestDifferentHeadersLoadingData() {
 		// Check the data structure
 		REQUIRE(mesh->nbVertices == expectedNbVertices);
 		for (int i = 0; i < 24; i++)
-			REQUIRE(mesh->verticesPosition[i] == expectedPositions[i]);
+			REQUIRE(mesh->verticesData[i / 3].position[i % 3] == expectedPositions[i]);
 		REQUIRE(mesh->nbFaces == expectedNbFaces);
 		for (int i = 0; i < 32; i++)
 			REQUIRE(mesh->facesVertices[i] == expectedVertices[i]);
 		for (int i = 0; i < 12; i++)
-			REQUIRE(mesh->facesMaterial[i] == expectedMaterials[i]);
+			REQUIRE(mesh->facesMaterials[i] == expectedMaterials[i]);
 
 		delete reader;
 	}
@@ -294,7 +294,7 @@ static void TestDifferentHeadersLoadingData() {
 		// Check the data structure
 		REQUIRE(mesh->nbVertices == expectedNbVertices);
 		for (int i = 0; i < 24; i++)
-			REQUIRE(mesh->verticesPosition[i] == expectedPositions[i]);
+			REQUIRE(mesh->verticesData[i / 3].position[i % 3] == expectedPositions[i]);
 		REQUIRE(mesh->nbFaces == expectedNbFaces);
 		for (int i = 0; i < 32; i++)
 			REQUIRE(mesh->facesVertices[i] == expectedVertices[i]);
