@@ -113,6 +113,7 @@ Mesh::Mesh(MeshData* data) {
 		std::vector<unsigned int>::iterator nextUnusedPoint =
 				unusedPoints.begin();
 		if (haveColors) {
+			float maxIntensity = data->GetMaxColorIntesity();
 			Eigen::Vector3f color;
 			for (unsigned int i = 0; i < data->nbVertices; i++) {
 				// Set the new index of the vertex 
@@ -132,7 +133,7 @@ Mesh::Mesh(MeshData* data) {
 				color = Eigen::Vector3f(
 						data->verticesColors[(3 * i)],
 						data->verticesColors[(3 * i) + 1],
-						data->verticesColors[(3 * i) + 2]);
+						data->verticesColors[(3 * i) + 2]) / maxIntensity;
 				verticesData[nextIndex++] = Vertex(position, color);
 			}
 		} else {
@@ -157,6 +158,7 @@ Mesh::Mesh(MeshData* data) {
 	} else {
 		// If there is no unused point, don’t spend time on checking
 		if (haveColors) {
+			float maxIntensity = data->GetMaxColorIntesity();
 			Eigen::Vector3f color;
 			for (unsigned int i = 0; i < this->nbVertices; i++) {
 				// Copy data
@@ -167,7 +169,7 @@ Mesh::Mesh(MeshData* data) {
 				color = Eigen::Vector3f(
 						data->verticesColors[(3 * i)],
 						data->verticesColors[(3 * i) + 1],
-						data->verticesColors[(3 * i) + 2]);
+						data->verticesColors[(3 * i) + 2]) / maxIntensity;
 				verticesData[i] = Vertex(position, color);
 			}
 		} else {
