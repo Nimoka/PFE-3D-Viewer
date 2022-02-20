@@ -15,6 +15,10 @@ void ForwardRenderer::Init() {
 void ForwardRenderer::Render(ImVec2 size) {
 	glBindFramebuffer(GL_FRAMEBUFFER, this->fboID);
 
+	glBindTexture(GL_TEXTURE_2D, this->textureID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0,
+			GL_RGB, GL_UNSIGNED_BYTE, 0);
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_PROGRAM_POINT_SIZE);
 
