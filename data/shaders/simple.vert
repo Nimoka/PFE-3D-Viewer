@@ -5,6 +5,7 @@ uniform mat4 view_matrix;
 
 in vec3 vtx_position;
 in vec3 vtx_color;
+in vec3 vtx_normal;
 
 out vec3 vert_color;
 
