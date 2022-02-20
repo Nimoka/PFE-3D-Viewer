@@ -315,20 +315,22 @@ void Context::SetWindowSize(int width, int height) {
 
 void Context::ProcessKeyboardInput(int key, int scancode, int action,
 		int mods) {
-	if (this->fileDialog == nullptr) {
-		if (action == GLFW_PRESS) {
-			if (mods == GLFW_MOD_CONTROL) {
-				switch (key) {
-					case GLFW_KEY_O:
+	// TODO: Find a way to handle non-QWERTY keyboards
+
+	if (action == GLFW_PRESS) {
+		if (mods == GLFW_MOD_CONTROL) {
+			switch (key) {
+				case GLFW_KEY_O:
+					if (this->fileDialog == nullptr)
 						this->CreateOpenPLYFileSelectionDialog();
-						return;
-					case GLFW_KEY_Q:
-						this->Quit();
-						return;
-				}
+					return;
+				case GLFW_KEY_Q:
+					this->Quit();
+					return;
 			}
 		}
 	}
+
 
 	if (this->viewer != nullptr) {
 		if (this->viewer->GetRenderer() != nullptr) {
