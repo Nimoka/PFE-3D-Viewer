@@ -83,14 +83,14 @@ Camera::Camera()
 void Camera::MoveCameraPolar(Eigen::Vector2f coordinates) {
 	this->cameraPolarCoordinates += coordinates;
 
-	if (this->cameraPolarCoordinates.x() > M_PI)
-		this->cameraPolarCoordinates.x() -= (2 * M_PI);
-	else if (this->cameraPolarCoordinates.x() < (-M_PI))
-		this->cameraPolarCoordinates.x() += (2 * M_PI);
-	if (this->cameraPolarCoordinates.y() > M_PI)
-		this->cameraPolarCoordinates.y() -= (2 * M_PI);
-	else if (this->cameraPolarCoordinates.y() < (-M_PI))
-		this->cameraPolarCoordinates.y() += (2 * M_PI);
+	if (this->cameraPolarCoordinates.x() > EIGEN_PI)
+		this->cameraPolarCoordinates.x() -= (2 * EIGEN_PI);
+	else if (this->cameraPolarCoordinates.x() < (-EIGEN_PI))
+		this->cameraPolarCoordinates.x() += (2 * EIGEN_PI);
+	if (this->cameraPolarCoordinates.y() > EIGEN_PI)
+		this->cameraPolarCoordinates.y() -= (2 * EIGEN_PI);
+	else if (this->cameraPolarCoordinates.y() < (-EIGEN_PI))
+		this->cameraPolarCoordinates.y() += (2 * EIGEN_PI);
 }
 
 void Camera::ZoomCameraPolar(float intensity) {
