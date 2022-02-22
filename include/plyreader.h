@@ -23,8 +23,6 @@ public:
 	Mesh* GetMesh();
 
 private:
-	void SetFilepath(std::string filepath);
-
 	std::string filepath;
 	bool isLoaded = false;
 	Mesh* mesh = nullptr;
