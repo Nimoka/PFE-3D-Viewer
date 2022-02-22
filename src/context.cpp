@@ -16,9 +16,7 @@
 #include "utils.h"
 
 Context::Context(std::string glslVersion)
-		: glslVersion(glslVersion)
-		, readyToDie(false)
-		, showTools(true) {}
+		: glslVersion(glslVersion) {}
 
 Context::~Context() {
 	/* Cleanup memory */
@@ -109,17 +107,17 @@ int Context::Init() {
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.WindowBorderSize = 0;
 
-	/* Load default values (hard-coded) */
-
-	this->benchmarkMode = false;
-	this->debugMode = false;
-	this->SetLightMode();
-
 	/* Create modules */
 
 	this->viewer = new ViewerModule(this);
 	this->fileDialog = nullptr;
 	this->imguiDemo = nullptr;
+
+	/* Load default values (hard-coded) */
+
+	this->benchmarkMode = false;
+	this->debugMode = false;
+	this->SetLightMode();
 
 	return 0;
 }

@@ -75,9 +75,9 @@ private:
 	std::string windowTitleForced;
 	std::string glslVersion;
 
-	bool benchmarkMode;
-	bool debugMode;
-	bool darkMode;
+	bool benchmarkMode = false;
+	bool debugMode = false;
+	bool darkMode = false;
 
 	ViewerModule* viewer;
 	std::vector<GUIModule*> modules;
@@ -86,12 +86,12 @@ private:
 
 	ImGuiDemoModule* imguiDemo;
 
-	int nextModuleID;
+	int nextModuleID = 0;
 
-	bool showTools;
+	bool showTools = true;
 
-	bool needToUpdate;
-	bool readyToDie;
+	bool needToUpdate = false;
+	bool readyToDie = false;
 
 	ImVec4 windowClearColor;
 };

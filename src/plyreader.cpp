@@ -20,7 +20,7 @@ PLYReader::PLYReader(PLYReader *reader) {
 }
 
 PLYReader::~PLYReader() {
-	CleanMemory();
+	this->CleanMemory();
 }
 
 bool PLYReader::Load() {
