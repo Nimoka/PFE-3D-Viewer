@@ -10,7 +10,7 @@
 #include "camera.h"
 #include "filewithextension.h"
 #include "modules/filedialog.h"
-#include "modules/plycontent.h"
+#include "modules/meshcontent.h"
 #include "renderers/forward.h"
 #include "scene.h"
 #include "utils.h"
@@ -263,7 +263,7 @@ void Context::LoadPLYFile(std::string filepath) {
 		std::string filename = filepath.substr(filepath.rfind(PATH_DELIMITER) + 1);
 		this->SetWindowTitle(filename);
 		this->modules.push_back(
-				new PLYContentModule(this, filename, reader->GetMesh()));
+				new MeshContentModule(this, filename, reader->GetMesh()));
 		this->readers.push_back(reader);
 
 		Scene* scene = new Scene(reader->GetMesh());

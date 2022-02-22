@@ -1,8 +1,8 @@
-#include "modules/plycontent.h"
+#include "modules/meshcontent.h"
 
 #define MAX_CONTENT		15
 
-PLYContentModule::PLYContentModule(Context* context, std::string name,
+MeshContentModule::MeshContentModule(Context* context, std::string name,
 		Mesh* mesh)
 		: GUIModule(context)
 		, mesh(mesh) {
@@ -11,7 +11,7 @@ PLYContentModule::PLYContentModule(Context* context, std::string name,
 	this->Init();
 }
 
-PLYContentModule::PLYContentModule(PLYContentModule* module)
+MeshContentModule::MeshContentModule(MeshContentModule* module)
 		: GUIModule(module->GetContext())
 		, mesh(module->GetMesh()) {
 	this->title = module->GetTitle();
@@ -19,17 +19,17 @@ PLYContentModule::PLYContentModule(PLYContentModule* module)
 	this->Init();
 }
 
-PLYContentModule::~PLYContentModule() {}
+MeshContentModule::~MeshContentModule() {}
 
-Mesh* PLYContentModule::GetMesh() {
+Mesh* MeshContentModule::GetMesh() {
 	return this->mesh;
 }
 
-void PLYContentModule::Init() {
+void MeshContentModule::Init() {
 	this->tableFlags = ImGuiTableFlags_Borders;
 }
 
-void PLYContentModule::Render() {
+void MeshContentModule::Render() {
 	if (this->mesh != nullptr) {
 		if (ImGui::Begin(std::string(this->title + "###"
 				+ std::to_string(this->id)).c_str())) {
