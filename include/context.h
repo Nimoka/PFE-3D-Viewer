@@ -41,6 +41,7 @@ public:
 	void LoadPLYFile(std::string filepath);
 	void MoveCamera(float polarAngle, float azimutalAngle);
 	void ZoomCamera(float intensity);
+	void ReloadShaders();
 	void Quit();
 
 	/* Debug commands */

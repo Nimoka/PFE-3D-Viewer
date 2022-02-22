@@ -15,6 +15,8 @@ public:
 
 	void Render(ImVec2 size);
 
+	void ReloadShaders();
+
 private:
 	ShaderReader* shader;
 };

@@ -15,6 +15,8 @@ public:
 
 	virtual void Render(ImVec2 size) = 0;
 
+	virtual void ReloadShaders() = 0;
+
 	Scene* GetScene();
 	const GLuint& GetRenderTexture() const;
 
@@ -23,6 +25,7 @@ public:
 protected:
 	void ActivateContext();
 	const void DeactivateContext();
+
 	Scene* scene;
 
 private:

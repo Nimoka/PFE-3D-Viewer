@@ -303,6 +303,14 @@ void Context::ZoomCamera(float intensity) {
 	}
 }
 
+void Context::ReloadShaders() {
+	if (this->viewer != nullptr) {
+		Renderer* renderer = this->viewer->GetRenderer();
+		if (renderer != nullptr)
+			renderer->ReloadShaders();
+	}
+}
+
 void Context::Quit() {
 	this->readyToDie = true;
 }
@@ -358,6 +366,12 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 					return;
 				case GLFW_KEY_Q:
 					this->Quit();
+					return;
+			}
+		} else {
+			switch (key) {
+				case GLFW_KEY_R:
+					this->ReloadShaders();
 					return;
 			}
 		}
