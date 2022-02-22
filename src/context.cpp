@@ -10,7 +10,6 @@
 #include "camera.h"
 #include "filewithextension.h"
 #include "modules/filedialog.h"
-#include "modules/framecounter.h"
 #include "modules/plycontent.h"
 #include "renderers/forward.h"
 #include "scene.h"
