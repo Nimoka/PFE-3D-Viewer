@@ -38,12 +38,20 @@ Renderer::Renderer() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+const Eigen::Vector4f& Renderer::GetClearColor() {
+	return this->clearColor;
+}
+
 Scene* Renderer::GetScene() {
 	return this->scene;
 }
 
 const GLuint& Renderer::GetRenderTexture() const {
 	return this->renderTextureID;
+}
+
+void Renderer::SetClearColor(Eigen::Vector4f color) {
+	this->clearColor = color;
 }
 
 void Renderer::SetScene(Scene* scene) {

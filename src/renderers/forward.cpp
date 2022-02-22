@@ -27,8 +27,8 @@ void ForwardRenderer::Render(ImVec2 size) {
 
 	glViewport(0, 0, size.x, size.y);
 
-	// glClearColor(.8, .8, .8, 1.);
-	glClearColor(.2, .2, .2, 1.);
+	glClearColor(this->clearColor[0], this->clearColor[1], this->clearColor[2],
+			this->clearColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	this->shader->Activate();

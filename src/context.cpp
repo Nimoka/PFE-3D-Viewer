@@ -328,12 +328,16 @@ void Context::ToggleImGuiDemoModule() {
 void Context::SetDarkMode() {
 	ImGui::StyleColorsDark();
 	windowClearColor = ImVec4(.2f, .2f, .2f, 1.f);
+	this->viewer->GetRenderer()
+			->SetClearColor(Eigen::Vector4f(.1f, .1f, .1f, 1.f));
 	this->darkMode = true;
 }
 
 void Context::SetLightMode() {
 	ImGui::StyleColorsLight();
 	windowClearColor = ImVec4(.95f, .95f, .95f, 1.f);
+	this->viewer->GetRenderer()
+			->SetClearColor(Eigen::Vector4f(1.f, 1.f, 1.f, 1.f));
 	this->darkMode = false;
 }
 
