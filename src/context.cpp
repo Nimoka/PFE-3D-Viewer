@@ -424,30 +424,6 @@ void Context::ProcessMouseButton(int button, int action, int mods) {}
 
 void Context::ProcessMouseScroll(double x, double y) {}
 
-void Context::Render() {
-	this->RenderMenuBar();
-
-	this->viewer->Render();
-
-	for (auto i: this->modules)
-		i->Render();
-
-	if (this->needToUpdate)
-		Update();
-}
-
-void Context::Update() {
-	for (auto it = this->modules.begin(); it != this->modules.end();) {
-		if ((*it)->IsReadyToDie()) {
-			delete *it;
-			it = this->modules.erase(it);
-		} else {
-			it++;
-		}
-	}
-	this->needToUpdate = false;
-}
-
 int Context::GetNewModuleID() {
 	return this->nextModuleID++;
 }
@@ -495,4 +471,31 @@ void Context::RenderMenuBar() {
 		}
 		ImGui::EndMainMenuBar();
 	}
+}
+
+void Context::Render() {
+	if (this->showTools)
+		this->RenderMenuBar();
+
+	this->viewer->Render();
+
+	if (this->showTools) {
+		for (auto i: this->modules)
+			i->Render();
+	}
+
+	if (this->needToUpdate)
+		Update();
+}
+
+void Context::Update() {
+	for (auto it = this->modules.begin(); it != this->modules.end();) {
+		if ((*it)->IsReadyToDie()) {
+			delete *it;
+			it = this->modules.erase(it);
+		} else {
+			it++;
+		}
+	}
+	this->needToUpdate = false;
 }
