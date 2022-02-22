@@ -3,7 +3,7 @@
 
 #include "renderers/renderer.h"
 
-#include "shader.h"
+#include "shaderreader.h"
 
 class ForwardRenderer: public Renderer
 {
@@ -16,7 +16,7 @@ public:
 	void Render(ImVec2 size);
 
 private:
-	Shader shader;
+	ShaderReader* shader;
 };
 
 #endif // RENDERERS_FORWARD_H

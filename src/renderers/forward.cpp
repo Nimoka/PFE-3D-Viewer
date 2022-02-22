@@ -5,11 +5,14 @@ ForwardRenderer::ForwardRenderer()
 	this->Init();
 }
 
-ForwardRenderer::~ForwardRenderer() {}
+ForwardRenderer::~ForwardRenderer() {
+	if (this->shader != nullptr)
+		delete this->shader;
+}
 
 void ForwardRenderer::Init() {
-	this->shader.loadFromFiles(DATA_DIR "shaders/simple.vert",
-			DATA_DIR "shaders/simple.frag");
+	this->shader = new ShaderReader(DATA_DIR "shaders/simple.vert",
+			DATA_DIR "shaders/simple.frag", false);
 }
 
 void ForwardRenderer::Render(ImVec2 size) {
@@ -28,16 +31,16 @@ void ForwardRenderer::Render(ImVec2 size) {
 	glClearColor(.2, .2, .2, 1.);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	this->shader.activate();
+	this->shader->Activate();
 
-	glUniformMatrix4fv(this->shader.getUniformLocation("projection_matrix"), 1,
+	glUniformMatrix4fv(this->shader->GetUniformLocation("projection_matrix"), 1,
 			false, this->scene->GetCamera()->ComputeProjectionMatrix().data());
-	glUniformMatrix4fv(this->shader.getUniformLocation("view_matrix"), 1,
+	glUniformMatrix4fv(this->shader->GetUniformLocation("view_matrix"), 1,
 			false, this->scene->GetCamera()->ComputeViewMatrix().data());
 
-	this->scene->Render(&this->shader, size);
+	this->scene->Render(this->shader, size);
 
-	this->shader.deactivate();
+	this->shader->Deactivate();
 
 	this->DeactivateContext();
 }

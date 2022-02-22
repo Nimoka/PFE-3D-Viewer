@@ -6,7 +6,7 @@
 
 #include "camera.h"
 #include "mesh.h"
-#include "shader.h"
+#include "shaderreader.h"
 
 class Scene
 {
@@ -15,7 +15,7 @@ public:
 	Scene(Mesh* mesh);
 	~Scene();
 
-	bool Render(Shader* shader, ImVec2 size);
+	bool Render(ShaderReader* shader, ImVec2 size);
 
 	Camera* GetCamera();
 	Mesh* GetMesh();
