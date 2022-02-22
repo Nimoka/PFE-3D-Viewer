@@ -88,6 +88,8 @@ private:
 
 	int nextModuleID;
 
+	bool showTools;
+
 	bool needToUpdate;
 	bool readyToDie;
 

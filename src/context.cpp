@@ -10,13 +10,16 @@
 #include "camera.h"
 #include "filewithextension.h"
 #include "modules/filedialog.h"
+#include "modules/framecounter.h"
 #include "modules/plycontent.h"
+#include "renderers/forward.h"
 #include "scene.h"
 #include "utils.h"
 
 Context::Context(std::string glslVersion)
 		: glslVersion(glslVersion)
-		, readyToDie(false) {}
+		, readyToDie(false)
+		, showTools(true) {}
 
 Context::~Context() {
 	/* Cleanup memory */
@@ -373,6 +376,9 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 				case GLFW_KEY_R:
 					this->ReloadShaders();
 					return;
+				case GLFW_KEY_TAB:
+					this->showTools = !this->showTools;
+					return;
 			}
 		}
 	}
@@ -460,10 +466,24 @@ void Context::RenderMenuBar() {
 		if (ImGui::BeginMenu("File")) {
 			if (ImGui::MenuItem("Open...", "Ctrl+O"))
 				this->CreateOpenPLYFileSelectionDialog();
-			// if (ImGui::MenuItem("Save...", "Ctrl+W"))
-			// 	this->CreateSavePLYFileSelectionDialog();
+			ImGui::Separator();
 			if (ImGui::MenuItem("Quit", "Ctrl+Q"))
 				this->readyToDie = true;
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("View")) {
+			if (ImGui::BeginMenu("Render method")) {
+				ImGui::MenuItem("Forward shading", "",
+						dynamic_cast<ForwardRenderer*>(
+								this->viewer->GetRenderer()));
+				ImGui::EndMenu();
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Reload shaders", "R"))
+				this->ReloadShaders();
+			ImGui::Separator();
+			if (ImGui::MenuItem("Show tools", "Tab", this->showTools))
+				this->showTools = !this->showTools;
 			ImGui::EndMenu();
 		}
 		if (this->debugMode) {
