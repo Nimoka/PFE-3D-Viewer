@@ -44,6 +44,7 @@ public:
 	void ZoomCamera(float intensity);
 	void ReloadShaders();
 	void ToggleDarkMode();
+	void ToggleDebugMode();
 	void Quit();
 
 	/* Debug commands */

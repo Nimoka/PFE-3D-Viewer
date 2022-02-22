@@ -321,6 +321,10 @@ void Context::ToggleDarkMode() {
 		this->SetDarkMode();
 }
 
+void Context::ToggleDebugMode() {
+	this->debugMode = !this->debugMode;
+}
+
 void Context::Quit() {
 	this->readyToDie = true;
 }
@@ -486,6 +490,8 @@ void Context::RenderMenuBar() {
 				this->showTools = !this->showTools;
 			if (ImGui::MenuItem("Enable dark mode", "", this->darkMode))
 				this->ToggleDarkMode();
+			if (ImGui::MenuItem("Enable debug menu", "", this->debugMode))
+				this->ToggleDebugMode();
 			ImGui::EndMenu();
 		}
 		if (this->debugMode) {
