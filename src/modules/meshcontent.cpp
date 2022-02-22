@@ -2,7 +2,7 @@
 
 #define MAX_CONTENT		15
 
-MeshContentModule::MeshContentModule(Context* context, std::string name,
+MeshContentModule::MeshContentModule(void* context, std::string name,
 		Mesh* mesh)
 		: GUIModule(context)
 		, mesh(mesh) {

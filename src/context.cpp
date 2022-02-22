@@ -23,8 +23,8 @@ Context::~Context() {
 
 	for (auto i: this->modules)
 		delete i;
-	for (auto i: this->readers)
-		delete i;
+	if (this->reader != nullptr)
+		delete this->reader;
 	if (this->fileDialog != nullptr)
 		delete this->fileDialog;
 	if (this->viewer != nullptr)
@@ -250,19 +250,22 @@ void Context::CreateOpenPLYFileSelectionDialog() {
 			new FileDialogModule(this, "Open file", ".ply", false));
 }
 
-// void Context::CreateSavePLYFileSelectionDialog() {
-// 	this->modules.push_back(
-//			new FileDialogModule(this, "Save file", ".ply", true));
-// }
-
 void Context::LoadPLYFile(std::string filepath) {
 	PLYReader* reader = new PLYReader(filepath);
 	if (reader->Load()) {
 		std::string filename = filepath.substr(filepath.rfind(PATH_DELIMITER) + 1);
 		this->SetWindowTitle(filename);
-		this->modules.push_back(
-				new MeshContentModule(this, filename, reader->GetMesh()));
-		this->readers.push_back(reader);
+
+		if (this->reader != nullptr)
+			delete this->reader;
+		this->reader = reader;
+
+		if (this->meshContent != nullptr) {
+			this->meshContent->Kill();
+			this->meshContent =
+					new MeshContentModule(this, filename, reader->GetMesh());
+			this->modules.push_back((GUIModule*) this->meshContent);
+		}
 
 		Scene* scene = new Scene(reader->GetMesh());
 		this->viewer->GetRenderer()->SetScene(scene);
@@ -329,6 +332,19 @@ void Context::ToggleImGuiDemoModule() {
 	} else {
 		this->imguiDemo->Kill();
 		this->imguiDemo = nullptr;
+	}
+}
+
+void Context::ToggleMeshContentModule() {
+	if (this->meshContent == nullptr) {
+		std::string filename = this->reader->GetFilepath()
+				.substr(this->reader->GetFilepath().rfind(PATH_DELIMITER) + 1);
+		this->meshContent = new MeshContentModule(this, filename,
+				reader->GetMesh());
+		this->modules.push_back(this->meshContent);
+	} else {
+		this->meshContent->Kill();
+		this->meshContent = nullptr;
 	}
 }
 
@@ -448,7 +464,7 @@ GLFWwindow* Context::GetWindow() {
 void Context::RenderMenuBar() {
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
-			if (ImGui::MenuItem("Open...", "Ctrl+O"))
+			if (ImGui::MenuItem("Open mesh...", "Ctrl+O"))
 				this->CreateOpenPLYFileSelectionDialog();
 			ImGui::Separator();
 			if (ImGui::MenuItem("Quit", "Ctrl+Q"))
@@ -477,6 +493,9 @@ void Context::RenderMenuBar() {
 				if (ImGui::MenuItem("Show ImGui demo", "",
 						(this->imguiDemo != nullptr)))
 					this->ToggleImGuiDemoModule();
+				if (ImGui::MenuItem("Show mesh content", "",
+						(this->meshContent != nullptr)))
+					this->ToggleMeshContentModule();
 				ImGui::EndMenu();
 			}
 		}
@@ -485,6 +504,9 @@ void Context::RenderMenuBar() {
 }
 
 void Context::Render() {
+	if (this->needToUpdate)
+		Update();
+
 	if (this->showTools)
 		this->RenderMenuBar();
 
@@ -494,9 +516,6 @@ void Context::Render() {
 		for (auto i: this->modules)
 			i->Render();
 	}
-
-	if (this->needToUpdate)
-		Update();
 }
 
 void Context::Update() {

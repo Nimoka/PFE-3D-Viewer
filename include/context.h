@@ -9,6 +9,7 @@
 #include "ImGuiFileBrowser.h"
 
 #include "modules/imguidemo.h"
+#include "modules/meshcontent.h"
 #include "modules/module.h"
 #include "modules/viewer.h"
 #include "plyreader.h"
@@ -47,6 +48,7 @@ public:
 
 	/* Debug commands */
 	void ToggleImGuiDemoModule();
+	void ToggleMeshContentModule();
 
 	/* Customization */
 	void SetDarkMode();
@@ -80,12 +82,14 @@ private:
 	bool debugMode = false;
 	bool darkMode = false;
 
-	ViewerModule* viewer;
+	ViewerModule* viewer = nullptr;
+	PLYReader* reader = nullptr;
 	std::vector<GUIModule*> modules;
-	std::vector<PLYReader*> readers;
-	imgui_addons::ImGuiFileBrowser* fileDialog;
 
-	ImGuiDemoModule* imguiDemo;
+	imgui_addons::ImGuiFileBrowser* fileDialog = nullptr;
+
+	MeshContentModule* meshContent = nullptr;
+	ImGuiDemoModule* imguiDemo = nullptr;
 
 	int nextModuleID = 0;
 
