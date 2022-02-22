@@ -12,6 +12,7 @@
 #include "modules/filedialog.h"
 #include "modules/plycontent.h"
 #include "scene.h"
+#include "utils.h"
 
 Context::Context(std::string glslVersion)
 		: glslVersion(glslVersion)
@@ -257,7 +258,7 @@ void Context::CreateOpenPLYFileSelectionDialog() {
 void Context::LoadPLYFile(std::string filepath) {
 	PLYReader* reader = new PLYReader(filepath);
 	if (reader->Load()) {
-		std::string filename = filepath.substr(filepath.rfind('/') + 1);
+		std::string filename = filepath.substr(filepath.rfind(PATH_DELIMITER) + 1);
 		this->SetWindowTitle(filename);
 		this->modules.push_back(
 				new PLYContentModule(this, filename, reader->GetMesh()));
