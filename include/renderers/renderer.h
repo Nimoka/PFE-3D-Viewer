@@ -16,17 +16,19 @@ public:
 	virtual void Render(ImVec2 size) = 0;
 
 	Scene* GetScene();
-	const GLuint& GetFboID() const;
-	const GLuint& GetTextureID() const;
+	const GLuint& GetRenderTexture() const;
 
 	void SetScene(Scene* scene);
 
 protected:
+	void ActivateContext();
+	const void DeactivateContext();
 	Scene* scene;
 
-	GLuint fboID;
-	GLuint rboID;
-	GLuint textureID;
+private:
+	GLuint renderFboID;
+	GLuint renderRboID;
+	GLuint renderTextureID;
 };
 
 #endif // RENDERERS_RENDERER_H

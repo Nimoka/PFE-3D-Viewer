@@ -42,8 +42,8 @@ void ViewerModule::Render() {
 			+ std::to_string(this->id)).c_str(), nullptr, this->flags);
 	if (this->renderer != nullptr) {
 		this->renderer->Render(size);
-		ImGui::Image(
-				reinterpret_cast<ImTextureID>(this->renderer->GetTextureID()),
+		ImGui::Image(reinterpret_cast<ImTextureID>(
+				this->renderer->GetRenderTexture()),
 				size, ImVec2(0, 1), ImVec2(1, 0));
 	} else {
 		ImGui::Text("No renderer");

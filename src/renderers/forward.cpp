@@ -13,12 +13,10 @@ void ForwardRenderer::Init() {
 }
 
 void ForwardRenderer::Render(ImVec2 size) {
-	glBindFramebuffer(GL_FRAMEBUFFER, this->fboID);
+	this->ActivateContext();
 
-	glBindTexture(GL_TEXTURE_2D, this->textureID);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0,
 			GL_RGB, GL_UNSIGNED_BYTE, 0);
-	glBindRenderbuffer(GL_RENDERBUFFER, this->rboID);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, size.x, size.y);
 
 	glEnable(GL_DEPTH_TEST);
@@ -26,7 +24,8 @@ void ForwardRenderer::Render(ImVec2 size) {
 
 	glViewport(0, 0, size.x, size.y);
 
-	glClearColor(.8, .8, .8, 1.);
+	// glClearColor(.8, .8, .8, 1.);
+	glClearColor(.2, .2, .2, 1.);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	this->shader.activate();
@@ -40,5 +39,5 @@ void ForwardRenderer::Render(ImVec2 size) {
 
 	this->shader.deactivate();
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	this->DeactivateContext();
 }
