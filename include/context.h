@@ -42,6 +42,7 @@ public:
 	void MoveCamera(float polarAngle, float azimutalAngle);
 	void ZoomCamera(float intensity);
 	void ReloadShaders();
+	void ToggleDarkMode();
 	void Quit();
 
 	/* Debug commands */

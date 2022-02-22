@@ -311,6 +311,13 @@ void Context::ReloadShaders() {
 	}
 }
 
+void Context::ToggleDarkMode() {
+	if (this->darkMode)
+		this->SetLightMode();
+	else
+		this->SetDarkMode();
+}
+
 void Context::Quit() {
 	this->readyToDie = true;
 }
@@ -461,6 +468,8 @@ void Context::RenderMenuBar() {
 			ImGui::Separator();
 			if (ImGui::MenuItem("Show tools", "Tab", this->showTools))
 				this->showTools = !this->showTools;
+			if (ImGui::MenuItem("Enable dark mode", "", this->darkMode))
+				this->ToggleDarkMode();
 			ImGui::EndMenu();
 		}
 		if (this->debugMode) {
