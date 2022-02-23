@@ -8,8 +8,6 @@ PLYReader::PLYReader() {}
 
 PLYReader::PLYReader(std::string filepath) {
 	this->filepath = filepath;
-
-	this->Load();
 }
 
 PLYReader::PLYReader(PLYReader *reader) {
