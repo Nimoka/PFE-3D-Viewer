@@ -267,8 +267,7 @@ void Context::LoadPLYFile(std::string filepath) {
 			this->modules.push_back((GUIModule*) this->meshContent);
 		}
 
-		Scene* scene = new Scene(reader->GetMesh());
-		this->viewer->GetRenderer()->SetScene(scene);
+		this->viewer->SetMesh(reader->GetMesh());
 
 		return;
 	}

@@ -29,7 +29,7 @@ protected:
 	const void DeactivateContext();
 
 	Eigen::Vector4f clearColor = Eigen::Vector4f(0., 0., 0., 1.);
-	Scene* scene;
+	Scene* scene = nullptr;
 
 private:
 	GLuint renderFboID;
