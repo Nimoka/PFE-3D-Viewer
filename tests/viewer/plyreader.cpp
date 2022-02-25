@@ -1,6 +1,8 @@
 #include <iostream>
 
-#include "catch2/catch_all.hpp"
+#define CATCH_CONFIG_MAIN
+
+#include <catch2/catch.hpp>
 
 #include "plyreader.h"
 
@@ -321,8 +323,4 @@ TEST_CASE("Testing viewer’s PLY reader") {
 		TestDifferentHeadersLoadingData();
 		TestMultipleLoadingsData();
 	}
-}
-
-int main(int argc, char** argv) {
-	return Catch::Session().run(argc, argv);
 }
