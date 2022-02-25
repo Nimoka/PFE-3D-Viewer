@@ -42,7 +42,7 @@ void MeshContentModule::Render() {
 					(this->mesh->HaveColors() ? "yes" : "no"));
 			ImGui::Text("  Have materials: %s",
 					(this->mesh->HaveMaterials() ? "yes" : "no"));
-			ImGui::Text("");
+			ImGui::Separator();
 
 			ImGui::Text("Values range:");
 			ImGui::Text("  x: [ %.2f, %.2f ]",
@@ -58,7 +58,7 @@ void MeshContentModule::Render() {
 				ImGui::Text("  mat ID: [ %u, %u ]",
 						this->mesh->GetMaterialsRange().min()[0],
 						this->mesh->GetMaterialsRange().max()[0]);
-			ImGui::Text("");
+			ImGui::Separator();
 
 			ImGui::Text("Content:");
 			ImGui::Text("  Vertices:");
