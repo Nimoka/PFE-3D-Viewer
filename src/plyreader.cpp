@@ -25,8 +25,8 @@ bool PLYReader::Load() {
 	if (this->isLoaded)
 		return this->isLoaded;
 
-	miniply::PLYReader reader(this->filepath.c_str());
-	if (!reader.valid())
+	miniply::PLYReader* reader = new miniply::PLYReader(this->filepath.c_str());
+	if (!reader->valid())
 		return false;
 
 	if (this->mesh != nullptr)
@@ -35,51 +35,53 @@ bool PLYReader::Load() {
 	MeshData* meshData = new MeshData();
 
 	uint32_t indexes[3];
-	while (reader.has_element()) {
-		if (reader.element_is(miniply::kPLYVertexElement)
-				&& reader.load_element()
-				&& reader.find_pos(indexes)) {
-			meshData->nbVertices = reader.num_rows();
+	while (reader->has_element()) {
+		if (reader->element_is(miniply::kPLYVertexElement)
+				&& reader->load_element()
+				&& reader->find_pos(indexes)) {
+			meshData->nbVertices = reader->num_rows();
 
 			/* Vertices positions */
 			meshData->verticesPositions = new float[meshData->nbVertices * 3];
-			reader.extract_properties(indexes, 3,
+			reader->extract_properties(indexes, 3,
 					miniply::PLYPropertyType::Float,
 					meshData->verticesPositions);
 
 			/* Vertices colors */
 			uint32_t indexesColors[3];
-			meshData->haveColors = reader.find_color(indexesColors);
+			meshData->haveColors = reader->find_color(indexesColors);
 			if (meshData->haveColors) {
 				meshData->verticesColors = new float[meshData->nbVertices * 3];
-				reader.extract_properties(indexesColors, 3,
+				reader->extract_properties(indexesColors, 3,
 						miniply::PLYPropertyType::Float,
 						meshData->verticesColors);
 			}
-		} else if (reader.element_is(miniply::kPLYFaceElement)
-				&& reader.load_element()
-				&& reader.find_indices(indexes)) {
-			meshData->nbFaces = reader.num_rows();
+		} else if (reader->element_is(miniply::kPLYFaceElement)
+				&& reader->load_element()
+				&& reader->find_indices(indexes)) {
+			meshData->nbFaces = reader->num_rows();
 
 			/* Faces ID vertices */
 			meshData->facesVertices = new unsigned int[meshData->nbFaces * 3];
-			reader.extract_triangles(indexes[0],
+			reader->extract_triangles(indexes[0],
 					meshData->verticesPositions, meshData->nbVertices,
 					miniply::PLYPropertyType::Int, meshData->facesVertices);
 			// TODO: Handle faces with more than 3 vertices
 
 			/* Faces ID materials */
-			uint32_t indexMaterials = reader.find_property("id");
+			uint32_t indexMaterials = reader->find_property("id");
 			if (indexMaterials != miniply::kInvalidIndex) {
 				meshData->haveMaterials = true;
 				meshData->facesMaterials = new unsigned int[meshData->nbFaces];
-				reader.extract_properties(indexes, 1,
+				reader->extract_properties(indexes, 1,
 						miniply::PLYPropertyType::Int,
 						meshData->facesMaterials);
 			}
 		}
-		reader.next_element();
+		reader->next_element();
 	}
+
+	delete reader;
 
 	this->mesh = new Mesh(meshData);
 
