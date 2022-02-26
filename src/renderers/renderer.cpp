@@ -17,6 +17,10 @@ Renderer::Renderer(Renderer* renderer)
 	this->Init();
 }
 
+Renderer::~Renderer() {
+	this->Clean();
+}
+
 const Eigen::Vector4f& Renderer::GetClearColor() {
 	return this->clearColor;
 }
@@ -81,4 +85,10 @@ void Renderer::Init() {
 
 	// Switch back to default frame buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::Clean() {
+	glDeleteTextures(1, &this->renderTextureID);
+	glDeleteRenderbuffers(1, &this->renderRboID);
+	glDeleteFramebuffers(1, &this->renderFboID);
 }

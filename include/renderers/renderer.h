@@ -13,7 +13,7 @@ public:
 	Renderer();
 	Renderer(Scene* scene);
 	Renderer(Renderer* renderer);
-	virtual ~Renderer() {}
+	virtual ~Renderer();
 
 	virtual void Render(ImVec2 size) = 0;
 
@@ -35,6 +35,7 @@ protected:
 
 private:
 	void Init();
+	void Clean();
 
 	GLuint renderFboID;
 	GLuint renderRboID;
