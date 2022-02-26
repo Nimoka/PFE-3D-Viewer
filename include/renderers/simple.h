@@ -1,15 +1,15 @@
-#ifndef RENDERERS_FORWARD_H
-#define RENDERERS_FORWARD_H
+#ifndef RENDERERS_SIMPLE_H
+#define RENDERERS_SIMPLE_H
 
 #include "renderers/renderer.h"
 
 #include "shaderreader.h"
 
-class ForwardRenderer: public Renderer
+class SimpleRenderer: public Renderer
 {
 public:
-	ForwardRenderer();
-	~ForwardRenderer();
+	SimpleRenderer();
+	~SimpleRenderer();
 
 	void Init();
 
@@ -21,4 +21,4 @@ private:
 	ShaderReader* shader;
 };
 
-#endif // RENDERERS_FORWARD_H
+#endif // RENDERERS_SIMPLE_H

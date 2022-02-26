@@ -1,21 +1,21 @@
-#include "renderers/forward.h"
+#include "renderers/simple.h"
 
-ForwardRenderer::ForwardRenderer()
+SimpleRenderer::SimpleRenderer()
 : Renderer() {
 	this->Init();
 }
 
-ForwardRenderer::~ForwardRenderer() {
+SimpleRenderer::~SimpleRenderer() {
 	if (this->shader != nullptr)
 		delete this->shader;
 }
 
-void ForwardRenderer::Init() {
+void SimpleRenderer::Init() {
 	this->shader = new ShaderReader(DATA_DIR "shaders/simple.vert",
 			DATA_DIR "shaders/simple.frag", false);
 }
 
-void ForwardRenderer::Render(ImVec2 size) {
+void SimpleRenderer::Render(ImVec2 size) {
 	this->ActivateContext();
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0,
@@ -45,7 +45,7 @@ void ForwardRenderer::Render(ImVec2 size) {
 	this->DeactivateContext();
 }
 
-void ForwardRenderer::ReloadShaders() {
+void SimpleRenderer::ReloadShaders() {
 	if (this->shader != nullptr)
 		this->shader->Load();
 }

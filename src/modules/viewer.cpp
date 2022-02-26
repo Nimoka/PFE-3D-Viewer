@@ -1,11 +1,11 @@
 #include "modules/viewer.h"
 
-#include "renderers/forward.h"
+#include "renderers/simple.h"
 
 ViewerModule::ViewerModule(void* context)
 		: GUIModule(context) {
 	this->title = "Viewer";
-	this->renderer = new ForwardRenderer();
+	this->renderer = new SimpleRenderer();
 
 	this->Init();
 }

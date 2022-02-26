@@ -11,7 +11,7 @@
 #include "filewithextension.h"
 #include "modules/filedialog.h"
 #include "modules/meshcontent.h"
-#include "renderers/forward.h"
+#include "renderers/simple.h"
 #include "scene.h"
 #include "utils.h"
 
@@ -476,9 +476,12 @@ void Context::RenderMenuBar() {
 		}
 		if (ImGui::BeginMenu("View")) {
 			if (ImGui::BeginMenu("Render method")) {
-				ImGui::MenuItem("Forward shading", "",
-						dynamic_cast<ForwardRenderer*>(
+				ImGui::MenuItem("Simple shading (no lights)", "",
+						dynamic_cast<SimpleRenderer*>(
 								this->viewer->GetRenderer()));
+				// ImGui::MenuItem("Forward shading", "",
+				// 		dynamic_cast<ForwardRenderer*>(
+				// 				this->viewer->GetRenderer()));
 				ImGui::EndMenu();
 			}
 			ImGui::Separator();
