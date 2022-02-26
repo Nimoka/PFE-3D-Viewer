@@ -9,6 +9,8 @@ class SimpleRenderer: public Renderer
 {
 public:
 	SimpleRenderer();
+	SimpleRenderer(Scene* scene);
+	SimpleRenderer(Renderer* renderer);
 	~SimpleRenderer();
 
 	void Init();

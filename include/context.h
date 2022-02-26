@@ -67,6 +67,8 @@ public:
 	int GetNewModuleID();
 	void AskForUpdate();
 
+	void SetMesh(Mesh* mesh);
+
 	GLFWwindow* GetWindow();
 
 private:
@@ -85,6 +87,7 @@ private:
 
 	ViewerModule* viewer = nullptr;
 	PLYReader* reader = nullptr;
+	Scene* scene = nullptr;
 	std::vector<GUIModule*> modules;
 
 	imgui_addons::ImGuiFileBrowser* fileDialog = nullptr;

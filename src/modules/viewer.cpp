@@ -59,15 +59,6 @@ void ViewerModule::SetRenderer(Renderer* renderer) {
 	this->renderer = renderer;
 }
 
-void ViewerModule::SetMesh(Mesh* mesh) {
-	if (this->renderer != nullptr) {
-		if (this->renderer->GetScene() != nullptr)
-			this->renderer->GetScene()->SetMesh(mesh);
-		else
-			this->renderer->SetScene(new Scene(mesh));
-	}
-}
-
 Renderer* ViewerModule::GetRenderer() {
 	return this->renderer;
 }

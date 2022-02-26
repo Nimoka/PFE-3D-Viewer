@@ -18,7 +18,6 @@ public:
 	void Init();
 	void Render();
 
-	void SetMesh(Mesh* mesh);
 	void SetRenderer(Renderer* renderer);
 
 	Mesh* GetMesh();

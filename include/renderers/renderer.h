@@ -11,6 +11,8 @@ class Renderer
 {
 public:
 	Renderer();
+	Renderer(Scene* scene);
+	Renderer(Renderer* renderer);
 	virtual ~Renderer() {}
 
 	virtual void Render(ImVec2 size) = 0;
@@ -32,6 +34,8 @@ protected:
 	Scene* scene = nullptr;
 
 private:
+	void Init();
+
 	GLuint renderFboID;
 	GLuint renderRboID;
 	GLuint renderTextureID;

@@ -3,6 +3,51 @@
 #include <iostream>
 
 Renderer::Renderer() {
+	this->Init();
+}
+
+Renderer::Renderer(Scene* scene)
+		: scene(scene) {
+	this->Init();
+}
+
+Renderer::Renderer(Renderer* renderer)
+		: scene(renderer->GetScene())
+		, clearColor(renderer->GetClearColor()) {
+	this->Init();
+}
+
+const Eigen::Vector4f& Renderer::GetClearColor() {
+	return this->clearColor;
+}
+
+Scene* Renderer::GetScene() {
+	return this->scene;
+}
+
+const GLuint& Renderer::GetRenderTexture() const {
+	return this->renderTextureID;
+}
+
+void Renderer::SetClearColor(Eigen::Vector4f color) {
+	this->clearColor = color;
+}
+
+void Renderer::SetScene(Scene* scene) {
+	this->scene = scene;
+}
+
+void Renderer::ActivateContext() {
+	glBindFramebuffer(GL_FRAMEBUFFER, this->renderFboID);
+	glBindRenderbuffer(GL_RENDERBUFFER, this->renderRboID);
+	glBindTexture(GL_TEXTURE_2D, this->renderTextureID);
+}
+
+const void Renderer::DeactivateContext() {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::Init() {
 	/* Create render FBO */
 
 	// Create a frame buffer
@@ -35,37 +80,5 @@ Renderer::Renderer() {
 		std::cout << "Framebuffer initialization failed!" << std::endl;
 
 	// Switch back to default frame buffer
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-const Eigen::Vector4f& Renderer::GetClearColor() {
-	return this->clearColor;
-}
-
-Scene* Renderer::GetScene() {
-	return this->scene;
-}
-
-const GLuint& Renderer::GetRenderTexture() const {
-	return this->renderTextureID;
-}
-
-void Renderer::SetClearColor(Eigen::Vector4f color) {
-	this->clearColor = color;
-}
-
-void Renderer::SetScene(Scene* scene) {
-	if (this->scene != nullptr)
-		delete this->scene;
-	this->scene = scene;
-}
-
-void Renderer::ActivateContext() {
-	glBindFramebuffer(GL_FRAMEBUFFER, this->renderFboID);
-	glBindRenderbuffer(GL_RENDERBUFFER, this->renderRboID);
-	glBindTexture(GL_TEXTURE_2D, this->renderTextureID);
-}
-
-const void Renderer::DeactivateContext() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

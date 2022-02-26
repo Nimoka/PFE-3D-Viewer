@@ -29,6 +29,8 @@ Context::~Context() {
 		delete this->fileDialog;
 	if (this->viewer != nullptr)
 		delete this->viewer;
+	if (this->scene != nullptr)
+		delete this->scene;
 
 	/* Cleanup ImGui */
 
@@ -109,7 +111,10 @@ int Context::Init() {
 
 	/* Create modules */
 
+	this->scene = new Scene();
 	this->viewer = new ViewerModule(this);
+	this->viewer->GetRenderer()->SetScene(this->scene);
+
 	this->fileDialog = nullptr;
 	this->imguiDemo = nullptr;
 
@@ -267,7 +272,7 @@ void Context::LoadPLYFile(std::string filepath) {
 			this->modules.push_back((GUIModule*) this->meshContent);
 		}
 
-		this->viewer->SetMesh(reader->GetMesh());
+		this->SetMesh(reader->GetMesh());
 
 		return;
 	}
@@ -276,32 +281,20 @@ void Context::LoadPLYFile(std::string filepath) {
 }
 
 void Context::MoveCamera(float polarAngle, float azimutalAngle) {
-	if (this->viewer != nullptr) {
-		Renderer* renderer = this->viewer->GetRenderer();
-		if (renderer != nullptr) {
-			Scene* scene = renderer->GetScene();
-			if (scene != nullptr) {
-				Camera* camera = scene->GetCamera();
-				if (camera != nullptr) {
-					camera->MoveCameraPolar(
-							Eigen::Vector2f(polarAngle, azimutalAngle));
-				}
-			}
+	if (this->scene != nullptr) {
+		Camera* camera = this->scene->GetCamera();
+		if (camera != nullptr) {
+			camera->MoveCameraPolar(
+					Eigen::Vector2f(polarAngle, azimutalAngle));
 		}
 	}
 }
 
 void Context::ZoomCamera(float intensity) {
-	if (this->viewer != nullptr) {
-		Renderer* renderer = this->viewer->GetRenderer();
-		if (renderer != nullptr) {
-			Scene* scene = renderer->GetScene();
-			if (scene != nullptr) {
-				Camera* camera = scene->GetCamera();
-				if (camera != nullptr)
-					camera->ZoomCameraPolar(intensity);
-			}
-		}
+	if (this->scene != nullptr) {
+		Camera* camera = this->scene->GetCamera();
+		if (camera != nullptr)
+			camera->ZoomCameraPolar(intensity);
 	}
 }
 
@@ -460,6 +453,15 @@ void Context::AskForUpdate() {
 	this->needToUpdate = true;
 }
 
+void Context::SetMesh(Mesh* mesh) {
+	if (this->scene != nullptr) {
+		this->scene->SetMesh(mesh);
+	} else {
+		this->scene = new Scene(mesh);
+		this->viewer->GetRenderer()->SetScene(this->scene);
+	}
+}
+
 GLFWwindow* Context::GetWindow() {
 	return this->window;
 }
@@ -475,19 +477,22 @@ void Context::RenderMenuBar() {
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("View")) {
-			if (ImGui::BeginMenu("Render method")) {
-				ImGui::MenuItem("Simple shading (no lights)", "",
-						dynamic_cast<SimpleRenderer*>(
-								this->viewer->GetRenderer()));
-				// ImGui::MenuItem("Forward shading", "",
-				// 		dynamic_cast<ForwardRenderer*>(
-				// 				this->viewer->GetRenderer()));
-				ImGui::EndMenu();
+			Renderer* renderer = this->viewer->GetRenderer();
+			if (renderer != nullptr) {
+				if (ImGui::BeginMenu("Render method")) {
+					if (ImGui::MenuItem("Simple shading (no lights)", "",
+							dynamic_cast<SimpleRenderer*>(renderer)))
+						this->viewer->SetRenderer(new SimpleRenderer(renderer));
+					// if (ImGui::MenuItem("Forward shading", "",
+					// 		dynamic_cast<ForwardRenderer*>(renderer)))
+					// 	this->viewer->SetRenderer(new SimpleRenderer(renderer));
+					ImGui::EndMenu();
+				}
+				ImGui::Separator();
+				if (ImGui::MenuItem("Reload shaders", "R"))
+					this->ReloadShaders();
+				ImGui::Separator();
 			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Reload shaders", "R"))
-				this->ReloadShaders();
-			ImGui::Separator();
 			if (ImGui::MenuItem("Show tools", "Tab", this->showTools))
 				this->showTools = !this->showTools;
 			if (ImGui::MenuItem("Enable dark mode", "", this->darkMode))

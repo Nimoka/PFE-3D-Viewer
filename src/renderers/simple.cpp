@@ -1,7 +1,17 @@
 #include "renderers/simple.h"
 
 SimpleRenderer::SimpleRenderer()
-: Renderer() {
+		: Renderer() {
+	this->Init();
+}
+
+SimpleRenderer::SimpleRenderer(Scene* scene)
+		: Renderer(scene) {
+	this->Init();
+}
+
+SimpleRenderer::SimpleRenderer(Renderer* renderer)
+		: Renderer(renderer) {
 	this->Init();
 }
 
