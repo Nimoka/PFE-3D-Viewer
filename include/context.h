@@ -13,6 +13,7 @@
 #include "modules/module.h"
 #include "modules/viewer.h"
 #include "plyreader.h"
+#include "cliloader.h"
 
 #define DEFAULT_WINDOW_TITLE	"3D Viewer"
 #define DEFAULT_WINDOW_WIDTH	1280
@@ -33,7 +34,7 @@ public:
 
 	/* Initialization */
 	int Init();
-	int LoadCLIContext(int argc, char** argv);
+	int LoadOptions(int argc, char** argv);
 	bool LoadTOMLContext(std::string filepath);
 
 	/* Commands */
@@ -51,13 +52,6 @@ public:
 	void ToggleImGuiDemoModule();
 	void ToggleMeshContentModule();
 
-	/* Customization */
-	void SetDarkMode();
-	void SetLightMode();
-	void SetWindowTitle(std::string title);
-	void SetForcedWindowTitle(std::string title);
-	void SetWindowSize(int width, int height);
-
 	/* Callbacks */
 	void ProcessKeyboardInput(int key, int scancode, int action, int mods);
 	void ProcessMouseMovement(double x, double y);
@@ -67,7 +61,31 @@ public:
 	int GetNewModuleID();
 	void AskForUpdate();
 
+	/* Getters & Setters */
 	void SetMesh(Mesh* mesh);
+
+	void SetWindowTitle(std::string title);
+	void SetForcedWindowTitle(std::string title);
+	std::string GetWindowTitle();
+
+	void SetWindowSize(int width, int height);
+	int GetWindowWidth();
+	int GetWindowHeight();
+
+	void SetConfigFile(std::string file);
+	std::string GetConfigFile();
+	void SetInputFile(std::string file);
+	std::string GetInputFile();
+
+	void SetBenchmarkMode(bool benchmark);
+	bool GetBenchmarkMode();
+	void SetDebugMode(bool debug);
+	bool GetDebugMode();
+	void SetDarkMode();
+	void SetLightMode();
+	bool GetDarkMode();
+
+	CLILoader GetCLI();
 
 	GLFWwindow* GetWindow();
 
@@ -78,28 +96,36 @@ private:
 	void Update();
 
 	GLFWwindow* window;
+	std::string windowTitle;
 	std::string windowTitleForced;
 	std::string glslVersion;
 
 	bool benchmarkMode = false;
 	bool debugMode = false;
 	bool darkMode = false;
-	bool mouseLeftPressed =false;
-	bool firstMouse=true;
+	bool mouseLeftPressed = false;
+	bool firstMouse = true;
 	double lastX;
 	double lastY;
 
 	ViewerModule* viewer = nullptr;
 	PLYReader* reader = nullptr;
 	Scene* scene = nullptr;
+
 	std::vector<GUIModule*> modules;
 
 	imgui_addons::ImGuiFileBrowser* fileDialog = nullptr;
-
 	MeshContentModule* meshContent = nullptr;
 	ImGuiDemoModule* imguiDemo = nullptr;
 
+	std::string configFile = DATA_DIR "configs/default.toml";
+	std::string inputFile;
+
 	int nextModuleID = 0;
+	int windowWidth = DEFAULT_WINDOW_WIDTH;
+	int windowHeight = DEFAULT_WINDOW_HEIGHT;
+
+	CLILoader cli;
 
 	bool showTools = true;
 

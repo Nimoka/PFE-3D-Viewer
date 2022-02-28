@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-#include "CLI/CLI.hpp"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "toml.hpp"
@@ -127,85 +126,28 @@ int Context::Init() {
 	return 0;
 }
 
-int Context::LoadCLIContext(int argc, char** argv) {
-	/* Create CLI context */
-
-	CLI::App app{DEFAULT_WINDOW_TITLE};
-
-	std::string inputFile, configurationFile;
-	std::string windowTitle;
-	int windowWidth = 0, windowHeight = 0;
-
-	/* Set CLI options */
-
-	app.add_option("-i, --input", inputFile,
-			"PLY file to load")
-			->required()
-			->check(CLI::ExistingFile)->check(FileWithExtension("ply"));
-	app.add_option("-c, --config", configurationFile,
-			"Configuration file")
-			->check(CLI::ExistingFile)->check(FileWithExtension("toml"));
-	app.add_option("--width", windowWidth,
-			"Window’s width (pixels)")
-			->check(CLI::PositiveNumber);
-	app.add_option("--height", windowHeight,
-			"Window’s height (pixels)")
-			->check(CLI::PositiveNumber);
-	app.add_option("-t, --title", windowTitle,
-			"Window title");
-	app.add_flag("-b, --benchmark", this->benchmarkMode,
-			"Run the program in benchmark mode");
-	app.add_flag("--debug", this->debugMode,
-			"Enable debug mode (tools in menu bar)");
-	app.add_flag("--dark", this->darkMode,
-			"Enable dark mode");
-
-	/* Parse CLI options */
-
-	try {
-		app.parse(argc, argv);
-	} catch (const CLI::ParseError &e) {
-		return app.exit(e);
-	}
-
-	/* Load default configuration file */
-
-	this->LoadTOMLContext(DATA_DIR "configs/default.toml");
-	// TODO: Maybe consider having two differents default configuration files:
-	//       one for viewer mode and another for benchmark mode, and so load
-	//       different files depending on `this->benchmarkMode`.
-	// Yeah, I moved it here instead of in `Init()`, so it can be done without
-	// calling `LoadCLIContext` before `LoadDefaultContext` just for knowing
-	// the mode… In fact, both functions can be fusionned.
-
-	/* Process CLI options found (if needed) */
-
-	// Configuration file
-	if (!configurationFile.empty()) {
-		if (!this->LoadTOMLContext(configurationFile))
-			return ERROR_CLI_MISS_TOML;
-	}
+int Context::LoadOptions(int argc, char** argv) {
+	/* Fetch original config file */
+	LoadTOMLContext(configFile);
 
 	// Window’s title
 	if (!windowTitle.empty())
-		this->SetForcedWindowTitle(windowTitle);
+		SetForcedWindowTitle(windowTitle);
 
 	// Window’s size
-	if (windowWidth && windowHeight) {
-		this->SetWindowSize(windowWidth, windowHeight);
-	} else if (windowWidth) {
-		this->SetWindowSize(windowWidth, DEFAULT_WINDOW_HEIGHT);
-	} else if (windowHeight) {
-		this->SetWindowSize(DEFAULT_WINDOW_WIDTH, windowHeight);
-	}
+	SetWindowSize(windowWidth, windowHeight);
 
 	// Window’s style
-	if (this->darkMode)
-		this->SetDarkMode();
+	SetLightMode();
+
+	/* Fetch CLI options (and the designated extra config file) */
+	int res = cli.LoadContext(this, argc, argv);
+	if (res)
+		return res;
 
 	// PLY file to load
 	if (!inputFile.empty())
-		this->LoadPLYFile(inputFile);
+		LoadPLYFile(inputFile);
 
 	return 0;
 }
@@ -344,38 +286,6 @@ void Context::ToggleMeshContentModule() {
 	}
 }
 
-void Context::SetDarkMode() {
-	ImGui::StyleColorsDark();
-	windowClearColor = ImVec4(.2f, .2f, .2f, 1.f);
-	this->viewer->GetRenderer()
-			->SetClearColor(Eigen::Vector4f(.1f, .1f, .1f, 1.f));
-	this->darkMode = true;
-}
-
-void Context::SetLightMode() {
-	ImGui::StyleColorsLight();
-	windowClearColor = ImVec4(.95f, .95f, .95f, 1.f);
-	this->viewer->GetRenderer()
-			->SetClearColor(Eigen::Vector4f(1.f, 1.f, 1.f, 1.f));
-	this->darkMode = false;
-}
-
-void Context::SetWindowTitle(std::string title) {
-	if (this->windowTitleForced.empty()) {
-		std::string formattedTitle = title + " — " + DEFAULT_WINDOW_TITLE;
-		glfwSetWindowTitle(this->window, formattedTitle.c_str());
-	}
-}
-
-void Context::SetForcedWindowTitle(std::string title) {
-	this->windowTitleForced = title;
-	glfwSetWindowTitle(this->window, title.c_str());
-}
-
-void Context::SetWindowSize(int width, int height) {
-	glfwSetWindowSize(this->window, width, height);
-}
-
 void Context::ProcessKeyboardInput(int key, int scancode, int action,
 		int mods) {
 	// TODO: Find a way to handle non-QWERTY keyboards
@@ -487,6 +397,91 @@ void Context::SetMesh(Mesh* mesh) {
 		this->scene = new Scene(mesh);
 		this->viewer->GetRenderer()->SetScene(this->scene);
 	}
+}
+
+void Context::SetWindowTitle(std::string title) {
+	if (this->windowTitleForced.empty()) {
+		this->windowTitle = title + " — " + DEFAULT_WINDOW_TITLE;
+		glfwSetWindowTitle(this->window, this->windowTitle.c_str());
+	}
+}
+
+void Context::SetForcedWindowTitle(std::string title) {
+	this->windowTitleForced = title;
+	glfwSetWindowTitle(this->window, title.c_str());
+}
+
+std::string Context::GetWindowTitle() {
+	return this->windowTitleForced.empty() ? this->windowTitleForced : this->windowTitle;
+}
+
+void Context::SetWindowSize(int width, int height) {
+	glfwSetWindowSize(this->window, width, height);
+	this->windowWidth = width;
+	this->windowHeight = height;
+}
+
+int Context::GetWindowWidth() {
+	return this->windowWidth;
+}
+
+int Context::GetWindowHeight() {
+	return this->windowHeight;
+}
+
+void Context::SetConfigFile(std::string file) {
+	this->configFile = file;
+}
+
+std::string Context::GetConfigFile() {
+	return this->configFile;
+}
+
+void Context::SetInputFile(std::string file) {
+	this->inputFile = file;
+}
+std::string Context::GetInputFile() {
+	return this->inputFile;
+}
+
+void Context::SetBenchmarkMode(bool benchmark) {
+	this->benchmarkMode = benchmark;
+}
+
+bool Context::GetBenchmarkMode() {
+	return this->benchmarkMode;
+}
+
+void Context::SetDebugMode(bool debug) {
+	this->debugMode = debug;
+}
+
+bool Context::GetDebugMode() {
+	return this->debugMode;
+}
+
+void Context::SetDarkMode() {
+	ImGui::StyleColorsDark();
+	windowClearColor = ImVec4(.2f, .2f, .2f, 1.f);
+	this->viewer->GetRenderer()
+			->SetClearColor(Eigen::Vector4f(.1f, .1f, .1f, 1.f));
+	this->darkMode = true;
+}
+
+void Context::SetLightMode() {
+	ImGui::StyleColorsLight();
+	windowClearColor = ImVec4(.95f, .95f, .95f, 1.f);
+	this->viewer->GetRenderer()
+			->SetClearColor(Eigen::Vector4f(1.f, 1.f, 1.f, 1.f));
+	this->darkMode = false;
+}
+
+bool Context::GetDarkMode() {
+	return this->darkMode;
+}
+
+CLILoader Context::GetCLI() {
+	return this->cli;
 }
 
 GLFWwindow* Context::GetWindow() {

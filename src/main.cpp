@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
 	/* Load context from CLI and configuration files */
 
 	{
-		int error = context->LoadCLIContext(argc, argv);
+		int error = context->LoadOptions(argc, argv);
 		if (error) {
 			CleanupEverything();
 			return error;
