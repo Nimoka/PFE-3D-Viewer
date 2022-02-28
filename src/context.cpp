@@ -439,9 +439,24 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 	}
 }
 
-void Context::ProcessMouseMovement(double x, double y) {}
+void Context::ProcessMouseMovement(double x, double y) {
+	double xpos = x;
+	double ypos = y;
+	if(firstMouse){
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+	double xoffset = (xpos -lastX) *0.01; // slowly move the camera
+	double yoffset = (lastY - ypos) *0.01;
+	lastX=xpos ;
+	lastY=ypos ;
+	this->MoveCamera(static_cast<float>(xoffset),static_cast<float>(yoffset));
+}
 
-void Context::ProcessMouseButton(int button, int action, int mods) {}
+void Context::ProcessMouseButton(int button, int action, int mods) {
+
+}
 
 void Context::ProcessMouseScroll(double x, double y) {
 	this->ZoomCamera(-y);

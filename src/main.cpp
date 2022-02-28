@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
 	{
 		GLFWwindow* window = context->GetWindow();
 		glfwSetKeyCallback(window, ProcessKeyboardInput);
-		// glfwSetCursorPosCallback(window, ProcessMouseMovement);
+		glfwSetCursorPosCallback(window, ProcessMouseMovement);
 		// glfwSetMouseButtonCallback(window, ProcessMouseButton);
 		glfwSetScrollCallback(window, ProcessMouseScroll);
 	}
