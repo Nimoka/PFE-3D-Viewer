@@ -81,8 +81,7 @@ public:
 	bool GetBenchmarkMode();
 	void SetDebugMode(bool debug);
 	bool GetDebugMode();
-	void SetDarkMode();
-	void SetLightMode();
+	void SetDarkMode(bool darkMode);
 	bool GetDarkMode();
 
 	CLILoader GetCLI();

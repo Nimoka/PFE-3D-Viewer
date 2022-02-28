@@ -121,7 +121,7 @@ int Context::Init() {
 
 	this->benchmarkMode = false;
 	this->debugMode = false;
-	this->SetLightMode();
+	this->SetDarkMode(false);
 
 	return 0;
 }
@@ -136,9 +136,6 @@ int Context::LoadOptions(int argc, char** argv) {
 
 	// Window’s size
 	SetWindowSize(windowWidth, windowHeight);
-
-	// Window’s style
-	SetLightMode();
 
 	/* Fetch CLI options (and the designated extra config file) */
 	int res = cli.LoadContext(this, argc, argv);
@@ -249,10 +246,7 @@ void Context::ReloadShaders() {
 }
 
 void Context::ToggleDarkMode() {
-	if (this->darkMode)
-		this->SetLightMode();
-	else
-		this->SetDarkMode();
+	this->SetDarkMode(!this->darkMode);
 }
 
 void Context::ToggleDebugMode() {
@@ -460,20 +454,19 @@ bool Context::GetDebugMode() {
 	return this->debugMode;
 }
 
-void Context::SetDarkMode() {
-	ImGui::StyleColorsDark();
-	windowClearColor = ImVec4(.2f, .2f, .2f, 1.f);
-	this->viewer->GetRenderer()
-			->SetClearColor(Eigen::Vector4f(.1f, .1f, .1f, 1.f));
-	this->darkMode = true;
-}
-
-void Context::SetLightMode() {
-	ImGui::StyleColorsLight();
-	windowClearColor = ImVec4(.95f, .95f, .95f, 1.f);
-	this->viewer->GetRenderer()
-			->SetClearColor(Eigen::Vector4f(1.f, 1.f, 1.f, 1.f));
-	this->darkMode = false;
+void Context::SetDarkMode(bool darkMode) {
+	if (darkMode) {
+		ImGui::StyleColorsDark();
+		windowClearColor = ImVec4(.2f, .2f, .2f, 1.f);
+		this->viewer->GetRenderer()
+				->SetClearColor(Eigen::Vector4f(.1f, .1f, .1f, 1.f));
+	} else {
+		ImGui::StyleColorsLight();
+		windowClearColor = ImVec4(.95f, .95f, .95f, 1.f);
+		this->viewer->GetRenderer()
+				->SetClearColor(Eigen::Vector4f(1.f, 1.f, 1.f, 1.f));
+	}
+	this->darkMode = darkMode;
 }
 
 bool Context::GetDarkMode() {
@@ -520,16 +513,16 @@ void Context::RenderMenuBar() {
 							glEnable(GL_CULL_FACE);
 					}
 					ImGui::Separator();
-					int mode;
-					glGetIntegerv(GL_CULL_FACE_MODE, &mode);
+					int faceCullingMode;
+					glGetIntegerv(GL_CULL_FACE_MODE, &faceCullingMode);
 					if (ImGui::MenuItem("Front and back", "",
-							(mode == GL_FRONT_AND_BACK)))
+							(faceCullingMode == GL_FRONT_AND_BACK)))
 						glCullFace(GL_FRONT_AND_BACK);
 					if (ImGui::MenuItem("Front only", "",
-							(mode == GL_FRONT)))
+							(faceCullingMode == GL_FRONT)))
 						glCullFace(GL_FRONT);
 					if (ImGui::MenuItem("Back only", "",
-							(mode == GL_BACK)))
+							(faceCullingMode == GL_BACK)))
 						glCullFace(GL_BACK);
 					ImGui::EndMenu();
 				}

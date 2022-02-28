@@ -74,13 +74,11 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 
 	// Debug mode
 	if (debugMode || noDebugMode)
-		context->SetDebugMode(!debugMode);
+		context->SetDebugMode(debugMode);
 
 	// Window’s style
-	if (darkMode)
-		context->SetDarkMode();
-	if (lightMode)
-		context->SetLightMode();
+	if (darkMode || lightMode)
+		context->SetDarkMode(darkMode);
 
 	return 0;
 }
