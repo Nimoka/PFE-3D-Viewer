@@ -15,7 +15,7 @@ add_test(plyreader plyreader)
 # CLI Tester ---------------------------------------------------
 
 add_executable(CLI
-		CLI.cpp
+		cliloader.cpp
 		${ROOT_DIR}/src/cliloader.cpp
 		${ROOT_DIR}/include/cliloader.h)
 target_include_directories(CLI PUBLIC
