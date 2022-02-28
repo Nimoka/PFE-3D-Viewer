@@ -229,7 +229,7 @@ int Context::GetWindowWidth() {
 	return this->windowWidth;
 }
 
-int Context::GetwindowHeight() {
+int Context::GetWindowHeight() {
 	return this->windowHeight;
 }
 
@@ -295,8 +295,8 @@ bool Context::GetBenchmarkMode() {
 void Context::SetDebugMode(bool debug) {
 	this->debugMode = debug;
 }
-bool Context::GetDarkMode() {
-	return this->darkMode;
+bool Context::GetDebugMode() {
+	return this->debugMode;
 }
 
 void Context::SetDarkMode(bool dark) {
@@ -309,8 +309,8 @@ void Context::SetDarkMode(bool dark) {
 	}
 	this->darkMode = dark;
 }
-bool Context::GetDebugMode() {
-	return this->debugMode;
+bool Context::GetDarkMode() {
+	return this->darkMode;
 }
 
 void Context::SetConfigFile(std::string file) {

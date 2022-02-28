@@ -60,7 +60,7 @@ public:
 
 	void SetWindowSize(int width, int height);
 	int GetWindowWidth();
-	int GetwindowHeight();
+	int GetWindowHeight();
 
 	void SetConfigFile(std::string file);
 	std::string GetConfigFile();
