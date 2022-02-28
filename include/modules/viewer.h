@@ -15,7 +15,6 @@ public:
 	ViewerModule(ViewerModule* module);
 	~ViewerModule();
 
-	void Init();
 	void Render();
 
 	void SetRenderer(Renderer* renderer);
@@ -24,6 +23,8 @@ public:
 	Renderer* GetRenderer();
 
 private:
+	void Init();
+
 	Renderer* renderer;
 
 	ImGuiWindowFlags flags;

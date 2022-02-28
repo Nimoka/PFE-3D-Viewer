@@ -14,19 +14,11 @@ ViewerModule::ViewerModule(ViewerModule* module)
 		: GUIModule(module->GetContext())
 		, renderer(module->GetRenderer()) {
 	this->title = module->GetTitle();
+
 	this->Init();
 }
 
 ViewerModule::~ViewerModule() {}
-
-void ViewerModule::Init() {
-	this->flags = ImGuiWindowFlags_NoDecoration
-			| ImGuiWindowFlags_NoMove
-			| ImGuiWindowFlags_NoResize
-			| ImGuiWindowFlags_NoSavedSettings
-			| ImGuiWindowFlags_NoBackground
-			| ImGuiWindowFlags_NoBringToFrontOnFocus;
-}
 
 void ViewerModule::Render() {
 	const ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -69,4 +61,14 @@ Mesh* ViewerModule::GetMesh() {
 			return this->renderer->GetScene()->GetMesh();
 	}
 	return nullptr;
+}
+
+void ViewerModule::Init() {
+	this->flags = ImGuiWindowFlags_None
+			| ImGuiWindowFlags_NoDecoration
+			| ImGuiWindowFlags_NoMove
+			| ImGuiWindowFlags_NoResize
+			| ImGuiWindowFlags_NoSavedSettings
+			| ImGuiWindowFlags_NoBackground
+			| ImGuiWindowFlags_NoBringToFrontOnFocus;
 }
