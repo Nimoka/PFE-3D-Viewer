@@ -110,7 +110,7 @@ void PLYContentModule::Render() {
 			ImGui::Text("  Nb faces: %u", this->mesh->nbFaces);
 			ImGui::Text("  Have colors: %s", (this->mesh->haveColors ? "yes" : "no"));
 			ImGui::Text("  Have materials: %s", (this->mesh->haveMaterials ? "yes" : "no"));
-			ImGui::Text("");
+			ImGui::Text(" ");
 
 			ImGui::Text("Values range:");
 			ImGui::Text("  x: [ %.2f, %.2f ]", this->minPosX, this->maxPosX);
@@ -123,7 +123,7 @@ void PLYContentModule::Render() {
 			}
 			if (this->mesh->haveMaterials)
 				ImGui::Text("  mat ID: [ %u, %u ]", this->minMatID, this->maxMatID);
-			ImGui::Text("");
+			ImGui::Text(" ");
 
 			ImGui::Text("Content:");
 			ImGui::Text("  Vertices:");

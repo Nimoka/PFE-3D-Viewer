@@ -12,6 +12,7 @@
 #include "modules/module.h"
 #include "modules/viewer.h"
 #include "plyreader.h"
+#include "cliloader.h"
 
 #define DEFAULT_WINDOW_TITLE	"3D Viewer"
 #define DEFAULT_WINDOW_WIDTH	1280
@@ -32,7 +33,7 @@ public:
 
 	/* Initialization */
 	int Init();
-	int LoadCLIContext(int argc, char** argv);
+	int LoadOptions(int argc, char** argv);
 	bool LoadTOMLContext(std::string filepath);
 
 	/* Commands */
@@ -43,13 +44,6 @@ public:
 	/* Debug commands */
 	void ToggleImGuiDemoModule();
 
-	/* Customization */
-	void SetDarkMode();
-	void SetLightMode();
-	void SetWindowTitle(std::string title);
-	void SetForcedWindowTitle(std::string title);
-	void SetWindowSize(int width, int height);
-
 	/* Callbacks */
 	void ProcessKeyboardInput(int key, int scancode, int action, int mods);
 	void ProcessMouseMovement(double x, double y);
@@ -58,6 +52,29 @@ public:
 
 	int GetNewModuleID();
 	void AskForUpdate();
+
+	/* Getters & Setters */
+	void SetWindowTitle(std::string title);
+	void SetForcedWindowTitle(std::string title);
+	std::string GetWindowTitle();
+
+	void SetWindowSize(int width, int height);
+	int GetWindowWidth();
+	int GetwindowHeight();
+
+	void SetConfigFile(std::string file);
+	std::string GetConfigFile();
+	void SetInputFile(std::string file);
+	std::string GetInputFile();
+
+	void SetBenchmarkMode(bool benchmark);
+	bool GetBenchmarkMode();
+	void SetDebugMode(bool debug);
+	bool GetDebugMode();
+	void SetDarkMode(bool dark);
+	bool GetDarkMode();
+
+	CLILoader GetCLI();
 
 	GLFWwindow* GetWindow();
 
@@ -68,12 +85,15 @@ private:
 	void Update();
 
 	GLFWwindow* window;
+	std::string windowTitle;
 	std::string windowTitleForced;
 	std::string glslVersion;
 
-	bool benchmarkMode;
-	bool debugMode;
-	bool darkMode;
+	bool benchmarkMode = false;
+	bool debugMode = false;
+	bool darkMode = false;
+	std::string configFile = DATA_DIR "configs/default.toml";
+	std::string inputFile;
 
 	ViewerModule* viewer;
 	std::vector<GUIModule*> modules;
@@ -81,6 +101,10 @@ private:
 	imgui_addons::ImGuiFileBrowser* fileDialog;
 
 	ImGuiDemoModule* imguiDemo;
+	int windowWidth = DEFAULT_WINDOW_WIDTH;
+	int windowHeight = DEFAULT_WINDOW_HEIGHT;
+
+	CLILoader cli;
 
 	int nextModuleID;
 

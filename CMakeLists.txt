@@ -109,6 +109,7 @@ file(GLOB VIEWER_SOURCES
 		src/main.cpp
 		src/camera.cpp
 		src/context.cpp
+		src/cliloader.cpp
 		src/filewithextension.cpp
 		src/mesh.cpp
 		src/plyreader.cpp
@@ -121,6 +122,7 @@ file(GLOB VIEWER_SOURCES
 file(GLOB VIEWER_HEADERS
 		include/camera.h
 		include/context.h
+		include/cliloader.h
 		include/filewithextension.h
 		include/mesh.h
 		include/plyreader.h
