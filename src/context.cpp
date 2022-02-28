@@ -510,6 +510,29 @@ void Context::RenderMenuBar() {
 					// 	this->viewer->SetRenderer(new SimpleRenderer(renderer));
 					ImGui::EndMenu();
 				}
+				if (ImGui::BeginMenu("Facet culling")) {
+					int facetCullingIsEnabled = (int) glIsEnabled(GL_CULL_FACE);
+					if (ImGui::MenuItem("Enable facet culling", "",
+							facetCullingIsEnabled)) {
+						if (facetCullingIsEnabled == (int) GL_TRUE)
+							glDisable(GL_CULL_FACE);
+						else
+							glEnable(GL_CULL_FACE);
+					}
+					ImGui::Separator();
+					int mode;
+					glGetIntegerv(GL_CULL_FACE_MODE, &mode);
+					if (ImGui::MenuItem("Front and back", "",
+							(mode == GL_FRONT_AND_BACK)))
+						glCullFace(GL_FRONT_AND_BACK);
+					if (ImGui::MenuItem("Front only", "",
+							(mode == GL_FRONT)))
+						glCullFace(GL_FRONT);
+					if (ImGui::MenuItem("Back only", "",
+							(mode == GL_BACK)))
+						glCullFace(GL_BACK);
+					ImGui::EndMenu();
+				}
 				ImGui::Separator();
 				if (ImGui::MenuItem("Reload shaders", "R"))
 					this->ReloadShaders();
