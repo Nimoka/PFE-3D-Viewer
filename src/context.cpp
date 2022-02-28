@@ -440,22 +440,32 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 }
 
 void Context::ProcessMouseMovement(double x, double y) {
-	double xpos = x;
-	double ypos = y;
-	if(firstMouse){
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
+	if(mouseLeftPressed){
+		double xpos = x;
+		double ypos = y;
+		if(firstMouse){
+			lastX = xpos;
+			lastY = ypos;
+			firstMouse = false;
+		}
+		double xoffset = (xpos -lastX) *0.01; // slowly move the camera
+		double yoffset = (lastY - ypos) *0.01;
+		lastX=xpos ;
+		lastY=ypos ;
+		this->MoveCamera(static_cast<float>(xoffset),static_cast<float>(yoffset));
 	}
-	double xoffset = (xpos -lastX) *0.01; // slowly move the camera
-	double yoffset = (lastY - ypos) *0.01;
-	lastX=xpos ;
-	lastY=ypos ;
-	this->MoveCamera(static_cast<float>(xoffset),static_cast<float>(yoffset));
+	
 }
 
 void Context::ProcessMouseButton(int button, int action, int mods) {
-
+	if (button==GLFW_MOUSE_BUTTON_1){
+		if (action == GLFW_PRESS) {
+			mouseLeftPressed = true;
+		}
+		if (action == GLFW_RELEASE){
+			mouseLeftPressed =false;
+		}
+	}
 }
 
 void Context::ProcessMouseScroll(double x, double y) {

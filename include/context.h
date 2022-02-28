@@ -84,6 +84,7 @@ private:
 	bool benchmarkMode = false;
 	bool debugMode = false;
 	bool darkMode = false;
+	bool mouseLeftPressed =false;
 	bool firstMouse=true;
 	double lastX;
 	double lastY;
