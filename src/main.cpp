@@ -4,6 +4,8 @@
 #include <iostream>
 #include <ctype.h>
 
+#include <backends/imgui_impl_glfw.h>
+
 #include "context.h"
 
 #define ENABLE_HIGH_DPI
@@ -62,18 +64,22 @@ void CleanupEverything() {
 
 void ProcessKeyboardInput(GLFWwindow* window, int key, int scancode, int action,
 		int mods) {
+	ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
 	context->ProcessKeyboardInput(key, scancode, action, mods);
 }
 
 void ProcessMouseMovement(GLFWwindow* window, double x, double y) {
+	ImGui_ImplGlfw_CursorPosCallback(window, x, y);
 	context->ProcessMouseMovement(x, y);
 }
 
 void ProcessMouseButton(GLFWwindow* window, int button, int action, int mods) {
+	ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
 	context->ProcessMouseButton(button, action, mods);
 }
 
 void ProcessMouseScroll(GLFWwindow* window, double x, double y) {
+	ImGui_ImplGlfw_ScrollCallback(window, x, y);
 	context->ProcessMouseScroll(x, y);
 }
 
