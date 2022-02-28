@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
 		glfwSetKeyCallback(window, ProcessKeyboardInput);
 		// glfwSetCursorPosCallback(window, ProcessMouseMovement);
 		// glfwSetMouseButtonCallback(window, ProcessMouseButton);
-		// glfwSetScrollCallback(window, ProcessMouseScroll);
+		glfwSetScrollCallback(window, ProcessMouseScroll);
 	}
 
 	/* Load context from CLI and configuration files */

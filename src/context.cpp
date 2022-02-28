@@ -443,7 +443,9 @@ void Context::ProcessMouseMovement(double x, double y) {}
 
 void Context::ProcessMouseButton(int button, int action, int mods) {}
 
-void Context::ProcessMouseScroll(double x, double y) {}
+void Context::ProcessMouseScroll(double x, double y) {
+	this->ZoomCamera(-y);
+}
 
 int Context::GetNewModuleID() {
 	return this->nextModuleID++;
