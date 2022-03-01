@@ -1,6 +1,8 @@
 #include <iostream>
 
-#include "catch2/catch_all.hpp"
+#define CATCH_CONFIG_MAIN
+
+#include <catch2/catch.hpp>
 
 #include "context.h"
 
@@ -250,7 +252,7 @@ static void TestLight() {
 	delete [] argv[0], argv[1], argv[2], argv[3];
 	free(argv);
 }
-static void TestDar() {
+static void TestDark() {
 	context->SetDarkMode(true);
 
 	int argc = 4;
@@ -311,9 +313,4 @@ TEST_CASE("CLI testing") {
 		TestDark();
 		TestLight();
 	}
-}
-
-
-int main(int argc, char** argv) {
-	return Catch::Session().run(argc, argv);
 }
