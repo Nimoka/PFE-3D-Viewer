@@ -4,15 +4,20 @@
 
 #include "miniply.h"
 
-PLYReader::PLYReader() {}
+#include "context.h"
+#include "modules/message.h"
 
-PLYReader::PLYReader(std::string filepath) {
-	this->filepath = filepath;
-}
+PLYReader::PLYReader(void* context)
+		: context(context) {}
 
-PLYReader::PLYReader(PLYReader *reader) {
-	this->filepath = reader->GetFilepath();
-	this->isLoaded = reader->IsLoaded();
+PLYReader::PLYReader(void* context, std::string filepath)
+		: context(context)
+		, filepath(filepath) {}
+
+PLYReader::PLYReader(PLYReader *reader)
+		: context(reader->GetContext())
+		, filepath(reader->GetFilepath())
+		, isLoaded(reader->IsLoaded()) {
 	if ((this->isLoaded) && (reader->GetMesh() != nullptr))
 		this->mesh = new Mesh(reader->GetMesh());
 }
@@ -83,7 +88,7 @@ bool PLYReader::Load() {
 
 	delete reader;
 
-	this->mesh = new Mesh(meshData);
+	this->mesh = new Mesh(this->context, meshData);
 
 	delete meshData;
 
@@ -108,6 +113,10 @@ void PLYReader::CleanMemory() {
 
 bool PLYReader::IsLoaded() {
 	return this->isLoaded;
+}
+
+void* PLYReader::GetContext() {
+	return this->context;
 }
 
 std::string PLYReader::GetFilepath() {

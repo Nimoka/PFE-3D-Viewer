@@ -8,8 +8,8 @@
 class PLYReader
 {
 public:
-	PLYReader();
-	PLYReader(std::string filepath);
+	PLYReader(void* context);
+	PLYReader(void* context, std::string filepath);
 	PLYReader(PLYReader *reader);
 	~PLYReader();
 
@@ -19,10 +19,12 @@ public:
 
 	bool IsLoaded();
 
+	void* GetContext();
 	std::string GetFilepath();
 	Mesh* GetMesh();
 
 private:
+	void* context = nullptr;
 	std::string filepath;
 	bool isLoaded = false;
 	Mesh* mesh = nullptr;

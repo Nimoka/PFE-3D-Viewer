@@ -4,6 +4,9 @@
 #include <cmath>
 #include <stdlib.h>
 
+#include "context.h"
+#include "modules/message.h"
+
 MeshData::~MeshData() {
 	// Deallocate each array if it was allocated
 	if (this->verticesPositions != nullptr)
@@ -78,7 +81,8 @@ Vertex::Vertex(const Eigen::Vector3f &position,
 		, color(color)
 		, normal(normal) {}
 
-Mesh::Mesh(MeshData* data) {
+Mesh::Mesh(void* context, MeshData* data)
+		: context(context) {
 	// Declare indice’s correspondance array
 	// (If there are unused points, it will be set during vertices’ copy
 	// and used during faces’ copy to know new indices of vertices.)
@@ -235,7 +239,8 @@ Mesh::Mesh(MeshData* data) {
 }
 
 Mesh::Mesh(Mesh* mesh)
-		: nbVertices(mesh->nbVertices)
+		: context(mesh->GetContext())
+		, nbVertices(mesh->nbVertices)
 		, nbFaces(mesh->nbFaces)
 		, haveColors(mesh->HaveColors())
 		, haveMaterials(mesh->HaveMaterials())
@@ -308,6 +313,10 @@ Eigen::AlignedBox3f Mesh::GetBoundingBox() {
 
 Eigen::AlignedBox1i Mesh::GetMaterialsRange() {
 	return this->materialsRange;
+}
+
+void* Mesh::GetContext() {
+	return this->context;
 }
 
 void Mesh::ComputeNormals() {

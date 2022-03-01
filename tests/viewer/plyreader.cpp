@@ -6,6 +6,8 @@
 
 #include "plyreader.h"
 
+void* context = nullptr;
+
 int expectedNbVertices = 8;
 int expectedNbFaces = 12;
 float expectedPositions[24] = {
@@ -48,7 +50,7 @@ static void TestRealFilePLYReaderCreation() {
 	Mesh* mesh;
 
 	// Create a reader with a filepath
-	PLYReader* reader = new PLYReader(filepath);
+	PLYReader* reader = new PLYReader(context, filepath);
 	REQUIRE(!reader->IsLoaded());
 	REQUIRE(!reader->GetFilepath().compare(filepath));
 	REQUIRE(reader->GetMesh() == nullptr);
@@ -70,7 +72,7 @@ static void TestRealFilePLYReaderCreation() {
 
 static void TestEmptyPLYReaderCreation() {
 	// Create an empty reader
-	PLYReader* reader = new PLYReader();
+	PLYReader* reader = new PLYReader(context);
 	REQUIRE(!reader->IsLoaded());
 	REQUIRE(reader->GetFilepath().empty());
 	REQUIRE(reader->GetMesh() == nullptr);
@@ -108,7 +110,7 @@ static void TestUnknownFilePLYReaderCreation() {
 	Mesh* mesh;
 
 	// Create a first reader and load the file
-	PLYReader* reader1 = new PLYReader(filepath);
+	PLYReader* reader1 = new PLYReader(context, filepath);
 
 	// Create a second reader (copy of the first one)
 	PLYReader* reader2 = new PLYReader(reader1);
@@ -151,7 +153,7 @@ static void TestDifferentHeadersLoadings() {
 		std::string filepath = DATA_DIR "models/cube_rgbm.ply";
 
 		// Create a reader and load a file
-		PLYReader* reader = new PLYReader(filepath);
+		PLYReader* reader = new PLYReader(context, filepath);
 		assert(reader->Load());
 
 		// Check the data structure
@@ -164,7 +166,7 @@ static void TestDifferentHeadersLoadings() {
 		std::string filepath = DATA_DIR "models/cube_rgb.ply";
 
 		// Create a reader and load a file
-		PLYReader* reader = new PLYReader(filepath);
+		PLYReader* reader = new PLYReader(context, filepath);
 		assert(reader->Load());
 
 		// Check the data structure
@@ -177,7 +179,7 @@ static void TestDifferentHeadersLoadings() {
 		std::string filepath = DATA_DIR "models/cube_m.ply";
 
 		// Create a reader and load a file
-		PLYReader* reader = new PLYReader(filepath);
+		PLYReader* reader = new PLYReader(context, filepath);
 		assert(reader->Load());
 
 		// Check the data structure
@@ -190,7 +192,7 @@ static void TestDifferentHeadersLoadings() {
 		std::string filepath = DATA_DIR "models/cube.ply";
 
 		// Create a reader and load a file
-		PLYReader* reader = new PLYReader(filepath);
+		PLYReader* reader = new PLYReader(context, filepath);
 		assert(reader->Load());
 
 		// Check the data structure
@@ -206,7 +208,7 @@ static void TestMultipleLoadings() {
 	std::string filepath2 = DATA_DIR "models/cube_m.ply";
 
 	// Create a reader and load a file
-	PLYReader* reader = new PLYReader(filepath1);
+	PLYReader* reader = new PLYReader(context, filepath1);
 	assert(reader->Load());
 	assert(reader->GetMesh() != nullptr);
 	assert(reader->GetMesh()->HaveColors());
@@ -227,7 +229,7 @@ static void TestDifferentHeadersLoadingData() {
 		std::string filepath = DATA_DIR "models/cube_rgbm.ply";
 
 		// Create a reader and load a file
-		PLYReader* reader = new PLYReader(filepath);
+		PLYReader* reader = new PLYReader(context, filepath);
 		assert(reader->Load());
 		Mesh* mesh = reader->GetMesh();
 
@@ -249,7 +251,7 @@ static void TestDifferentHeadersLoadingData() {
 		std::string filepath = DATA_DIR "models/cube_rgb.ply";
 
 		// Create a reader and load a file
-		PLYReader* reader = new PLYReader(filepath);
+		PLYReader* reader = new PLYReader(context, filepath);
 		assert(reader->Load());
 		Mesh* mesh = reader->GetMesh();
 
@@ -269,7 +271,7 @@ static void TestDifferentHeadersLoadingData() {
 		std::string filepath = DATA_DIR "models/cube_m.ply";
 
 		// Create a reader and load a file
-		PLYReader* reader = new PLYReader(filepath);
+		PLYReader* reader = new PLYReader(context, filepath);
 		assert(reader->Load());
 		Mesh* mesh = reader->GetMesh();
 
@@ -289,7 +291,7 @@ static void TestDifferentHeadersLoadingData() {
 		std::string filepath = DATA_DIR "models/cube.ply";
 
 		// Create a reader and load a file
-		PLYReader* reader = new PLYReader(filepath);
+		PLYReader* reader = new PLYReader(context, filepath);
 		assert(reader->Load());
 		Mesh* mesh = reader->GetMesh();
 

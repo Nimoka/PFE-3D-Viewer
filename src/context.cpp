@@ -195,7 +195,7 @@ void Context::CreateOpenPLYFileSelectionDialog() {
 }
 
 void Context::LoadPLYFile(std::string filepath) {
-	PLYReader* reader = new PLYReader(filepath);
+	PLYReader* reader = new PLYReader(this, filepath);
 	if (reader->Load()) {
 		std::string filename = filepath.substr(filepath.rfind(PATH_DELIMITER) + 1);
 		this->SetWindowTitle(filename);

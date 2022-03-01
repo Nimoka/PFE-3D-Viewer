@@ -42,7 +42,7 @@ struct Vertex
 class Mesh
 {
 public:
-	Mesh(MeshData* data);
+	Mesh(void* context, MeshData* data);
 	Mesh(Mesh* mesh);
 	~Mesh();
 
@@ -55,6 +55,8 @@ public:
 	Eigen::AlignedBox3f GetBoundingBox();
 	Eigen::AlignedBox1i GetMaterialsRange();
 
+	void* GetContext();
+
 	Vertex* verticesData = nullptr;
 	unsigned int* facesVertices = nullptr;
 	unsigned int* facesMaterials = nullptr;
@@ -63,11 +65,16 @@ public:
 	unsigned int nbFaces = 0;
 
 private:
+	void Init(MeshData* data);
+
+	void CopyDataFromMeshData(MeshData* data);
 	void ComputeNormals();
 	void ComputeRanges();
 
 	bool haveColors = false;
 	bool haveMaterials = false;
+
+	void* context;
 
 	Eigen::AlignedBox3f boundingBox;
 	Eigen::AlignedBox1i materialsRange;
