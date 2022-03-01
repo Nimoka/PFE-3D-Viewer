@@ -327,19 +327,19 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 		switch (key) {
 			case GLFW_KEY_LEFT:
 				// Move to the left
-				this->MoveCamera(0., -movementSpeed);
+				this->MoveCamera(-movementSpeed, 0.);
 				return;
 			case GLFW_KEY_RIGHT:
 				// Move to the right
-				this->MoveCamera(0., movementSpeed);
+				this->MoveCamera(movementSpeed, 0.);
 				return;
 			case GLFW_KEY_UP:
 				// Move to the top
-				this->MoveCamera(movementSpeed, 0.);
+				this->MoveCamera(0., movementSpeed);
 				return;
 			case GLFW_KEY_DOWN:
 				// Move to the bottom
-				this->MoveCamera(-movementSpeed, 0.);
+				this->MoveCamera(0., -movementSpeed);
 				return;
 			case GLFW_KEY_O:
 				// Zoom out

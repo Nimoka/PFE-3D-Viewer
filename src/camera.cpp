@@ -67,10 +67,11 @@ Eigen::Matrix4f LookAt(const Eigen::Vector3f& position,
 Eigen::Vector3f PolarToCartesian(Eigen::Vector2f coordinates,
 		Eigen::Vector3f center, float distance) {
 	float x = center.x()
-			+ (distance * cos(coordinates.x()) * sin(coordinates.y()));
+			+ (distance * cos(coordinates.x()) * cos(coordinates.y()));
 	float y = center.y()
-			+ (distance * sin(coordinates.x()) * sin(coordinates.y()));
-	float z = center.z() + (distance * cos(coordinates.y()));
+			+ (distance * sin(coordinates.y()));
+	float z = center.z()
+			+ (distance * sin(coordinates.x()) * cos(coordinates.y()));
 
 	return Eigen::Vector3f(x, y, z);
 }
