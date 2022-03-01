@@ -4,8 +4,7 @@
 
 GUIModule::GUIModule(void* context)
 		: id(Global::nextModuleID++)
-		, context(context)
-		, readyToDie(false) {}
+		, context(context) {}
 
 void GUIModule::Kill() {
 	this->readyToDie = true;

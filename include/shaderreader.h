@@ -37,7 +37,7 @@ private:
 
 	std::string vertexShaderPath;
 	std::string fragmentShaderPath;
-	bool dynamicShaders;
+	bool dynamicShaders = false;
 
 	GLuint programID;
 	GLuint vertexShaderID;

@@ -11,7 +11,7 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	std::string windowTitle;
 	int windowWidth = DEFAULT_WINDOW_WIDTH, windowHeight = DEFAULT_WINDOW_HEIGHT;
 	std::string inputFile, configFile;
-	bool benchmarkMode, noBenchmarkMode, debugMode, noDebugMode, darkMode, lightMode;
+	bool benchmarkMode = false, noBenchmarkMode = false, debugMode = false, noDebugMode = false, darkMode = false, lightMode = false;
 
 	/* Set CLI options */
 

@@ -31,7 +31,7 @@ protected:
 	std::string title;
 	void* context;
 
-	bool readyToDie;
+	bool readyToDie = false;
 };
 
 #endif // MODULES_MODULE_H
