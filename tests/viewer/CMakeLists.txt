@@ -1,15 +1,17 @@
 # PLY Reader ---------------------------------------------------
 
-add_executable(plyreader
+file(GLOB TESTS_PLYREADER_SOURCES
 		plyreader.cpp
-		${ROOT_DIR}/src/mesh.cpp
-		${ROOT_DIR}/src/plyreader.cpp
-		${ROOT_DIR}/include/mesh.h
-		${ROOT_DIR}/include/plyreader.h)
-target_include_directories(plyreader PUBLIC
-		${ROOT_DIR}/include
-		${ROOT_DIR}/${MINIPLY_DIR})
-target_link_libraries(plyreader PRIVATE Catch2::Catch2 miniply)
+		${VIEWER_SOURCES})
+list(REMOVE_ITEM TESTS_PLYREADER_SOURCES ${ROOT_DIR}/src/main.cpp)
+
+add_executable(plyreader
+		${TESTS_PLYREADER_SOURCES}
+		${VIEWER_HEADERS})
+target_include_directories(plyreader PUBLIC ${VIEWER_INCLUDE})
+target_link_libraries(plyreader PRIVATE Catch2::Catch2 ${VIEWER_LIBRARIES})
+target_compile_definitions(plyreader PRIVATE GLFW_INCLUDE_NONE)
+
 add_test(plyreader plyreader)
 
 # CLI Tester ---------------------------------------------------

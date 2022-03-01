@@ -130,24 +130,20 @@ add_definitions(-DDATA_DIR="${PROJECT_SOURCE_DIR}/data/")
 
 set(VIEWER_NAME 3DViewer)
 file(GLOB VIEWER_SOURCES
-		src/*.cpp
-		src/modules/*.cpp
-		src/renderers/*.cpp
+		${ROOT_DIR}/src/*.cpp
+		${ROOT_DIR}/src/modules/*.cpp
+		${ROOT_DIR}/src/renderers/*.cpp
 		${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
 		${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp)
 file(GLOB VIEWER_HEADERS
-		include/*.h
-		include/modules/*.h
-		include/renderers/*.h
+		${ROOT_DIR}/include/*.h
+		${ROOT_DIR}/include/modules/*.h
+		${ROOT_DIR}/include/renderers/*.h
 		${IMGUI_DIR}/backends/imgui_impl_glfw.h
 		${IMGUI_DIR}/backends/imgui_impl_opengl3.h
 		${IMGUI_DIR}/backends/imgui_impl_opengl3_loader.h)
 
-add_executable(${VIEWER_NAME}
-		${VIEWER_SOURCES}
-		${VIEWER_HEADERS})
-
-target_link_libraries(${VIEWER_NAME} PUBLIC
+set(VIEWER_LIBRARIES
 		glfw
 		${GLFW_LIBRARIES}
 		glbinding::glbinding
@@ -158,8 +154,8 @@ target_link_libraries(${VIEWER_NAME} PUBLIC
 		CLI11
 		${OPENGL_LIBRARIES})
 
-target_include_directories(${VIEWER_NAME} PUBLIC
-		include/
+set(VIEWER_INCLUDE
+		${ROOT_DIR}/include/
 		${GLFW_INCLUDE}
 		${IMGUI_INCLUDE}
 		${IMGUI_DIR}/backends/
@@ -168,10 +164,16 @@ target_include_directories(${VIEWER_NAME} PUBLIC
 		${CLI11_DIR}
 		${EIGEN_DIR})
 if (BUILD_LIBS)
-	target_include_directories(${VIEWER_NAME} PUBLIC
+set(VIEWER_INCLUDE
+			${VIEWER_INCLUDE}
 			${GLBINDING_INCLUDE})
 endif ()
 
+add_executable(${VIEWER_NAME}
+		${VIEWER_SOURCES}
+		${VIEWER_HEADERS})
+target_include_directories(${VIEWER_NAME} PUBLIC ${VIEWER_INCLUDE})
+target_link_libraries(${VIEWER_NAME} PUBLIC ${VIEWER_LIBRARIES})
 target_compile_definitions(${VIEWER_NAME} PRIVATE GLFW_INCLUDE_NONE)
 
 # Tests ========================================================
