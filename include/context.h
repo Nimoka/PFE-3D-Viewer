@@ -9,6 +9,7 @@
 #include "ImGuiFileBrowser.h"
 
 #include "modules/imguidemo.h"
+#include "modules/imguiFPS.h"
 #include "modules/meshcontent.h"
 #include "modules/module.h"
 #include "modules/viewer.h"
@@ -51,6 +52,7 @@ public:
 	/* Debug commands */
 	void ToggleImGuiDemoModule();
 	void ToggleMeshContentModule();
+	void ToggleImGuiFPSModule();
 
 	/* Callbacks */
 	void ProcessKeyboardInput(int key, int scancode, int action, int mods);
@@ -116,6 +118,7 @@ private:
 	imgui_addons::ImGuiFileBrowser* fileDialog = nullptr;
 	MeshContentModule* meshContent = nullptr;
 	ImGuiDemoModule* imguiDemo = nullptr;
+	ImGuiFPSModule* imguiFPS = nullptr;
 
 	std::string configFile = DATA_DIR "configs/default.toml";
 	std::string inputFile;
