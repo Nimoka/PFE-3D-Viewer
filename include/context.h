@@ -61,6 +61,8 @@ public:
 	int GetNewModuleID();
 	void AskForUpdate();
 
+	void AddModule(GUIModule* module);
+
 	/* Getters & Setters */
 	void SetMesh(Mesh* mesh);
 
