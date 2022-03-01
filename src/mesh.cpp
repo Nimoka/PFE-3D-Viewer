@@ -83,6 +83,97 @@ Vertex::Vertex(const Eigen::Vector3f &position,
 
 Mesh::Mesh(void* context, MeshData* data)
 		: context(context) {
+	this->Init(data);
+}
+
+Mesh::Mesh(Mesh* mesh)
+		: context(mesh->GetContext())
+		, nbVertices(mesh->nbVertices)
+		, nbFaces(mesh->nbFaces)
+		, haveColors(mesh->HaveColors())
+		, haveMaterials(mesh->HaveMaterials())
+		, boundingBox(mesh->GetBoundingBox())
+		, materialsRange(mesh->GetMaterialsRange()) {
+	// Copy vertices’ data
+	this->verticesData = (Vertex*)
+			malloc(sizeof(struct Vertex) * this->nbVertices);
+	for (unsigned int i = 0; i < mesh->nbVertices; i++)
+		this->verticesData[i] = mesh->verticesData[i];
+
+	// Copy faces’ vertices (indices)
+	unsigned int nbElements = 3 * this->nbFaces;
+	this->facesVertices = (unsigned int*) malloc(sizeof(int) * nbElements);
+	for (unsigned int i = 0; i < nbElements; i++)
+		this->facesVertices[i] = mesh->facesVertices[i];
+
+	// Copy faces’ materials (IDs)
+	this->facesMaterials = (unsigned int*) malloc(sizeof(int) * this->nbFaces);
+	for (unsigned int i = 0; i < this->nbFaces; i++)
+		this->facesMaterials[i] = mesh->facesMaterials[i];
+}
+
+Mesh::~Mesh() {
+	// Deallocate each array if it was allocated
+	if (this->verticesData != nullptr)
+		delete this->verticesData;
+	if (this->facesVertices != nullptr)
+		delete this->facesVertices;
+	if (this->facesMaterials != nullptr)
+		delete this->facesMaterials;
+}
+
+void Mesh::ChangeDefaultColor(Eigen::Vector3f color) {
+	// Check if there were colors in the loaded mesh
+	// (If so, don’t alterate them.)
+	if (this->haveColors)
+		return;
+
+	// Replace the color for each vertice
+	for (unsigned int i = 0; i < this->nbVertices; i++)
+		this->verticesData->color = color;
+}
+
+void Mesh::ChangeDefaultMaterial(unsigned int material) {
+	// Check if there were materials in the loaded mesh
+	// (If so, don’t alterate them.)
+	if (this->haveMaterials)
+		return;
+
+	// Replace the material for each face
+	for (unsigned int i = 0; i < this->nbFaces; i++)
+		this->facesMaterials[i] = material;
+
+	// Update the materials range
+	this->materialsRange = Eigen::AlignedBox1i(material, material);
+}
+
+bool Mesh::HaveColors() {
+	return this->haveColors;
+}
+
+bool Mesh::HaveMaterials() {
+	return this->haveMaterials;
+}
+
+Eigen::AlignedBox3f Mesh::GetBoundingBox() {
+	return this->boundingBox;
+}
+
+Eigen::AlignedBox1i Mesh::GetMaterialsRange() {
+	return this->materialsRange;
+}
+
+void* Mesh::GetContext() {
+	return this->context;
+}
+
+void Mesh::Init(MeshData* data) {
+	this->CopyDataFromMeshData(data);
+	this->ComputeNormals();
+	this->ComputeRanges();
+}
+
+void Mesh::CopyDataFromMeshData(MeshData* data) {
 	// Declare indice’s correspondance array
 	// (If there are unused points, it will be set during vertices’ copy
 	// and used during faces’ copy to know new indices of vertices.)
@@ -228,95 +319,6 @@ Mesh::Mesh(void* context, MeshData* data)
 		// Set materials range
 		this->materialsRange = Eigen::AlignedBox1i(0, 0);
 	}
-
-	/* Compute normals */
-
-	this->ComputeNormals();
-
-	/* Metadata */
-
-	this->ComputeRanges();
-}
-
-Mesh::Mesh(Mesh* mesh)
-		: context(mesh->GetContext())
-		, nbVertices(mesh->nbVertices)
-		, nbFaces(mesh->nbFaces)
-		, haveColors(mesh->HaveColors())
-		, haveMaterials(mesh->HaveMaterials())
-		, boundingBox(mesh->GetBoundingBox())
-		, materialsRange(mesh->GetMaterialsRange()) {
-	// Copy vertices’ data
-	this->verticesData = (Vertex*)
-			malloc(sizeof(struct Vertex) * this->nbVertices);
-	for (unsigned int i = 0; i < mesh->nbVertices; i++)
-		this->verticesData[i] = mesh->verticesData[i];
-
-	// Copy faces’ vertices (indices)
-	unsigned int nbElements = 3 * this->nbFaces;
-	this->facesVertices = (unsigned int*) malloc(sizeof(int) * nbElements);
-	for (unsigned int i = 0; i < nbElements; i++)
-		this->facesVertices[i] = mesh->facesVertices[i];
-
-	// Copy faces’ materials (IDs)
-	this->facesMaterials = (unsigned int*) malloc(sizeof(int) * this->nbFaces);
-	for (unsigned int i = 0; i < this->nbFaces; i++)
-		this->facesMaterials[i] = mesh->facesMaterials[i];
-}
-
-Mesh::~Mesh() {
-	// Deallocate each array if it was allocated
-	if (this->verticesData != nullptr)
-		delete this->verticesData;
-	if (this->facesVertices != nullptr)
-		delete this->facesVertices;
-	if (this->facesMaterials != nullptr)
-		delete this->facesMaterials;
-}
-
-void Mesh::ChangeDefaultColor(Eigen::Vector3f color) {
-	// Check if there were colors in the loaded mesh
-	// (If so, don’t alterate them.)
-	if (this->haveColors)
-		return;
-
-	// Replace the color for each vertice
-	for (unsigned int i = 0; i < this->nbVertices; i++)
-		this->verticesData->color = color;
-}
-
-void Mesh::ChangeDefaultMaterial(unsigned int material) {
-	// Check if there were materials in the loaded mesh
-	// (If so, don’t alterate them.)
-	if (this->haveMaterials)
-		return;
-
-	// Replace the material for each face
-	for (unsigned int i = 0; i < this->nbFaces; i++)
-		this->facesMaterials[i] = material;
-
-	// Update the materials range
-	this->materialsRange = Eigen::AlignedBox1i(material, material);
-}
-
-bool Mesh::HaveColors() {
-	return this->haveColors;
-}
-
-bool Mesh::HaveMaterials() {
-	return this->haveMaterials;
-}
-
-Eigen::AlignedBox3f Mesh::GetBoundingBox() {
-	return this->boundingBox;
-}
-
-Eigen::AlignedBox1i Mesh::GetMaterialsRange() {
-	return this->materialsRange;
-}
-
-void* Mesh::GetContext() {
-	return this->context;
 }
 
 void Mesh::ComputeNormals() {
