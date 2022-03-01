@@ -33,6 +33,7 @@ namespace imgui_addons
             std::string selected_path;
             std::string ext;    // Store the saved file extension
 
+            bool isClosed();
 
         private:
             struct Info
@@ -115,6 +116,8 @@ namespace imgui_addons
             std::vector<const Info*> filtered_dirs; // Note: We don't need to call delete. It's just for storing filtered items from subdirs and subfiles so we don't use PassFilter every frame.
             std::vector<const Info*> filtered_files;
             std::vector< std::reference_wrapper<std::string> > inputcb_filter_files;
+
+            bool closed = false;
     };
 }
 

@@ -107,6 +107,8 @@ namespace imgui_addons
         subfiles.clear();
 
         ImGui::CloseCurrentPopup();
+
+        closed = true;
     }
 
     bool ImGuiFileBrowser::showFileDialog(const std::string& label, const DialogMode mode, const ImVec2& sz_xy, const std::string& valid_types)
@@ -214,6 +216,10 @@ namespace imgui_addons
         }
         else
             return false;
+    }
+
+    bool ImGuiFileBrowser::isClosed() {
+        return this->closed;
     }
 
     bool ImGuiFileBrowser::renderNavAndSearchBarRegion()

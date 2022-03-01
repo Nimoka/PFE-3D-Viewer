@@ -33,6 +33,11 @@ void FileDialogModule::Init() {
 }
 
 void FileDialogModule::Render() {
+	if (this->dialog->isClosed()) {
+		this->Kill();
+		return;
+	}
+
 	std::string fullName = this->title + "###" + std::to_string(this->id);
 	ImGui::OpenPopup(fullName.c_str());
 	if (this->dialog->showFileDialog(fullName,
@@ -40,7 +45,6 @@ void FileDialogModule::Render() {
 		this->SendResults();
 		this->Kill();
 	}
-	// TODO: Find how to kill the module when ‘Cancel’ is pressed
 }
 
 void FileDialogModule::SendResults() {
