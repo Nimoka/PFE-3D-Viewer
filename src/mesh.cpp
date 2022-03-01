@@ -174,6 +174,16 @@ void Mesh::Init(MeshData* data) {
 }
 
 void Mesh::CopyDataFromMeshData(MeshData* data) {
+	int processingCurrent = 0;
+	int processingExpected = 1;
+	ProcessingMessageModule* processingMessage;
+	if (this->context != nullptr) {
+		processingMessage = new ProcessingMessageModule(
+				this->context, "Interpreting data from file...",
+				&processingCurrent, &processingExpected);
+		((Context*) this->context)->AddModule(processingMessage);
+	}
+
 	// Declare indice’s correspondance array
 	// (If there are unused points, it will be set during vertices’ copy
 	// and used during faces’ copy to know new indices of vertices.)
@@ -189,6 +199,9 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 	this->nbFaces = data->nbFaces;
 	this->haveColors = data->haveColors;
 	this->haveMaterials = data->haveMaterials;
+
+	processingExpected = (this->nbVertices * (this->haveColors ? 2 : 1))
+			+ (this->nbFaces * (this->haveMaterials ? 2 : 1));
 
 	/* Vertices data */
 
@@ -232,6 +245,8 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 						data->verticesColors[(3 * i) + 1],
 						data->verticesColors[(3 * i) + 2]) / maxIntensity;
 				verticesData[nextIndex++] = Vertex(position, color);
+
+				processingCurrent++;
 			}
 		} else {
 			for (unsigned int i = 0; i < data->nbVertices; i++) {
@@ -250,6 +265,8 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 						data->verticesPositions[(3 * i) + 1],
 						data->verticesPositions[(3 * i) + 2]);
 				verticesData[nextIndex++] = Vertex(position);
+
+				processingCurrent++;
 			}
 		}
 	} else {
@@ -270,6 +287,8 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 						data->verticesColors[(3 * i) + 1],
 						data->verticesColors[(3 * i) + 2]) / maxIntensity;
 				verticesData[i] = Vertex(position, color);
+
+				processingCurrent++;
 			}
 		} else {
 			for (unsigned int i = 0; i < this->nbVertices; i++) {
@@ -279,6 +298,8 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 						data->verticesPositions[(3 * i) + 1],
 						data->verticesPositions[(3 * i) + 2]);
 				verticesData[i] = Vertex(position);
+
+				processingCurrent++;
 			}
 		}
 	}
@@ -293,6 +314,8 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 			// Copy data
 			this->facesVertices[i] =
 					indiceCorrespondance[data->facesVertices[i]];
+
+			processingCurrent++;
 		}
 		// Deallocate indice’s correspondance array
 		delete indiceCorrespondance;
@@ -300,6 +323,8 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 		for (unsigned int i = 0; i < nbElements; i++) {
 			// Copy data
 			this->facesVertices[i] = data->facesVertices[i];
+
+			processingCurrent++;
 		}
 	}
 
@@ -309,19 +334,36 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 		for (unsigned int i = 0; i < this->nbFaces; i++) {
 			// Copy data
 			this->facesMaterials[i] = data->facesMaterials[i];
+
+			processingCurrent++;
 		}
 	} else {
 		for (unsigned int i = 0; i < this->nbFaces; i++) {
 			// Set default data
 			this->facesMaterials[i] = 0;
+
+			processingCurrent++;
 		}
 		
 		// Set materials range
 		this->materialsRange = Eigen::AlignedBox1i(0, 0);
 	}
+
+	if (this->context != nullptr)
+		processingMessage->Kill();
 }
 
 void Mesh::ComputeNormals() {
+	int processingCurrent = 0;
+	int processingExpected = this->nbFaces + this->nbVertices;
+	ProcessingMessageModule* processingMessage;
+	if (this->context != nullptr) {
+		processingMessage = new ProcessingMessageModule(
+				this->context, "Computing normals...",
+				&processingCurrent, &processingExpected);
+		((Context*) this->context)->AddModule(processingMessage);
+	}
+
 	// Reinitialize vertices’ normals
 	for (unsigned int i = 0; i < this->nbVertices; i++)
 		this->verticesData[i].normal = Eigen::Vector3f::Constant(0);
@@ -346,12 +388,20 @@ void Mesh::ComputeNormals() {
 			this->verticesData[vertex1ID].normal += faceNormal;
 			this->verticesData[vertex2ID].normal += faceNormal;
 			this->verticesData[vertex3ID].normal += faceNormal;
+
+			processingCurrent++;
 		}
 	}
 
 	/* Normalize vertices’ normals */
-	for (unsigned int i = 0; i < this->nbVertices; i++)
+	for (unsigned int i = 0; i < this->nbVertices; i++) {
 		this->verticesData[i].normal.normalize();
+
+		processingCurrent++;
+	}
+
+	if (this->context != nullptr)
+		processingMessage->Kill();
 }
 
 void Mesh::ComputeRanges() {

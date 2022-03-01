@@ -39,6 +39,13 @@ bool PLYReader::Load() {
 
 	MeshData* meshData = new MeshData();
 
+	LoadingMessageModule* loadingMessage;
+	if (this->context != nullptr) {
+		loadingMessage = new LoadingMessageModule(
+				this->context, "Loading file '" + this->filepath + "'...");
+		((Context*) this->context)->AddModule(loadingMessage);
+	}
+
 	uint32_t indexes[3];
 	while (reader->has_element()) {
 		if (reader->element_is(miniply::kPLYVertexElement)
@@ -87,6 +94,9 @@ bool PLYReader::Load() {
 	}
 
 	delete reader;
+
+	if (this->context != nullptr)
+		loadingMessage->Kill();
 
 	this->mesh = new Mesh(this->context, meshData);
 
