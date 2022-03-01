@@ -280,6 +280,16 @@ void Context::ToggleMeshContentModule() {
 	}
 }
 
+void Context::ToggleImGuiFPSModule() {
+	if (this->imguiFPS == nullptr) {
+		this->imguiFPS = new ImGuiFPSModule(this);
+		this->modules.push_back(this->imguiFPS);
+	} else {
+		this->imguiFPS->Kill();
+		this->imguiFPS = nullptr;
+	}
+}
+
 void Context::ProcessKeyboardInput(int key, int scancode, int action,
 		int mods) {
 	// TODO: Find a way to handle non-QWERTY keyboards
@@ -552,6 +562,8 @@ void Context::RenderMenuBar() {
 				if (ImGui::MenuItem("Show mesh content", "",
 						(this->meshContent != nullptr)))
 					this->ToggleMeshContentModule();
+				if(ImGui::MenuItem("Show FPS", "", (this->imguiFPS!=nullptr)))
+					this->ToggleImGuiFPSModule();
 				ImGui::EndMenu();
 			}
 		}
