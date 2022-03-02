@@ -238,6 +238,16 @@ void Context::MoveCamera(float polarAngle, float azimutalAngle) {
 		}
 	}
 }
+void Context::MoveCamera3D(float cameraX, float cameraY, float cameraZ) {
+	if (this->scene != nullptr) {
+		Camera* camera = this->scene->GetCamera();
+		if (camera != nullptr) {
+			camera->MoveCamera3D(
+				Eigen::Vector3f(cameraX,cameraY,cameraZ));
+		}
+	}
+}
+
 
 void Context::ZoomCamera(float intensity) {
 	if (this->scene != nullptr) {
@@ -337,26 +347,42 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 		switch (key) {
 			case GLFW_KEY_LEFT:
 				// Move to the left
+				this->scene->navigate3D = false;
 				this->MoveCamera(-movementSpeed, 0.);
 				return;
 			case GLFW_KEY_RIGHT:
 				// Move to the right
+				this->scene->navigate3D = false;
 				this->MoveCamera(movementSpeed, 0.);
 				return;
 			case GLFW_KEY_UP:
 				// Move to the top
+				this->scene->navigate3D = false;
 				this->MoveCamera(0., movementSpeed);
 				return;
 			case GLFW_KEY_DOWN:
 				// Move to the bottom
+				this->scene->navigate3D = false;
 				this->MoveCamera(0., -movementSpeed);
+				return;
+			case GLFW_KEY_W:
+				// Move to the bottom
+				this->scene->navigate3D = true;
+				this->MoveCamera3D(0.,0., -movementSpeed);
+				return;
+			case GLFW_KEY_S:
+				// Move to the bottom
+				this->scene->navigate3D = true;
+				this->MoveCamera3D(0.,0., movementSpeed);
 				return;
 			case GLFW_KEY_O:
 				// Zoom out
+				this->scene->navigate3D = false;
 				this->ZoomCamera(-movementSpeed);
 				return;
 			case GLFW_KEY_P:
 				// Zoom in
+				this->scene->navigate3D = false;
 				this->ZoomCamera(movementSpeed);
 				return;
 		}

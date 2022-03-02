@@ -43,6 +43,7 @@ public:
 	void CreateSavePLYFileSelectionDialog();
 	void LoadPLYFile(std::string filepath);
 	void MoveCamera(float polarAngle, float azimutalAngle);
+	void MoveCamera3D(float cameraX, float cameraY, float cameraZ);
 	void ZoomCamera(float intensity);
 	void ReloadShaders();
 	void ToggleDarkMode();
