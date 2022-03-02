@@ -145,8 +145,10 @@ int Context::LoadOptions(int argc, char** argv) {
 		return res;
 
 	// PLY file to load
-	if (!inputFile.empty())
-		LoadPLYFile(inputFile);
+	if (inputFile.empty())
+		this->CreateOpenPLYFileSelectionDialog();
+	else
+		this->LoadPLYFile(inputFile);
 
 	return 0;
 }
