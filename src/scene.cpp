@@ -1,6 +1,7 @@
 #include "scene.h"
 
-Scene::Scene() {}
+Scene::Scene()
+		: camera(new Camera()) {}
 
 Scene::Scene(Mesh* mesh) {
 	this->mesh = mesh;
