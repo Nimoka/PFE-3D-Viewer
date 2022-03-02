@@ -1,7 +1,15 @@
 #include "scene.h"
 
 Scene::Scene()
-		: camera(new Camera()) {}
+		: camera(new Camera()) {
+	// TODO: To remove, only for test purpose
+	this->lights.push_back(new DirectionalLight(
+			Eigen::Vector3f(1., 1., 1.),
+			Eigen::Vector3f(0., 1., 0.)));
+	this->lights.push_back(new DirectionalLight(
+			Eigen::Vector3f(1., 0., 0.),
+			Eigen::Vector3f(0., -1., 0.)));
+}
 
 Scene::Scene(Mesh* mesh) {
 	this->mesh = mesh;
