@@ -1,10 +1,13 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include <vector>
+
 #include <Eigen/Geometry>
 #include <imgui.h>
 
 #include "camera.h"
+#include "light.h"
 #include "mesh.h"
 #include "shaderreader.h"
 
@@ -29,6 +32,7 @@ private:
 
 	Camera* camera = nullptr;
 	Mesh* mesh = nullptr;
+	std::vector<Light*> light;
 
 	GLuint vaoID;
 	GLuint vboID[2];
