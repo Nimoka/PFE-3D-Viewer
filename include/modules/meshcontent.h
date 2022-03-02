@@ -16,7 +16,7 @@ public:
 
 	Mesh* GetMesh();
 private:
-	Mesh* mesh;
+	Mesh* mesh = nullptr;
 
 	ImGuiTableFlags tableFlags;
 };

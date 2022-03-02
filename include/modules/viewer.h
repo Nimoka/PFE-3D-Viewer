@@ -25,7 +25,7 @@ public:
 private:
 	void Init();
 
-	Renderer* renderer;
+	Renderer* renderer = nullptr;
 
 	ImGuiWindowFlags flags;
 };

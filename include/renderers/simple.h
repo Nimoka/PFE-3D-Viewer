@@ -20,7 +20,7 @@ public:
 	void ReloadShaders();
 
 private:
-	ShaderReader* shader;
+	ShaderReader* shader = nullptr;
 };
 
 #endif // RENDERERS_SIMPLE_H

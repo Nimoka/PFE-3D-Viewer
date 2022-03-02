@@ -98,7 +98,7 @@ private:
 	void Render();
 	void Update();
 
-	GLFWwindow* window;
+	GLFWwindow* window = nullptr;
 	std::string windowTitle;
 	std::string windowTitleForced;
 	std::string glslVersion;

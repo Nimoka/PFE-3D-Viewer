@@ -29,7 +29,7 @@ public:
 protected:
 	unsigned int id;
 	std::string title;
-	void* context;
+	void* context = nullptr;
 
 	bool readyToDie = false;
 };

@@ -74,7 +74,7 @@ private:
 	bool haveColors = false;
 	bool haveMaterials = false;
 
-	void* context;
+	void* context = nullptr;
 
 	Eigen::AlignedBox3f boundingBox;
 	Eigen::AlignedBox1i materialsRange;

@@ -27,8 +27,8 @@ private:
 	void Init();
 	void Clean();
 
-	Camera* camera;
-	Mesh* mesh;
+	Camera* camera = nullptr;
+	Mesh* mesh = nullptr;
 
 	GLuint vaoID;
 	GLuint vboID[2];
