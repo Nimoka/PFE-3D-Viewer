@@ -51,4 +51,13 @@ private:
 	ImU32 backgroundColor;
 };
 
+class AlertMessageModule: public MessageModule
+{
+public:
+	AlertMessageModule(void* context, std::string message);
+	~AlertMessageModule();
+
+	void Render();
+};
+
 #endif // MODULES_MESSAGE_H

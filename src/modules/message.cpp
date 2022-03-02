@@ -76,3 +76,20 @@ void ProcessingMessageModule::Render() {
 	}
 	ImGui::End();
 }
+
+AlertMessageModule::AlertMessageModule(void* context, std::string message)
+		: MessageModule(context, message) {}
+
+AlertMessageModule::~AlertMessageModule() {}
+
+void AlertMessageModule::Render() {
+	if (ImGui::Begin(std::string("Alert###"
+			+ std::to_string(this->id)).c_str(), nullptr, this->flags)) {
+		ImGui::Text("%s", this->message.c_str());
+		ImGui::PushItemWidth(-(ImGui::GetWindowContentRegionWidth()
+				- ImGui::CalcItemWidth()));
+		if (ImGui::Button("OK", ImVec2(64., 0.)))
+			this->Kill();
+	}
+	ImGui::End();
+}
