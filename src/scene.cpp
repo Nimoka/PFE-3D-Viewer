@@ -9,18 +9,15 @@ Scene::Scene(Mesh* mesh) {
 }
 
 Scene::~Scene() {
+	for (auto i: this->lights)
+		delete i;
+
 	this->Clean();
 }
 
-bool Scene::Render(ShaderReader* shader, ImVec2 size) {
+bool Scene::RenderMesh(ShaderReader* shader) {
 	if (this->mesh == nullptr)
 		return false;
-	if (this->camera == nullptr)
-		return false;
-
-	this->camera->SetScreenViewport(Eigen::AlignedBox2f(
-			Eigen::Vector2f(0., 0.),
-			Eigen::Vector2f(size.x, size.y)));
 
 	glBindVertexArray(this->vaoID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vboID[0]);
@@ -61,12 +58,24 @@ bool Scene::Render(ShaderReader* shader, ImVec2 size) {
 	return true;
 }
 
+void Scene::UpdateCameraViewport(ImVec2 size) {
+	if (this->camera != nullptr) {
+		this->camera->SetScreenViewport(Eigen::AlignedBox2f(
+				Eigen::Vector2f(0., 0.),
+				Eigen::Vector2f(size.x, size.y)));
+	}
+}
+
 Camera* Scene::GetCamera() {
 	return this->camera;
 }
 
 Mesh* Scene::GetMesh() {
 	return this->mesh;
+}
+
+std::vector<Light*>* Scene::GetLights() {
+	return &this->lights;
 }
 
 void Scene::SetCamera(Camera* camera) {

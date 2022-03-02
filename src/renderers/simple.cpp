@@ -38,6 +38,7 @@ void SimpleRenderer::Render(ImVec2 size) {
 	glEnable(GL_PROGRAM_POINT_SIZE);
 
 	glViewport(0, 0, size.x, size.y);
+	this->scene->UpdateCameraViewport(size);
 
 	glClearColor(this->clearColor[0], this->clearColor[1], this->clearColor[2],
 			this->clearColor[3]);
@@ -50,7 +51,7 @@ void SimpleRenderer::Render(ImVec2 size) {
 	glUniformMatrix4fv(this->shader->GetUniformLocation("view_matrix"), 1,
 			false, this->scene->GetCamera()->ComputeViewMatrix().data());
 
-	this->scene->Render(this->shader, size);
+	this->scene->RenderMesh(this->shader);
 
 	this->shader->Deactivate();
 

@@ -18,10 +18,12 @@ public:
 	Scene(Mesh* mesh);
 	~Scene();
 
-	bool Render(ShaderReader* shader, ImVec2 size);
+	bool RenderMesh(ShaderReader* shader);
+	void UpdateCameraViewport(ImVec2 size);
 
 	Camera* GetCamera();
 	Mesh* GetMesh();
+	std::vector<Light*>* GetLights();
 
 	void SetCamera(Camera* camera);
 	void SetMesh(Mesh* mesh);
@@ -32,7 +34,7 @@ private:
 
 	Camera* camera = nullptr;
 	Mesh* mesh = nullptr;
-	std::vector<Light*> light;
+	std::vector<Light*> lights;
 
 	GLuint vaoID;
 	GLuint vboID[2];
