@@ -87,10 +87,12 @@ int Context::Init() {
 	/* Initialize glbinding */
 
 	glbinding::Binding::initialize(glfwGetProcAddress, false);
-	// std::cout << "OpenGL version: "
-	// 		<< glGetString(GL_VERSION) << std::endl;
-	// std::cout << "GLSL version: "
-	// 		<< glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+#ifdef DEBUG_OPENGL_CONTEXT
+	std::cout << "[DEBUG_OPENGL_CONTEXT] OpenGL version: "
+			<< glGetString(GL_VERSION) << std::endl;
+	std::cout << "[DEBUG_OPENGL_CONTEXT] GLSL version: "
+			<< glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+#endif
 
 	/* Initialize Dear ImGui */
 

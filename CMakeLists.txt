@@ -33,6 +33,10 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"
 	endif()
 endif ()
 
+if (DEBUG_ALL)
+	add_definitions(-DDEBUG_OPENGL_CONTEXT)
+endif ()
+
 # Libraries ====================================================
 
 set(EXTERNAL external)
