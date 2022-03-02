@@ -1,4 +1,5 @@
 #include "renderers/simple.h"
+#include <iostream>
 
 SimpleRenderer::SimpleRenderer(void* context)
 		: Renderer(context) {
@@ -48,8 +49,13 @@ void SimpleRenderer::Render(ImVec2 size) {
 
 	glUniformMatrix4fv(this->shader->GetUniformLocation("projection_matrix"), 1,
 			false, this->scene->GetCamera()->ComputeProjectionMatrix().data());
-	glUniformMatrix4fv(this->shader->GetUniformLocation("view_matrix"), 1,
+	if(!this->scene->navigate3D){
+		glUniformMatrix4fv(this->shader->GetUniformLocation("view_matrix"), 1,
 			false, this->scene->GetCamera()->ComputeViewMatrix().data());
+	}else{
+		glUniformMatrix4fv(this->shader->GetUniformLocation("view_matrix"), 1,
+			false, this->scene->GetCamera()->Compute3DViewMatrix().data());
+	}	
 
 	this->scene->RenderMesh(this->shader);
 
