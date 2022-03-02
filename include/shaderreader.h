@@ -6,8 +6,9 @@
 class ShaderReader
 {
 public:
-	ShaderReader();
-	ShaderReader(const std::string& vertexShaderPath,
+	ShaderReader(void* context);
+	ShaderReader(void* context,
+			const std::string& vertexShaderPath,
 			const std::string& fragmentShaderPath,
 			bool isDynamic = false);
 	~ShaderReader();
@@ -34,6 +35,8 @@ public:
 private:
 	void Clean();
 	std::string GetFileContent(const std::string& path);
+
+	void* context = nullptr;
 
 	std::string vertexShaderPath;
 	std::string fragmentShaderPath;

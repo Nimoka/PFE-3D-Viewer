@@ -10,8 +10,8 @@
 class Renderer
 {
 public:
-	Renderer();
-	Renderer(Scene* scene);
+	Renderer(void* context);
+	Renderer(void* context, Scene* scene);
 	Renderer(Renderer* renderer);
 	virtual ~Renderer();
 
@@ -19,6 +19,7 @@ public:
 
 	virtual void ReloadShaders() = 0;
 
+	void* GetContext();
 	const Eigen::Vector4f& GetClearColor();
 	Scene* GetScene();
 	const GLuint& GetRenderTexture() const;
@@ -29,6 +30,8 @@ public:
 protected:
 	void ActivateContext();
 	const void DeactivateContext();
+
+	void* context = nullptr;
 
 	Eigen::Vector4f clearColor = Eigen::Vector4f(0., 0., 0., 1.);
 	Scene* scene = nullptr;

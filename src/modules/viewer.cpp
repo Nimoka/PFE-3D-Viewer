@@ -5,7 +5,7 @@
 ViewerModule::ViewerModule(void* context)
 		: GUIModule(context) {
 	this->title = "Viewer";
-	this->renderer = new SimpleRenderer();
+	this->renderer = new SimpleRenderer(context);
 
 	this->Init();
 }

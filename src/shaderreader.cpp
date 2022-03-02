@@ -1,13 +1,17 @@
 #include "shaderreader.h"
 
+#include "context.h"
 #include "utils.h"
 
-ShaderReader::ShaderReader() {}
+ShaderReader::ShaderReader(void* context)
+		: context(context) {}
 
-ShaderReader::ShaderReader(const std::string& vertexShaderPath,
+ShaderReader::ShaderReader(void* context,
+		const std::string& vertexShaderPath,
 		const std::string& fragmentShaderPath,
 		bool isDynamic)
-		: dynamicShaders(isDynamic) {
+		: context(context)
+		, dynamicShaders(isDynamic) {
 	this->vertexShaderPath = vertexShaderPath;
 	this->fragmentShaderPath = fragmentShaderPath;
 

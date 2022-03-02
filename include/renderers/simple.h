@@ -8,8 +8,8 @@
 class SimpleRenderer: public Renderer
 {
 public:
-	SimpleRenderer();
-	SimpleRenderer(Scene* scene);
+	SimpleRenderer(void* context);
+	SimpleRenderer(void* context, Scene* scene);
 	SimpleRenderer(Renderer* renderer);
 	~SimpleRenderer();
 

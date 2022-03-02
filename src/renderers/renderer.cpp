@@ -2,23 +2,30 @@
 
 #include <iostream>
 
-Renderer::Renderer() {
+Renderer::Renderer(void* context)
+		: context(context) {
 	this->Init();
 }
 
-Renderer::Renderer(Scene* scene)
-		: scene(scene) {
+Renderer::Renderer(void* context, Scene* scene)
+		: context(context)
+		, scene(scene) {
 	this->Init();
 }
 
 Renderer::Renderer(Renderer* renderer)
-		: scene(renderer->GetScene())
+		: context(renderer->GetContext())
+		, scene(renderer->GetScene())
 		, clearColor(renderer->GetClearColor()) {
 	this->Init();
 }
 
 Renderer::~Renderer() {
 	this->Clean();
+}
+
+void* Renderer::GetContext() {
+	return this->context;
 }
 
 const Eigen::Vector4f& Renderer::GetClearColor() {

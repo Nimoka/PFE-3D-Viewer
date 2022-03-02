@@ -1,12 +1,12 @@
 #include "renderers/simple.h"
 
-SimpleRenderer::SimpleRenderer()
-		: Renderer() {
+SimpleRenderer::SimpleRenderer(void* context)
+		: Renderer(context) {
 	this->Init();
 }
 
-SimpleRenderer::SimpleRenderer(Scene* scene)
-		: Renderer(scene) {
+SimpleRenderer::SimpleRenderer(void* context, Scene* scene)
+		: Renderer(context, scene) {
 	this->Init();
 }
 
@@ -21,8 +21,10 @@ SimpleRenderer::~SimpleRenderer() {
 }
 
 void SimpleRenderer::Init() {
-	this->shader = new ShaderReader(DATA_DIR "shaders/simple.vert",
-			DATA_DIR "shaders/simple.frag", false);
+	this->shader = new ShaderReader(this->context,
+			DATA_DIR "shaders/simple.vert",
+			DATA_DIR "shaders/simple.frag",
+			false);
 }
 
 void SimpleRenderer::Render(ImVec2 size) {
