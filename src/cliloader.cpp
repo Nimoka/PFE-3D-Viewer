@@ -3,15 +3,17 @@
 #include "context.h"
 
 int CLILoader::LoadContext(void *c, int argc, char **argv) {
-    Context *context = (Context*) c;
-    /* Create CLI context */
+	Context *context = (Context*) c;
+	/* Create CLI context */
 
 	CLI::App app{DEFAULT_WINDOW_TITLE};
 
 	std::string windowTitle;
-	int windowWidth = DEFAULT_WINDOW_WIDTH, windowHeight = DEFAULT_WINDOW_HEIGHT;
+	int windowWidth = DEFAULT_WINDOW_WIDTH;
+	int windowHeight = DEFAULT_WINDOW_HEIGHT;
 	std::string inputFile, configFile;
-	bool benchmarkMode = false, noBenchmarkMode = false, debugMode = false, noDebugMode = false, darkMode = false, lightMode = false;
+	bool benchmarkMode = false, noBenchmarkMode = false, debugMode = false,
+			noDebugMode = false, darkMode = false, lightMode = false;
 
 	/* Set CLI options */
 
@@ -25,18 +27,30 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 			->check(CLI::PositiveNumber);
 	app.add_option("-t, --title", windowTitle, "Window title");
 
-	CLI::Option *benchmark = app.add_flag("-b, --benchmark", benchmarkMode, "Run the program in benchmark mode");
-	CLI::Option *noBenchmark = app.add_flag("--nb, --no-benchmark", noBenchmarkMode, "Run the program normally, without benchmark mode");
+	CLI::Option *benchmark = app.add_flag("-b, --benchmark",
+			benchmarkMode,
+			"Run the program in benchmark mode");
+	CLI::Option *noBenchmark = app.add_flag("--nb, --no-benchmark",
+			noBenchmarkMode,
+			"Run the program normally, without benchmark mode");
 	benchmark->excludes(noBenchmark);
 	noBenchmark->excludes(benchmark);
 
-	CLI::Option *debug = app.add_flag("-d, --debug", debugMode, "Enable debug mode (tools in menu bar)");
-	CLI::Option *noDebug = app.add_flag("--nd, --no-debug", noDebugMode, "Disable debug mode (tools in menu bar)");
+	CLI::Option *debug = app.add_flag("-d, --debug",
+			debugMode,
+			"Enable debug mode (tools in menu bar)");
+	CLI::Option *noDebug = app.add_flag("--nd, --no-debug",
+			noDebugMode,
+			"Disable debug mode (tools in menu bar)");
 	debug->excludes(noDebug);
 	noDebug->excludes(debug);
 
-	CLI::Option *dark = app.add_flag("--dark", darkMode, "Enable dark mode");
-	CLI::Option *light = app.add_flag("--light", lightMode, "Enable light mode");
+	CLI::Option *dark = app.add_flag("--dark",
+			darkMode,
+			"Enable dark mode");
+	CLI::Option *light = app.add_flag("--light",
+			lightMode,
+			"Enable light mode");
 	dark->excludes(light);
 	light->excludes(dark);
 
@@ -58,9 +72,9 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	// Window’s size
 	if (windowWidth && windowHeight) 
 		context->SetWindowSize(windowWidth, windowHeight);
-	else if (windowWidth)			 
+	else if (windowWidth)
 		context->SetWindowSize(windowWidth, DEFAULT_WINDOW_HEIGHT);
-	else if (windowHeight)			 
+	else if (windowHeight)
 		context->SetWindowSize(DEFAULT_WINDOW_WIDTH, windowHeight);
 
 	// Window’s title

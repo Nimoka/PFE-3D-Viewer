@@ -12,7 +12,7 @@ class GUIModule
 {
 public:
 	GUIModule(void* context);
-	virtual ~GUIModule() {}
+	virtual ~GUIModule();
 
 	virtual void Render() = 0;
 

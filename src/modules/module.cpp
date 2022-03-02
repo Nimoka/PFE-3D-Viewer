@@ -6,6 +6,8 @@ GUIModule::GUIModule(void* context)
 		: id(Global::nextModuleID++)
 		, context(context) {}
 
+GUIModule::~GUIModule() {}
+
 void GUIModule::Kill() {
 	this->readyToDie = true;
 	((Context*) this->context)->AskForUpdate();
