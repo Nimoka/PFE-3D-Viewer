@@ -78,6 +78,7 @@ Eigen::Vector3f PolarToCartesian(Eigen::Vector2f coordinates,
 
 Camera::Camera()
 		: cameraPolarCoordinates(Eigen::Vector2f(0., 0.))
+		, camera3DCoordinates(Eigen::Vector3f(0.,0.,3.))
 		, sceneCenter(Eigen::Vector3f(0., 0., 0.))
 		, up(Eigen::Vector3f(0., 1., 0.)) {}
 
@@ -94,6 +95,11 @@ void Camera::MoveCameraPolar(Eigen::Vector2f coordinates) {
 		this->cameraPolarCoordinates.y() += (2 * EIGEN_PI);
 }
 
+void Camera::MoveCamera3D(Eigen::Vector3f coordinates){
+	this->camera3DCoordinates += coordinates;
+	}
+
+
 void Camera::ZoomCameraPolar(float intensity) {
 	this->sceneDistance += intensity;
 
@@ -107,6 +113,13 @@ Eigen::Matrix4f Camera::ComputeViewMatrix() const {
 					this->sceneCenter, this->sceneDistance),
 			this->sceneCenter, this->up);
 }
+
+Eigen::Matrix4f Camera::Compute3DViewMatrix() const {
+	return LookAt(
+			this->camera3DCoordinates,
+			this->sceneCenter, this->up);
+}
+
 
 Eigen::Matrix4f Camera::ComputeProjectionMatrix() const {
 	float screenMinSize = MinScreenViewportSize();

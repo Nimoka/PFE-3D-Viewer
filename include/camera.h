@@ -31,9 +31,11 @@ public:
 	Camera();
 
 	void MoveCameraPolar(Eigen::Vector2f coordinates);
+	void MoveCamera3D(Eigen::Vector3f coordinates);
 	void ZoomCameraPolar(float intensity);
 
 	Eigen::Matrix4f ComputeViewMatrix() const;
+	Eigen::Matrix4f Compute3DViewMatrix() const;
 	Eigen::Matrix4f ComputeProjectionMatrix() const;
 
 	float MinScreenViewportSize() const;
@@ -60,6 +62,7 @@ private:
 
 	Eigen::Matrix4f cameraMatrix;
 	Eigen::Vector2f cameraPolarCoordinates;
+	Eigen::Vector3f camera3DCoordinates;
 
 	Eigen::Vector3f up;
 };
