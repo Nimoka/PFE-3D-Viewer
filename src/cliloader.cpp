@@ -16,7 +16,6 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	/* Set CLI options */
 
 	app.add_option("-i, --input", inputFile, "PLY file to load")
-			->required()
 			->check(CLI::ExistingFile)->check(FileWithExtension("ply"));
 	app.add_option("-c, --config", configFile, "Configuration file")
 			->check(CLI::ExistingFile)->check(FileWithExtension("toml"));
