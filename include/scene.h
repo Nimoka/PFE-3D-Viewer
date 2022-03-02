@@ -27,6 +27,7 @@ public:
 
 	void SetCamera(Camera* camera);
 	void SetMesh(Mesh* mesh);
+	bool navigate3D;
 
 private:
 	void Init();
