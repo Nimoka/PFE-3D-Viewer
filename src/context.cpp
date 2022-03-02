@@ -520,7 +520,16 @@ void Context::RenderMenuBar() {
 						this->viewer->SetRenderer(new SimpleRenderer(renderer));
 					// if (ImGui::MenuItem("Forward shading", "",
 					// 		dynamic_cast<ForwardRenderer*>(renderer)))
-					// 	this->viewer->SetRenderer(new SimpleRenderer(renderer));
+					// 	this->viewer->SetRenderer(
+					// 			new ForwardRenderer(this->renderer));
+					// if (ImGui::MenuItem("Deferred shading", "",
+					// 		dynamic_cast<DeferredRenderer*>(renderer)))
+					// 	this->viewer->SetRenderer(
+					// 			new DeferredRenderer(this->renderer));
+					// if (ImGui::MenuItem("Clustured deferred shading", "",
+					// 		dynamic_cast<ClusturedRenderer*>(renderer)))
+					// 	this->viewer->SetRenderer(
+					// 			new ClusturedRenderer(this->renderer));
 					ImGui::EndMenu();
 				}
 				if (ImGui::BeginMenu("Facet culling")) {
