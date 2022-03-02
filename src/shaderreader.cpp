@@ -1,6 +1,7 @@
 #include "shaderreader.h"
 
 #include "context.h"
+#include "modules/message.h"
 #include "utils.h"
 
 ShaderReader::ShaderReader(void* context)
@@ -35,9 +36,26 @@ bool ShaderReader::Load() {
 			this->GetFileContent(this->fragmentShaderPath);
 
 	// Check if both files have content
-	if (vertexShaderContent.empty()
-			|| fragmentShaderContent.empty())
+	if (vertexShaderContent.empty()) {
+		// If vertex shader was not read, send alert to user
+		if (this->context != nullptr) {
+			((Context*) this->context)->AddModule(
+					new AlertMessageModule(this->context,
+							"Failed to load file '"
+									+ this->vertexShaderPath + "'."));
+		}
 		return false;
+	}
+	if (fragmentShaderContent.empty()) {
+		// If fragment shader was not read, send alert to user
+		if (this->context != nullptr) {
+			((Context*) this->context)->AddModule(
+					new AlertMessageModule(this->context,
+							"Failed to load file '"
+									+ this->fragmentShaderPath + "'."));
+		}
+		return false;
+	}
 
 	// Create program
 	GLuint tmpProgramID = glCreateProgram();
@@ -62,6 +80,14 @@ bool ShaderReader::Load() {
 			// If errors, delete new shader and program
 			glDeleteShader(tmpVertexShaderID);
 			glDeleteProgram(tmpProgramID);
+
+			// Send alert to user
+			if (this->context != nullptr) {
+				((Context*) this->context)->AddModule(new AlertMessageModule(
+						this->context, "Failed to compile file '"
+								+ this->vertexShaderPath + "'."));
+			}
+
 			return false;
 		}
 
@@ -89,6 +115,12 @@ bool ShaderReader::Load() {
 			glDeleteShader(tmpVertexShaderID);
 			glDeleteShader(tmpFragmentShaderID);
 			glDeleteProgram(tmpProgramID);
+
+			// Send alert to user
+			((Context*) this->context)->AddModule(new AlertMessageModule(
+					this->context, "Failed to compile file '"
+							+ this->fragmentShaderPath + "'."));
+
 			return false;
 		}
 
@@ -107,6 +139,10 @@ bool ShaderReader::Load() {
 		glDeleteShader(tmpVertexShaderID);
 		glDeleteShader(tmpFragmentShaderID);
 		glDeleteProgram(tmpProgramID);
+
+		((Context*) this->context)->AddModule(new AlertMessageModule(
+					this->context, "Failed to link shaders."));
+
 		return false;
 	}
 

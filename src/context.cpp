@@ -9,6 +9,7 @@
 #include "camera.h"
 #include "filewithextension.h"
 #include "modules/filedialog.h"
+#include "modules/message.h"
 #include "modules/meshcontent.h"
 #include "renderers/simple.h"
 #include "scene.h"
@@ -216,11 +217,11 @@ void Context::LoadPLYFile(std::string filepath) {
 		}
 
 		this->SetMesh(reader->GetMesh());
-
-		return;
+	} else {
+		this->AddModule(new AlertMessageModule(this,
+				"Failed to load file '" + filepath + "'."));
+		delete reader;
 	}
-	delete reader;
-	// TODO: Throw exception
 }
 
 void Context::MoveCamera(float polarAngle, float azimutalAngle) {
