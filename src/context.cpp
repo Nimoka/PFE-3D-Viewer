@@ -11,6 +11,7 @@
 #include "modules/filedialog.h"
 #include "modules/message.h"
 #include "modules/meshcontent.h"
+#include "renderers/forward.h"
 #include "renderers/simple.h"
 #include "scene.h"
 #include "utils.h"
@@ -520,20 +521,22 @@ void Context::RenderMenuBar() {
 			if (renderer != nullptr) {
 				if (ImGui::BeginMenu("Render method")) {
 					if (ImGui::MenuItem("Simple shading (no lights)", "",
-							dynamic_cast<SimpleRenderer*>(renderer)))
+							dynamic_cast<SimpleRenderer*>(renderer))) {
 						this->viewer->SetRenderer(new SimpleRenderer(renderer));
-					// if (ImGui::MenuItem("Forward shading", "",
-					// 		dynamic_cast<ForwardRenderer*>(renderer)))
+					} else if (ImGui::MenuItem("Forward shading", "",
+							dynamic_cast<ForwardRenderer*>(renderer))) {
+						this->viewer->SetRenderer(
+								new ForwardRenderer(renderer));
+					// } else if (ImGui::MenuItem("Deferred shading", "",
+					// 		dynamic_cast<DeferredRenderer*>(renderer))) {
 					// 	this->viewer->SetRenderer(
-					// 			new ForwardRenderer(this->renderer));
-					// if (ImGui::MenuItem("Deferred shading", "",
-					// 		dynamic_cast<DeferredRenderer*>(renderer)))
+					// 			new DeferredRenderer(renderer));
+					// }
+					// else if (ImGui::MenuItem("Clustured deferred shading", "",
+					// 		dynamic_cast<ClusturedRenderer*>(renderer))) {
 					// 	this->viewer->SetRenderer(
-					// 			new DeferredRenderer(this->renderer));
-					// if (ImGui::MenuItem("Clustured deferred shading", "",
-					// 		dynamic_cast<ClusturedRenderer*>(renderer)))
-					// 	this->viewer->SetRenderer(
-					// 			new ClusturedRenderer(this->renderer));
+					// 			new ClusturedRenderer(renderer));
+					}
 					ImGui::EndMenu();
 				}
 				if (ImGui::BeginMenu("Facet culling")) {
