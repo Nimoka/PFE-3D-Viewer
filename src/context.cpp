@@ -95,6 +95,10 @@ int Context::Init() {
 			<< glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 #endif
 
+	/* Initialize OpenGL */
+
+	glEnable(GL_CULL_FACE);
+
 	/* Initialize Dear ImGui */
 
 	IMGUI_CHECKVERSION();
