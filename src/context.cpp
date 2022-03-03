@@ -366,25 +366,25 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 				this->MoveCamera(0., -movementSpeed);
 				return;
 			case GLFW_KEY_W:
-				// Move to the bottom
+				// Move forward
 				this->scene->navigate3D = true;
 				this->scene->GetCamera()->navigation3DUpDown = true;
 				this->MoveCamera3D(0.,0., -movementSpeed);
 				return;
 			case GLFW_KEY_S:
-				// Move to the bottom
+				// Move backward
 				this->scene->navigate3D = true;
 				this->scene->GetCamera()->navigation3DUpDown = true;
 				this->MoveCamera3D(0.,0., movementSpeed);
 				return;
 			case GLFW_KEY_A:
-				// Move to the bottom
+				// Move left
 				this->scene->navigate3D = true;
 				this->scene->GetCamera()->navigation3DUpDown = false;
 				this->MoveCamera3D(0.,0., movementSpeed);
 				return;
 			case GLFW_KEY_D:
-				// Move to the bottom
+				// Move right
 				this->scene->navigate3D = true;
 				this->scene->GetCamera()->navigation3DUpDown = false;
 				this->MoveCamera3D(0.,0., -movementSpeed);
