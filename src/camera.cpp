@@ -1,6 +1,7 @@
 #include "camera.h"
 
 #define ORTHO_THRESOLD		1.e2f
+#define CAMERASPEED			0.1f
 
 Eigen::Matrix4f OrthographicProjection(float l, float r, float b, float t,
 		float n, float f) {
@@ -78,7 +79,8 @@ Eigen::Vector3f PolarToCartesian(Eigen::Vector2f coordinates,
 
 Camera::Camera()
 		: cameraPolarCoordinates(Eigen::Vector2f(0., 0.))
-		, camera3DCoordinates(Eigen::Vector3f(0.,0.,3.))
+		, camera3DCoordinates(Eigen::Vector3f(0.5,0.5,3.5))
+		, cameraFront(Eigen::Vector3f(0.,0.,-1))
 		, sceneCenter(Eigen::Vector3f(0., 0., 0.))
 		, up(Eigen::Vector3f(0., 1., 0.)) {}
 
@@ -96,7 +98,10 @@ void Camera::MoveCameraPolar(Eigen::Vector2f coordinates) {
 }
 
 void Camera::MoveCamera3D(Eigen::Vector3f coordinates){
-	this->camera3DCoordinates += coordinates;
+	if(navigation3DUpDown)
+		this->camera3DCoordinates += coordinates;
+	else
+		this->camera3DCoordinates += ((coordinates.cross(up)).normalized() + coordinates) * CAMERASPEED;
 	}
 
 
@@ -117,7 +122,7 @@ Eigen::Matrix4f Camera::ComputeViewMatrix() const {
 Eigen::Matrix4f Camera::Compute3DViewMatrix() const {
 	return LookAt(
 			this->camera3DCoordinates,
-			this->sceneCenter, this->up);
+			this->camera3DCoordinates+cameraFront, this->up);
 }
 
 

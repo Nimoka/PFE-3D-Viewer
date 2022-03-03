@@ -41,7 +41,6 @@ public:
 	float MinScreenViewportSize() const;
 	bool IsOrthographic() const;
 	bool IsPerspective() const;
-
 	float GetSceneRadius() const;
 
 	void SetSceneCenter(const Eigen::Vector3f& sceneCenter);
@@ -51,6 +50,7 @@ public:
 	void SetMinNear(float minNear);
 	void SetNearFarOffsets(float nearOffset, float farOffset);
 
+	bool navigation3DUpDown = true;
 private:
 	Eigen::Vector3f sceneCenter;
 	float sceneDistance;
@@ -63,6 +63,7 @@ private:
 	Eigen::Matrix4f cameraMatrix;
 	Eigen::Vector2f cameraPolarCoordinates;
 	Eigen::Vector3f camera3DCoordinates;
+	Eigen::Vector3f cameraFront;
 
 	Eigen::Vector3f up;
 };
