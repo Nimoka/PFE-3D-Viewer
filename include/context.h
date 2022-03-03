@@ -24,6 +24,7 @@
 #define ERROR_IMGUI_INIT		3
 #define ERROR_CLI_PARSING		4
 #define ERROR_CLI_MISS_TOML		5
+#define MOUSE_SPEED				0.01
 
 class Context
 {
