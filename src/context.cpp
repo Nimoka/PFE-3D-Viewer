@@ -368,12 +368,26 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 			case GLFW_KEY_W:
 				// Move to the bottom
 				this->scene->navigate3D = true;
+				this->scene->GetCamera()->navigation3DUpDown = true;
 				this->MoveCamera3D(0.,0., -movementSpeed);
 				return;
 			case GLFW_KEY_S:
 				// Move to the bottom
 				this->scene->navigate3D = true;
+				this->scene->GetCamera()->navigation3DUpDown = true;
 				this->MoveCamera3D(0.,0., movementSpeed);
+				return;
+			case GLFW_KEY_A:
+				// Move to the bottom
+				this->scene->navigate3D = true;
+				this->scene->GetCamera()->navigation3DUpDown = false;
+				this->MoveCamera3D(0.,0., movementSpeed);
+				return;
+			case GLFW_KEY_D:
+				// Move to the bottom
+				this->scene->navigate3D = true;
+				this->scene->GetCamera()->navigation3DUpDown = false;
+				this->MoveCamera3D(0.,0., -movementSpeed);
 				return;
 			case GLFW_KEY_O:
 				// Zoom out
@@ -398,8 +412,8 @@ void Context::ProcessMouseMovement(double x, double y) {
 			lastY = ypos;
 			firstMouse = false;
 		}
-		double xoffset = (xpos -lastX) *0.01; // slowly move the camera
-		double yoffset = (lastY - ypos) *0.01;
+		double xoffset = (xpos -lastX) *MOUSE_SPEED; // slowly move the camera
+		double yoffset = (lastY - ypos) *MOUSE_SPEED;
 		lastX=xpos ;
 		lastY=ypos ;
 		this->MoveCamera(static_cast<float>(xoffset),static_cast<float>(yoffset));
