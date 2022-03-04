@@ -21,7 +21,7 @@ void Light::SetIntensity(const Eigen::Vector3f& intensity) {
 DirectionalLight::DirectionalLight(const Eigen::Vector3f& intensity,
 		const Eigen::Vector3f& direction)
 		: Light(intensity) {
-	this->direction = direction;
+	this->SetDirection(direction);
 }
 
 DirectionalLight::DirectionalLight(DirectionalLight* light)
@@ -45,5 +45,5 @@ Eigen::Vector3f DirectionalLight::GetDirection() {
 }
 
 void DirectionalLight::SetDirection(const Eigen::Vector3f& direction) {
-	this->direction = direction;
+	this->direction = direction.normalized();
 }
