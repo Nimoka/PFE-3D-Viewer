@@ -3,5 +3,6 @@
 [ -d build ] || mkdir build
 cd build
 
-cmake .. -Wno-dev -DBUILD_LIBS=ON -DBUILD_TESTING=OFF -DDEBUG_ALL=OFF
+cmake .. -Wno-dev -DCMAKE_BUILD_TYPE=RELEASE \
+		-DBUILD_LIBS=ON -DBUILD_TESTING=OFF -DDEBUG_ALL=OFF
 make

@@ -3,8 +3,10 @@
 [ -d build ] || mkdir build
 cd build
 
-cmake .. -DBUILD_LIBS=OFF -DBUILD_TESTING=ON -DDEBUG_ALL=ON
+cmake .. -DCMAKE_BUILD_TYPE=DEBUG \
+		-DBUILD_LIBS=OFF -DBUILD_TESTING=ON -DDEBUG_ALL=ON
 make
 make tests
 
-./tests/viewer/plyreader
+[ -f tests/viewer/plyreader ] && ./tests/viewer/plyreader
+[ -f tests/viewer/cliloader ] && ./tests/viewer/cliloader
