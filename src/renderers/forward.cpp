@@ -59,19 +59,44 @@ void ForwardRenderer::Render(ImVec2 size) {
 	glUniformMatrix3fv(this->shader->GetUniformLocation("normal_matrix"), 1,
 			false, this->scene->GetNormalMatrix().data());
 
-	std::vector<DirectionalLight*>* lights = this->scene->GetLights();
-	auto it = lights->begin();
-	if (it != lights->end()) {
-		(*it)->Activate(this->shader);
-		this->scene->RenderMesh(this->shader);
-		glEnable(GL_BLEND);
-		glDisable(GL_DEPTH_TEST);
-		for (it++; it != lights->end(); it++) {
-			(*it)->Activate(this->shader);
-			this->scene->RenderMesh(this->shader);
+	{
+		unsigned int nbDirectionalLights;
+		float* directionalLightsDirection;
+		float* directionalLightsIntensity;
+
+		std::vector<DirectionalLight*>* lights = this->scene->GetLights();
+		nbDirectionalLights = lights->size();
+		directionalLightsDirection =
+				(float*) malloc(sizeof(float) * 3 * nbDirectionalLights);
+		directionalLightsIntensity =
+				(float*) malloc(sizeof(float) * 3 * nbDirectionalLights);
+
+		DirectionalLight* light;
+		for (unsigned int i = 0; i < nbDirectionalLights; i++) {
+			light = lights->at(i);
+			directionalLightsDirection[3 * i] = light->GetDirection()[0];
+			directionalLightsDirection[3 * i + 1] = light->GetDirection()[1];
+			directionalLightsDirection[3 * i + 2] = light->GetDirection()[2];
+			directionalLightsIntensity[3 * i] = light->GetIntensity()[0];
+			directionalLightsIntensity[3 * i + 1] = light->GetIntensity()[1];
+			directionalLightsIntensity[3 * i + 2] = light->GetIntensity()[2];
 		}
-		glDisable(GL_BLEND);
+
+		glUniform1i(this->shader->GetUniformLocation("lights_dir_nb"),
+				nbDirectionalLights);
+		glUniform3fv(this->shader->GetUniformLocation("lights_dir_direction"),
+				nbDirectionalLights, directionalLightsDirection);
+		glUniform3fv(this->shader->GetUniformLocation("lights_dir_intensity"),
+				nbDirectionalLights, directionalLightsIntensity);
+
+		delete directionalLightsDirection;
+		delete directionalLightsIntensity;
 	}
+
+	glUniform3fv(this->shader->GetUniformLocation("ambient_color"), 1,
+			this->scene->GetAmbientColor().data());
+
+	this->scene->RenderMesh(this->shader);
 
 	this->shader->Deactivate();
 

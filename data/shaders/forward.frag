@@ -1,7 +1,9 @@
 #version 410 core
 
-uniform vec3 light_direction;
-uniform vec3 light_intensity;
+uniform vec3 lights_dir_direction[2];
+uniform vec3 lights_dir_intensity[2];
+
+uniform vec3 ambient_color;
 uniform mat3 normal_matrix;
 
 in vec4 vert_position;
@@ -11,7 +13,10 @@ in vec3 vert_normal;
 layout(location = 0) out vec3 out_color;
 
 void main() {
-	out_color = (vert_color * light_intensity)
-			* max(dot(vert_normal,
-					normalize(light_direction * normal_matrix)), 0);
+	out_color = ambient_color * vert_color;
+	for (int i = 0; i < 2; i++) {
+		out_color += (vert_color * lights_dir_intensity[i])
+				* max(dot(vert_normal, normalize(lights_dir_direction[i]
+						* normal_matrix)), 0);
+	}
 }
