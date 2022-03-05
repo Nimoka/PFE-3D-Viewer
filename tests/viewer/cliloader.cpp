@@ -22,7 +22,7 @@ static void TestHelp() {
 	argv[1] = CstrFromString("--help");
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 
-	delete [] argv[0], argv[1];
+	delete [] argv;
 	free(argv);
 }
 
@@ -32,7 +32,7 @@ static void TestMissingInput() {
 	argv[0] = CstrFromString("command");
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
 
-	delete [] argv[0];
+	delete [] argv;
 	free(argv);
 }
 static void TestWrongInput() {
@@ -43,7 +43,7 @@ static void TestWrongInput() {
 	argv[2] = CstrFromString(DATA_DIR "configs/default.toml");
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
 
-	delete [] argv[0], argv[1], argv[2];
+	delete [] argv;
 	free(argv);
 }
 static void TestRightInput() {
@@ -55,7 +55,7 @@ static void TestRightInput() {
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(context->GetInputFile() == DATA_DIR "models/cube.ply");
 
-	delete [] argv[0], argv[1], argv[2];
+	delete [] argv;
 	free(argv);
 }
 
@@ -69,7 +69,7 @@ static void TestWrongConfig() {
 	argv[4] = CstrFromString(DATA_DIR "configs/defaulttt.toml");
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
 
-	delete [] argv[0], argv[1], argv[2], argv[3], argv[4];
+	delete [] argv;
 	free(argv);
 }
 static void TestRightConfig() {
@@ -83,7 +83,7 @@ static void TestRightConfig() {
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(context->GetConfigFile() == (DATA_DIR "configs/default-2.toml"));
 
-	delete [] argv[0], argv[1], argv[2], argv[3], argv[4];
+	delete [] argv;
 	free(argv);
 }
 
@@ -97,7 +97,7 @@ static void TestNonIntegerWidth() {
 	argv[4] = CstrFromString("wowza");
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
 
-	delete [] argv[0], argv[1], argv[2], argv[3], argv[4];
+	delete [] argv;
 	free(argv);
 }
 static void TestNegativeWidth() {
@@ -110,7 +110,7 @@ static void TestNegativeWidth() {
 	argv[4] = CstrFromString("-480");
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
 
-	delete [] argv[0], argv[1], argv[2], argv[3], argv[4];
+	delete [] argv;
 	free(argv);
 }
 static void TestRightWidth() {
@@ -124,7 +124,7 @@ static void TestRightWidth() {
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(context->GetWindowWidth() == 1000);
 
-	delete [] argv[0], argv[1], argv[2], argv[3], argv[4];
+	delete [] argv;
 	free(argv);
 }
 
@@ -138,7 +138,7 @@ static void TestNonIntegerHeight() {
 	argv[4] = CstrFromString("wowza");
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
 
-	delete [] argv[0], argv[1], argv[2], argv[3], argv[4];
+	delete [] argv;
 	free(argv);
 }
 static void TestNegativeHeight() {
@@ -151,7 +151,7 @@ static void TestNegativeHeight() {
 	argv[4] = CstrFromString("-480");
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
 
-	delete [] argv[0], argv[1], argv[2], argv[3], argv[4];
+	delete [] argv;
 	free(argv);
 }
 static void TestRightHeight() {
@@ -165,7 +165,7 @@ static void TestRightHeight() {
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(context->GetWindowHeight() == 1000);
 
-	delete [] argv[0], argv[1], argv[2], argv[3], argv[4];
+	delete [] argv;
 	free(argv);
 }
 
@@ -180,7 +180,7 @@ static void TestTitle() {
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(context->GetWindowTitle() == "This is my test title");
 
-	delete [] argv[0], argv[1], argv[2], argv[3], argv[4];
+	delete [] argv;
 	free(argv);
 }
 
@@ -194,7 +194,7 @@ static void TestExclusiveBenchmark() {
 	argv[4] = CstrFromString("--nb");
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
 
-	delete [] argv[0], argv[1], argv[2], argv[3], argv[4];
+	delete [] argv;
 	free(argv);
 }
 static void TestBenchmark() {
@@ -207,7 +207,7 @@ static void TestBenchmark() {
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(context->GetBenchmarkMode());
 
-	delete [] argv[0], argv[1], argv[2], argv[3];
+	delete [] argv;
 	free(argv);
 }
 static void TestNoBenchmark() {
@@ -222,7 +222,49 @@ static void TestNoBenchmark() {
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(!context->GetBenchmarkMode());
 
-	delete [] argv[0], argv[1], argv[2], argv[3];
+	delete [] argv;
+	free(argv);
+}
+
+static void TestExclusiveDebug() {
+	int argc = 5;
+	char **argv = (char**) malloc(sizeof(char*) * argc);
+	argv[0] = CstrFromString("command");
+	argv[1] = CstrFromString("-i");
+	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
+	argv[3] = CstrFromString("-d");
+	argv[4] = CstrFromString("--nd");
+	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
+
+	delete [] argv;
+	free(argv);
+}
+static void TestDebug() {
+	int argc = 4;
+	char **argv = (char**) malloc(sizeof(char*) * argc);
+	argv[0] = CstrFromString("command");
+	argv[1] = CstrFromString("-i");
+	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
+	argv[3] = CstrFromString("-d");
+	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
+	REQUIRE(context->GetDebugMode());
+
+	delete[] argv;
+	free(argv);
+}
+static void TestNoDebug() {
+	context->SetDebugMode(true);
+
+	int argc = 4;
+	char **argv = (char**) malloc(sizeof(char*) * argc);
+	argv[0] = CstrFromString("command");
+	argv[1] = CstrFromString("-i");
+	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
+	argv[3] = CstrFromString("--nd");
+	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
+	REQUIRE(!context->GetDebugMode());
+
+	delete [] argv;
 	free(argv);
 }
 
@@ -236,7 +278,7 @@ static void TestExclusiveTheme() {
 	argv[4] = CstrFromString("--light");
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
 
-	delete [] argv[0], argv[1], argv[2], argv[3], argv[4];
+	delete [] argv;
 	free(argv);
 }
 static void TestLight() {
@@ -249,7 +291,7 @@ static void TestLight() {
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(context->GetDarkMode());
 
-	delete [] argv[0], argv[1], argv[2], argv[3];
+	delete [] argv;
 	free(argv);
 }
 static void TestDark() {
@@ -264,7 +306,7 @@ static void TestDark() {
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(!context->GetDarkMode());
 
-	delete [] argv[0], argv[1], argv[2], argv[3];
+	delete [] argv;
 	free(argv);
 }
 
