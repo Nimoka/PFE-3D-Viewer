@@ -21,11 +21,12 @@ public:
 	bool RenderMesh(ShaderReader* shader);
 	void UpdateCameraViewport(ImVec2 size);
 
+	const Eigen::Vector3f& GetAmbientColor();
 	Camera* GetCamera();
 	Mesh* GetMesh();
 	const Eigen::Matrix4f& GetMeshTransformationMatrix();
 	Eigen::Matrix3f GetNormalMatrix();
-	std::vector<Light*>* GetLights();
+	std::vector<DirectionalLight*>* GetLights();
 
 	void SetCamera(Camera* camera);
 	void SetMesh(Mesh* mesh);
@@ -37,7 +38,9 @@ private:
 
 	Camera* camera = nullptr;
 	Mesh* mesh = nullptr;
-	std::vector<Light*> lights;
+	std::vector<DirectionalLight*> lights;
+
+	Eigen::Vector3f ambientColor = Eigen::Vector3f(.1, .1, .1);
 
 	Eigen::Matrix4f meshTransformationMatrix = Eigen::Matrix4f::Identity();
 

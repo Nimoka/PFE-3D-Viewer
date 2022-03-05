@@ -74,6 +74,10 @@ void Scene::UpdateCameraViewport(ImVec2 size) {
 	}
 }
 
+const Eigen::Vector3f& Scene::GetAmbientColor() {
+	return this->ambientColor;
+}
+
 Camera* Scene::GetCamera() {
 	return this->camera;
 }
@@ -92,7 +96,7 @@ Eigen::Matrix3f Scene::GetNormalMatrix() {
 	return normalMatrix.block<3, 3>(0, 0).inverse().transpose();
 }
 
-std::vector<Light*>* Scene::GetLights() {
+std::vector<DirectionalLight*>* Scene::GetLights() {
 	return &this->lights;
 }
 

@@ -59,7 +59,7 @@ void ForwardRenderer::Render(ImVec2 size) {
 	glUniformMatrix3fv(this->shader->GetUniformLocation("normal_matrix"), 1,
 			false, this->scene->GetNormalMatrix().data());
 
-	std::vector<Light*>* lights = this->scene->GetLights();
+	std::vector<DirectionalLight*>* lights = this->scene->GetLights();
 	auto it = lights->begin();
 	if (it != lights->end()) {
 		(*it)->Activate(this->shader);
