@@ -54,6 +54,10 @@ void ForwardRenderer::Render(ImVec2 size) {
 			false, this->scene->GetCamera()->ComputeProjectionMatrix().data());
 	glUniformMatrix4fv(this->shader->GetUniformLocation("view_matrix"), 1,
 			false, this->scene->GetCamera()->ComputeViewMatrix().data());
+	glUniformMatrix4fv(this->shader->GetUniformLocation("model_matrix"), 1,
+			false, this->scene->GetMeshTransformationMatrix().data());
+	glUniformMatrix3fv(this->shader->GetUniformLocation("normal_matrix"), 1,
+			false, this->scene->GetNormalMatrix().data());
 
 	std::vector<Light*>* lights = this->scene->GetLights();
 	auto it = lights->begin();
