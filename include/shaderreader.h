@@ -3,6 +3,8 @@
 
 #include "opengl.h"
 
+std::string GetShaderLog(GLuint shader);
+
 class ShaderReader
 {
 public:

@@ -4,6 +4,18 @@
 #include "modules/message.h"
 #include "utils.h"
 
+std::string GetShaderLog(GLuint shader) {
+	GLint size = 0;
+	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &size);
+	gl::GLchar* data = (GLchar*) malloc(sizeof(gl::GLchar) * (size + 1));
+	glGetShaderInfoLog(shader, size, NULL, data);
+
+	std::string text = std::string((char*) data);
+	delete data;
+
+	return text;
+}
+
 ShaderReader::ShaderReader(void* context)
 		: context(context) {}
 
@@ -77,16 +89,17 @@ bool ShaderReader::Load() {
 		int compiled;
 		glGetShaderiv(tmpVertexShaderID, GL_COMPILE_STATUS, &compiled);
 		if (!compiled) {
-			// If errors, delete new shader and program
-			glDeleteShader(tmpVertexShaderID);
-			glDeleteProgram(tmpProgramID);
-
-			// Send alert to user
+			// If errors, send alert to user
 			if (this->context != nullptr) {
 				((Context*) this->context)->AddModule(new AlertMessageModule(
 						this->context, "Failed to compile file '"
-								+ this->vertexShaderPath + "'."));
+								+ this->vertexShaderPath + "':\n"
+								+ GetShaderLog(tmpVertexShaderID)));
 			}
+
+			// Delete new shader and program
+			glDeleteShader(tmpVertexShaderID);
+			glDeleteProgram(tmpProgramID);
 
 			return false;
 		}
@@ -111,15 +124,18 @@ bool ShaderReader::Load() {
 		int compiled;
 		glGetShaderiv(tmpFragmentShaderID, GL_COMPILE_STATUS, &compiled);
 		if (!compiled) {
-			// If errors, delete new shaders and program
+			// If errors, send alert to user
+			if (this->context != nullptr) {
+				((Context*) this->context)->AddModule(new AlertMessageModule(
+						this->context, "Failed to compile file '"
+								+ this->fragmentShaderPath + "':\n"
+								+ GetShaderLog(tmpFragmentShaderID)));
+			}
+
+			// Delete new shaders and program
 			glDeleteShader(tmpVertexShaderID);
 			glDeleteShader(tmpFragmentShaderID);
 			glDeleteProgram(tmpProgramID);
-
-			// Send alert to user
-			((Context*) this->context)->AddModule(new AlertMessageModule(
-					this->context, "Failed to compile file '"
-							+ this->fragmentShaderPath + "'."));
 
 			return false;
 		}
@@ -140,8 +156,10 @@ bool ShaderReader::Load() {
 		glDeleteShader(tmpFragmentShaderID);
 		glDeleteProgram(tmpProgramID);
 
-		((Context*) this->context)->AddModule(new AlertMessageModule(
-					this->context, "Failed to link shaders."));
+		if (this->context != nullptr) {
+			((Context*) this->context)->AddModule(new AlertMessageModule(
+						this->context, "Failed to link shaders."));
+		}
 
 		return false;
 	}
