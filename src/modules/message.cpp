@@ -1,6 +1,7 @@
 #include "modules/message.h"
 
 #include <iostream>
+#include <string>
 
 #include "imgui_addons.h"
 
