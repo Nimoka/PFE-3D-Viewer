@@ -373,7 +373,7 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 			case GLFW_KEY_D:
 				// Move right
 				this->scene->navigate3D = true;
-								this->scene->GetCamera()->camera3DCoordinates+= this->scene->GetCamera()->cameraFront.cross(this->scene->GetCamera()->up).normalized() * movementSpeed;
+				this->scene->GetCamera()->camera3DCoordinates+= this->scene->GetCamera()->cameraFront.cross(this->scene->GetCamera()->up).normalized() * movementSpeed;
 				return;
 			case GLFW_KEY_O:
 				// Zoom out
