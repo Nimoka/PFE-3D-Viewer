@@ -405,18 +405,16 @@ void Context::ProcessMouseMovement(double x, double y) {
 		float yoffset = (lastY - ypos) * MOUSE_SPEED;
 		lastX         = xpos;
 		lastY         = ypos;
-		//this->MoveCamera(static_cast<float>(xoffset),static_cast<float>(yoffset));
 
-		yaw += xoffset ;
+		yaw	+= xoffset ;
 		pitch += yoffset ;
-
-		if (pitch > 89.0f) pitch = 89.0f;
-		if (pitch < -89.0f) pitch = -89.0f;
+		if (pitch > MAX_PITCH) pitch = MAX_PITCH;
+		if (pitch < -MAX_PITCH) pitch = -MAX_PITCH;
 
 		Eigen::Vector3f front;
-		front[0] = cos(yaw * M_PI / 180.0) * cos(pitch * M_PI / 180.0);
-		front[1] = sin(pitch * M_PI / 180.0);
-		front[2] = sin(yaw * M_PI / 180.0) * cos(pitch * M_PI / 180.0);
+		front[0] = cos(yaw * M_PI / PI_DEGREE) * cos(pitch * M_PI / PI_DEGREE);
+		front[1] = sin(pitch * M_PI / PI_DEGREE);
+		front[2] = sin(yaw * M_PI / PI_DEGREE) * cos(pitch * M_PI / PI_DEGREE);
 
 		this->scene->GetCamera()->cameraFront = front.normalized();
 	}

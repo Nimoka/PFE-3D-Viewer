@@ -26,6 +26,8 @@
 #define ERROR_CLI_MISS_TOML		5
 #define MOUSE_SPEED				0.1
 #define M_PI					3.14159265358979323846
+#define PI_DEGREE				180.0
+#define MAX_PITCH				89.0
 
 class Context
 {
