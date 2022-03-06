@@ -238,16 +238,6 @@ void Context::MoveCamera(float polarAngle, float azimutalAngle) {
 		}
 	}
 }
-void Context::MoveCamera3D(float cameraX, float cameraY, float cameraZ) {
-	if (this->scene != nullptr) {
-		Camera* camera = this->scene->GetCamera();
-		if (camera != nullptr) {
-			camera->MoveCamera3D(
-				Eigen::Vector3f(cameraX,cameraY,cameraZ));
-		}
-	}
-}
-
 
 void Context::ZoomCamera(float intensity) {
 	if (this->scene != nullptr) {
@@ -366,28 +356,24 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 				this->MoveCamera(0., -movementSpeed);
 				return;
 			case GLFW_KEY_W:
-				// Move forward
+				// Move forward	
 				this->scene->navigate3D = true;
-				this->scene->GetCamera()->navigation3DUpDown = true;
-				this->MoveCamera3D(0.,0., -movementSpeed);
+				this->scene->GetCamera()->camera3DCoordinates += movementSpeed * this->scene->GetCamera()->cameraFront;
 				return;
 			case GLFW_KEY_S:
 				// Move backward
 				this->scene->navigate3D = true;
-				this->scene->GetCamera()->navigation3DUpDown = true;
-				this->MoveCamera3D(0.,0., movementSpeed);
+				this->scene->GetCamera()->camera3DCoordinates += -movementSpeed * this->scene->GetCamera()->cameraFront;
 				return;
 			case GLFW_KEY_A:
 				// Move left
 				this->scene->navigate3D = true;
-				this->scene->GetCamera()->navigation3DUpDown = false;
-				this->MoveCamera3D(0.,0., movementSpeed);
+				this->scene->GetCamera()->camera3DCoordinates+= this->scene->GetCamera()->cameraFront.cross(this->scene->GetCamera()->up).normalized() * -movementSpeed;
 				return;
 			case GLFW_KEY_D:
 				// Move right
 				this->scene->navigate3D = true;
-				this->scene->GetCamera()->navigation3DUpDown = false;
-				this->MoveCamera3D(0.,0., -movementSpeed);
+								this->scene->GetCamera()->camera3DCoordinates+= this->scene->GetCamera()->cameraFront.cross(this->scene->GetCamera()->up).normalized() * movementSpeed;
 				return;
 			case GLFW_KEY_O:
 				// Zoom out
@@ -404,25 +390,38 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 }
 
 void Context::ProcessMouseMovement(double x, double y) {
-	if(mouseLeftPressed){
-		double xpos = x;
-		double ypos = y;
-		if(firstMouse){
-			lastX = xpos;
-			lastY = ypos;
-			firstMouse = false;
-		}
-		double xoffset = (xpos -lastX) *MOUSE_SPEED; // slowly move the camera
-		double yoffset = (lastY - ypos) *MOUSE_SPEED;
-		lastX=xpos ;
-		lastY=ypos ;
-		this->MoveCamera(static_cast<float>(xoffset),static_cast<float>(yoffset));
+	this->scene->navigate3D = true;
+	float xpos = static_cast<float>(x);
+	float ypos = static_cast<float>(y);
+
+	if(firstMouse){
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
 	}
-	
+	float xoffset = (xpos -lastX) *MOUSE_SPEED; // slowly move the camera
+	float yoffset = (lastY - ypos) *MOUSE_SPEED;
+	lastX=xpos ;
+	lastY=ypos ;
+	//this->MoveCamera(static_cast<float>(xoffset),static_cast<float>(yoffset));
+
+	yaw += xoffset;
+	pitch += yoffset;
+
+	if (pitch > 89.0f) pitch = 89.0f;
+	if (pitch < -89.0f) pitch = -89.0f;
+
+	Eigen::Vector3f front;
+	front[0] = cos(yaw * M_PI/180.0) * cos(pitch*M_PI / 180.0);
+	front[1] = sin(pitch * M_PI / 180.0);
+	front[2] = sin(yaw * M_PI / 180.0) * cos(pitch * M_PI / 180.0);
+
+	this->scene->GetCamera()->cameraFront = front.normalized();
 }
 
 void Context::ProcessMouseButton(int button, int action, int mods) {
-	if (button==GLFW_MOUSE_BUTTON_1){
+  if (button == GLFW_MOUSE_BUTTON_1)
+  {
 		if (action == GLFW_PRESS) {
 			mouseLeftPressed = true;
 		}
@@ -433,6 +432,7 @@ void Context::ProcessMouseButton(int button, int action, int mods) {
 }
 
 void Context::ProcessMouseScroll(double x, double y) {
+	this->scene->navigate3D = true;
 	this->ZoomCamera(-y);
 }
 

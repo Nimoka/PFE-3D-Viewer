@@ -108,7 +108,7 @@ private:
 	bool benchmarkMode = false;
 	bool debugMode = false;
 	bool darkMode = false;
-	//bool mouseLeftPressed = false;
+	bool mouseLeftPressed = false;
 	bool firstMouse = true;
 	
 	float  yaw   = -90.0f;
