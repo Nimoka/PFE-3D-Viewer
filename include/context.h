@@ -24,7 +24,8 @@
 #define ERROR_IMGUI_INIT		3
 #define ERROR_CLI_PARSING		4
 #define ERROR_CLI_MISS_TOML		5
-#define MOUSE_SPEED				0.01
+#define MOUSE_SPEED				0.1
+#define M_PI					3.14159265358979323846
 
 class Context
 {
@@ -44,7 +45,6 @@ public:
 	void CreateSavePLYFileSelectionDialog();
 	void LoadPLYFile(std::string filepath);
 	void MoveCamera(float polarAngle, float azimutalAngle);
-	void MoveCamera3D(float cameraX, float cameraY, float cameraZ);
 	void ZoomCamera(float intensity);
 	void ReloadShaders();
 	void ToggleDarkMode();
@@ -92,7 +92,7 @@ public:
 
 	CLILoader GetCLI();
 
-	GLFWwindow* GetWindow();
+	GLFWwindow* GetWindow();	
 
 private:
 	void RenderMenuBar();
@@ -108,10 +108,14 @@ private:
 	bool benchmarkMode = false;
 	bool debugMode = false;
 	bool darkMode = false;
-	bool mouseLeftPressed = false;
+	//bool mouseLeftPressed = false;
 	bool firstMouse = true;
-	double lastX;
-	double lastY;
+	
+	float  yaw   = -90.0f;
+	float  pitch = 0.0f;
+	float  lastX = 800.0f / 2.0;
+	float  lastY = 600.0 / 2.0;
+	float  fov   = 45.0f;
 
 	ViewerModule* viewer = nullptr;
 	PLYReader* reader = nullptr;
