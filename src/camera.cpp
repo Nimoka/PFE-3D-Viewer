@@ -4,6 +4,7 @@
 #define CAMERASPEED			0.1f
 #define MAX_ANGLE			1.5f
 
+
 Eigen::Matrix4f OrthographicProjection(float l, float r, float b, float t,
 		float n, float f) {
 	float rpl = r + l;
@@ -90,14 +91,6 @@ void Camera::MoveCameraPolar(Eigen::Vector2f coordinates) {
 	if (this->cameraPolarCoordinates.y() > MAX_ANGLE) this->cameraPolarCoordinates.y() = MAX_ANGLE;
 	if (this->cameraPolarCoordinates.y() < -MAX_ANGLE) this->cameraPolarCoordinates.y() = -MAX_ANGLE;
 }
-
-void Camera::MoveCamera3D(Eigen::Vector3f coordinates){
-	if(navigation3DUpDown)
-		this->camera3DCoordinates += coordinates;
-	else
-		this->camera3DCoordinates += ((coordinates.cross(up)).normalized() + coordinates) * CAMERASPEED;
-	}
-
 
 void Camera::ZoomCameraPolar(float intensity) {
 	this->sceneDistance += intensity;
