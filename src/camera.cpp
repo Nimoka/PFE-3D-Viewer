@@ -2,6 +2,7 @@
 
 #define ORTHO_THRESOLD		1.e2f
 #define CAMERASPEED			0.1f
+#define MAX_ANGLE			1.5f
 
 Eigen::Matrix4f OrthographicProjection(float l, float r, float b, float t,
 		float n, float f) {
@@ -86,15 +87,8 @@ Camera::Camera()
 
 void Camera::MoveCameraPolar(Eigen::Vector2f coordinates) {
 	this->cameraPolarCoordinates += coordinates;
-
-	if (this->cameraPolarCoordinates.x() > EIGEN_PI)
-		this->cameraPolarCoordinates.x() -= (2 * EIGEN_PI);
-	else if (this->cameraPolarCoordinates.x() < (-EIGEN_PI))
-		this->cameraPolarCoordinates.x() += (2 * EIGEN_PI);
-	if (this->cameraPolarCoordinates.y() > EIGEN_PI)
-		this->cameraPolarCoordinates.y() -= (2 * EIGEN_PI);
-	else if (this->cameraPolarCoordinates.y() < (-EIGEN_PI))
-		this->cameraPolarCoordinates.y() += (2 * EIGEN_PI);
+	if (this->cameraPolarCoordinates.y() > MAX_ANGLE) this->cameraPolarCoordinates.y() = MAX_ANGLE;
+	if (this->cameraPolarCoordinates.y() < -MAX_ANGLE) this->cameraPolarCoordinates.y() = -MAX_ANGLE;
 }
 
 void Camera::MoveCamera3D(Eigen::Vector3f coordinates){
