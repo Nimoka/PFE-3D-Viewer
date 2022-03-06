@@ -2,8 +2,7 @@
 
 #define ORTHO_THRESOLD		1.e2f
 #define CAMERASPEED			0.1f
-#define MAX_ANGLE			1.5f
-
+#define MAX_ANGLE			((EIGEN_PI / 2.) - 1.2e-3)
 
 Eigen::Matrix4f OrthographicProjection(float l, float r, float b, float t,
 		float n, float f) {
