@@ -390,33 +390,36 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 }
 
 void Context::ProcessMouseMovement(double x, double y) {
-	this->scene->navigate3D = true;
-	float xpos = static_cast<float>(x);
-	float ypos = static_cast<float>(y);
+	if (mouseLeftPressed){
+		this->scene->navigate3D = true;
+		float xpos              = static_cast<float>(x);
+		float ypos              = static_cast<float>(y);
 
-	if(firstMouse){
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
+		if (firstMouse)
+		{
+		  lastX      = xpos;
+		  lastY      = ypos;
+		  firstMouse = false;
+		}
+		float xoffset = (xpos - lastX) * MOUSE_SPEED;   // slowly move the camera
+		float yoffset = (lastY - ypos) * MOUSE_SPEED;
+		lastX         = xpos;
+		lastY         = ypos;
+		//this->MoveCamera(static_cast<float>(xoffset),static_cast<float>(yoffset));
+
+		yaw += xoffset ;
+		pitch += yoffset ;
+
+		if (pitch > 89.0f) pitch = 89.0f;
+		if (pitch < -89.0f) pitch = -89.0f;
+
+		Eigen::Vector3f front;
+		front[0] = cos(yaw * M_PI / 180.0) * cos(pitch * M_PI / 180.0);
+		front[1] = sin(pitch * M_PI / 180.0);
+		front[2] = sin(yaw * M_PI / 180.0) * cos(pitch * M_PI / 180.0);
+
+		this->scene->GetCamera()->cameraFront = front.normalized();
 	}
-	float xoffset = (xpos -lastX) *MOUSE_SPEED; // slowly move the camera
-	float yoffset = (lastY - ypos) *MOUSE_SPEED;
-	lastX=xpos ;
-	lastY=ypos ;
-	//this->MoveCamera(static_cast<float>(xoffset),static_cast<float>(yoffset));
-
-	yaw += xoffset;
-	pitch += yoffset;
-
-	if (pitch > 89.0f) pitch = 89.0f;
-	if (pitch < -89.0f) pitch = -89.0f;
-
-	Eigen::Vector3f front;
-	front[0] = cos(yaw * M_PI/180.0) * cos(pitch*M_PI / 180.0);
-	front[1] = sin(pitch * M_PI / 180.0);
-	front[2] = sin(yaw * M_PI / 180.0) * cos(pitch * M_PI / 180.0);
-
-	this->scene->GetCamera()->cameraFront = front.normalized();
 }
 
 void Context::ProcessMouseButton(int button, int action, int mods) {
@@ -427,6 +430,7 @@ void Context::ProcessMouseButton(int button, int action, int mods) {
 		}
 		if (action == GLFW_RELEASE){
 			mouseLeftPressed =false;
+			firstMouse       = true;
 		}
 	}
 }
