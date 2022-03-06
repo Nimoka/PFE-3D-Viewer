@@ -31,7 +31,6 @@ public:
 	Camera();
 
 	void MoveCameraPolar(Eigen::Vector2f coordinates);
-	void MoveCamera3D(Eigen::Vector3f coordinates);
 	void ZoomCameraPolar(float intensity);
 
 	Eigen::Matrix4f ComputeViewMatrix() const;
@@ -51,6 +50,9 @@ public:
 	void SetNearFarOffsets(float nearOffset, float farOffset);
 
 	bool navigation3DUpDown = true;
+	Eigen::Vector3f camera3DCoordinates;
+	Eigen::Vector3f cameraFront;
+	Eigen::Vector3f up;
 private:
 	Eigen::Vector3f sceneCenter;
 	float sceneDistance;
@@ -62,10 +64,7 @@ private:
 
 	Eigen::Matrix4f cameraMatrix;
 	Eigen::Vector2f cameraPolarCoordinates;
-	Eigen::Vector3f camera3DCoordinates;
-	Eigen::Vector3f cameraFront;
-
-	Eigen::Vector3f up;
+	
 };
 
 #endif // CAMERA_H
