@@ -3,7 +3,7 @@
 file(GLOB TESTS_PLYREADER_SOURCES
 		plyreader.cpp
 		${VIEWER_SOURCES})
-list(REMOVE_ITEM TESTS_PLYREADER_SOURCES ${ROOT_DIR}/src/main.cpp)
+list(REMOVE_ITEM TESTS_PLYREADER_SOURCES ${ROOT_DIR}/src/viewer/main.cpp)
 
 add_executable(plyreader
 		${TESTS_PLYREADER_SOURCES}
@@ -19,7 +19,7 @@ add_test(plyreader plyreader)
 file(GLOB TESTS_CLILOADER_SOURCES
 		cliloader.cpp
 		${VIEWER_SOURCES})
-list(REMOVE_ITEM TESTS_CLILOADER_SOURCES ${ROOT_DIR}/src/main.cpp)
+list(REMOVE_ITEM TESTS_CLILOADER_SOURCES ${ROOT_DIR}/src/viewer/main.cpp)
 
 add_executable(cliloader
 		${TESTS_CLILOADER_SOURCES}

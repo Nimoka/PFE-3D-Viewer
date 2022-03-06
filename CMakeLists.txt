@@ -134,15 +134,15 @@ add_definitions(-DDATA_DIR="${PROJECT_SOURCE_DIR}/data/")
 
 set(VIEWER_NAME 3DViewer)
 file(GLOB VIEWER_SOURCES
-		${ROOT_DIR}/src/*.cpp
-		${ROOT_DIR}/src/modules/*.cpp
-		${ROOT_DIR}/src/renderers/*.cpp
+		${ROOT_DIR}/src/viewer/*.cpp
+		${ROOT_DIR}/src/viewer/modules/*.cpp
+		${ROOT_DIR}/src/viewer/renderers/*.cpp
 		${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
 		${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp)
 file(GLOB VIEWER_HEADERS
-		${ROOT_DIR}/include/*.h
-		${ROOT_DIR}/include/modules/*.h
-		${ROOT_DIR}/include/renderers/*.h
+		${ROOT_DIR}/include/viewer/*.h
+		${ROOT_DIR}/include/viewer/modules/*.h
+		${ROOT_DIR}/include/viewer/renderers/*.h
 		${IMGUI_DIR}/backends/imgui_impl_glfw.h
 		${IMGUI_DIR}/backends/imgui_impl_opengl3.h
 		${IMGUI_DIR}/backends/imgui_impl_opengl3_loader.h)
@@ -159,7 +159,7 @@ set(VIEWER_LIBRARIES
 		${OPENGL_LIBRARIES})
 
 set(VIEWER_INCLUDE
-		${ROOT_DIR}/include/
+		${ROOT_DIR}/include/viewer/
 		${GLFW_INCLUDE}
 		${IMGUI_INCLUDE}
 		${IMGUI_DIR}/backends/
