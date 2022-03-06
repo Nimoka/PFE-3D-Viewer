@@ -1,7 +1,7 @@
 #include "imgui_addons.h"
 
 #include <imgui_internal.h>
-#include <cstdlib>
+#include <string>
 
 /* From: https://github.com/ocornut/imgui/issues/1901#issue-335266223 */
 bool ImGui::ProgressBar(const char* label, float value, const ImVec2& size_arg,

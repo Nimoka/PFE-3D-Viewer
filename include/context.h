@@ -4,17 +4,17 @@
 #include <iostream>
 #include <vector>
 
-#include "GLFW/glfw3.h"
-#include "imgui.h"
-#include "ImGuiFileBrowser.h"
+#include <GLFW/glfw3.h>
+#include <imgui.h>
+#include <ImGuiFileBrowser.h>
 
+#include "cliloader.h"
 #include "modules/imguidemo.h"
 #include "modules/imguiFPS.h"
 #include "modules/meshcontent.h"
 #include "modules/module.h"
 #include "modules/viewer.h"
 #include "plyreader.h"
-#include "cliloader.h"
 
 #define DEFAULT_WINDOW_TITLE	"3D Viewer"
 #define DEFAULT_WINDOW_WIDTH	1280
@@ -94,7 +94,7 @@ public:
 
 	CLILoader GetCLI();
 
-	GLFWwindow* GetWindow();	
+	GLFWwindow* GetWindow();
 
 private:
 	void RenderMenuBar();
@@ -113,11 +113,11 @@ private:
 	bool mouseLeftPressed = false;
 	bool firstMouse = true;
 	
-	float  yaw   = -90.0f;
-	float  pitch = 0.0f;
-	float  lastX = 800.0f / 2.0;
-	float  lastY = 600.0 / 2.0;
-	float  fov   = 45.0f;
+	float yaw = -90.0f;
+	float pitch = 0.0f;
+	float lastX = 800.0f / 2.0;
+	float lastY = 600.0 / 2.0;
+	float fov = 45.0f;
 
 	ViewerModule* viewer = nullptr;
 	PLYReader* reader = nullptr;

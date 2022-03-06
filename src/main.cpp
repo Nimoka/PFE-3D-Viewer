@@ -1,8 +1,8 @@
 #include "opengl.h"
 
 #include <cmath>
-#include <iostream>
 #include <ctype.h>
+#include <iostream>
 
 #include <backends/imgui_impl_glfw.h>
 

@@ -1,7 +1,7 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
-#include <Eigen/Eigen>
+#include <Eigen/Geometry>
 
 #include "shaderreader.h"
 

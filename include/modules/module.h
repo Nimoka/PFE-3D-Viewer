@@ -5,7 +5,6 @@
 
 #include <imgui.h>
 
-// #include "context.h"
 #include "utils.h"
 
 class GUIModule

@@ -1,8 +1,9 @@
 #ifndef MODULES_VIEWER_H
 #define MODULES_VIEWER_H
 
-#include <imgui.h>
 #include <string>
+
+#include <imgui.h>
 
 #include "mesh.h"
 #include "modules/module.h"

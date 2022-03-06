@@ -2,16 +2,15 @@
 
 #include <iostream>
 
-#include "Eigen/Geometry"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-#include "toml.hpp"
+#include <Eigen/Geometry>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+#include <toml.hpp>
 
 #include "camera.h"
 #include "filewithextension.h"
 #include "modules/filedialog.h"
 #include "modules/message.h"
-#include "modules/meshcontent.h"
 #include "renderers/forward.h"
 #include "renderers/simple.h"
 #include "scene.h"
@@ -208,7 +207,8 @@ void Context::CreateOpenPLYFileSelectionDialog() {
 void Context::LoadPLYFile(std::string filepath) {
 	PLYReader* reader = new PLYReader(this, filepath);
 	if (reader->Load()) {
-		std::string filename = filepath.substr(filepath.rfind(PATH_DELIMITER) + 1);
+		std::string filename = filepath.substr(
+				filepath.rfind(PATH_DELIMITER) + 1);
 		this->SetWindowTitle(filename);
 
 		if (this->reader != nullptr)
@@ -357,24 +357,34 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 				this->MoveCamera(0., -movementSpeed);
 				return;
 			case GLFW_KEY_W:
-				// Move forward	
+				// Move forward
 				this->scene->navigate3D = true;
-				this->scene->GetCamera()->camera3DCoordinates += movementSpeed * this->scene->GetCamera()->cameraFront;
+				this->scene->GetCamera()->camera3DCoordinates
+						+= movementSpeed
+								* this->scene->GetCamera()->cameraFront;
 				return;
 			case GLFW_KEY_S:
 				// Move backward
 				this->scene->navigate3D = true;
-				this->scene->GetCamera()->camera3DCoordinates += -movementSpeed * this->scene->GetCamera()->cameraFront;
+				this->scene->GetCamera()->camera3DCoordinates
+						-= movementSpeed
+								* this->scene->GetCamera()->cameraFront;
 				return;
 			case GLFW_KEY_A:
 				// Move left
 				this->scene->navigate3D = true;
-				this->scene->GetCamera()->camera3DCoordinates+= this->scene->GetCamera()->cameraFront.cross(this->scene->GetCamera()->up).normalized() * -movementSpeed;
+				this->scene->GetCamera()->camera3DCoordinates -=
+						this->scene->GetCamera()->cameraFront
+								.cross(this->scene->GetCamera()->up)
+								.normalized() * movementSpeed;
 				return;
 			case GLFW_KEY_D:
 				// Move right
 				this->scene->navigate3D = true;
-				this->scene->GetCamera()->camera3DCoordinates+= this->scene->GetCamera()->cameraFront.cross(this->scene->GetCamera()->up).normalized() * movementSpeed;
+				this->scene->GetCamera()->camera3DCoordinates +=
+						this->scene->GetCamera()->cameraFront
+								.cross(this->scene->GetCamera()->up)
+								.normalized() * movementSpeed;
 				return;
 			case GLFW_KEY_O:
 				// Zoom out
@@ -393,24 +403,26 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 void Context::ProcessMouseMovement(double x, double y) {
 	if (mouseLeftPressed){
 		this->scene->navigate3D = true;
-		float xpos              = static_cast<float>(x);
-		float ypos              = static_cast<float>(y);
+		float xpos = static_cast<float>(x);
+		float ypos = static_cast<float>(y);
 
-		if (firstMouse)
-		{
-		  lastX      = xpos;
-		  lastY      = ypos;
-		  firstMouse = false;
+		if (firstMouse) {
+			lastX = xpos;
+			lastY = ypos;
+			firstMouse = false;
 		}
-		float xoffset = (xpos - lastX) * MOUSE_SPEED;   // slowly move the camera
-		float yoffset = (lastY - ypos) * MOUSE_SPEED;
-		lastX         = xpos;
-		lastY         = ypos;
 
-		yaw	+= xoffset ;
-		pitch += yoffset ;
-		if (pitch > MAX_PITCH) pitch = MAX_PITCH;
-		if (pitch < -MAX_PITCH) pitch = -MAX_PITCH;
+		float xoffset = (xpos - lastX) * MOUSE_SPEED;
+		float yoffset = (lastY - ypos) * MOUSE_SPEED;
+		lastX = xpos;
+		lastY = ypos;
+
+		yaw += xoffset;
+		pitch += yoffset;
+		if (pitch > MAX_PITCH)
+			pitch = MAX_PITCH;
+		if (pitch < -MAX_PITCH)
+			pitch = -MAX_PITCH;
 
 		Eigen::Vector3f front;
 		front[0] = cos(yaw * EIGEN_PI / PI_DEGREE)
@@ -424,14 +436,12 @@ void Context::ProcessMouseMovement(double x, double y) {
 }
 
 void Context::ProcessMouseButton(int button, int action, int mods) {
-  if (button == GLFW_MOUSE_BUTTON_1)
-  {
+	if (button == GLFW_MOUSE_BUTTON_1) {
 		if (action == GLFW_PRESS) {
 			mouseLeftPressed = true;
-		}
-		if (action == GLFW_RELEASE){
-			mouseLeftPressed =false;
-			firstMouse       = true;
+		} else if (action == GLFW_RELEASE) {
+			mouseLeftPressed = false;
+			firstMouse = true;
 		}
 	}
 }
@@ -476,7 +486,9 @@ void Context::SetForcedWindowTitle(std::string title) {
 }
 
 std::string Context::GetWindowTitle() {
-	return this->windowTitleForced.empty() ? this->windowTitleForced : this->windowTitle;
+	return this->windowTitleForced.empty()
+			? this->windowTitleForced
+			: this->windowTitle;
 }
 
 void Context::SetWindowSize(int width, int height) {
@@ -628,7 +640,8 @@ void Context::RenderMenuBar() {
 				if (ImGui::MenuItem("Show mesh content", "",
 						(this->meshContent != nullptr)))
 					this->ToggleMeshContentModule();
-				if(ImGui::MenuItem("Show FPS", "", (this->imguiFPS!=nullptr)))
+				if (ImGui::MenuItem("Show FPS", "",
+						(this->imguiFPS != nullptr)))
 					this->ToggleImGuiFPSModule();
 				ImGui::EndMenu();
 			}

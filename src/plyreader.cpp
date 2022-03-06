@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "miniply.h"
+#include <miniply.h>
 
 #include "context.h"
 #include "modules/message.h"

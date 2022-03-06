@@ -3,7 +3,7 @@
 
 #include "opengl.h"
 
-#include "imgui.h"
+#include <imgui.h>
 
 #include "scene.h"
 

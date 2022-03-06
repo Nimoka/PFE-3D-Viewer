@@ -23,7 +23,8 @@ static Eigen::Matrix4f Perspective(float fovy, float aspect,
 static Eigen::Matrix4f LookAt(const Eigen::Vector3f& position,
 		const Eigen::Vector3f& target, const Eigen::Vector3f& up);
 
-Eigen::Vector3f PolarToCartesian(Eigen::Vector2f coordinates, Eigen::Vector3f center, float distance);
+Eigen::Vector3f PolarToCartesian(Eigen::Vector2f coordinates,
+		Eigen::Vector3f center, float distance);
 
 class Camera
 {

@@ -1,10 +1,10 @@
 #ifndef MODULES_FILEDIALOG_H
 #define MODULES_FILEDIALOG_H
 
+#include <ImGuiFileBrowser.h>
+
 #include "context.h"
 #include "modules/module.h"
-
-#include <ImGuiFileBrowser.h>
 
 class FileDialogModule: public GUIModule
 {

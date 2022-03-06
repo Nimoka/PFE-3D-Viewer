@@ -2,7 +2,6 @@
 #define RENDERERS_SIMPLE_H
 
 #include "renderers/renderer.h"
-
 #include "shaderreader.h"
 
 class SimpleRenderer: public Renderer

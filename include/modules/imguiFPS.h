@@ -8,10 +8,12 @@ class ImGuiFPSModule: public GUIModule
 public:
 	ImGuiFPSModule(void* context);
 	ImGuiFPSModule(ImGuiFPSModule* module);
-    void ShowFPSWindow();
 	~ImGuiFPSModule();
 
 	void Render();
+
+private:
+	void ShowFPSWindow();
 };
 
 #endif // MODULES_IMGUIFPS_H

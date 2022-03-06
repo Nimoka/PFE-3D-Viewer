@@ -7,7 +7,8 @@
 class FileWithExtension : public CLI::Validator
 {
 public:
-	FileWithExtension(std::string extension, const std::string &validator_name = std::string{});
+	FileWithExtension(std::string extension,
+			const std::string &validator_name = std::string{});
 };
 
 #endif // FILEWITHEXTENSION_H

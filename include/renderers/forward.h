@@ -2,7 +2,6 @@
 #define RENDERER_FORWARD_H
 
 #include "renderers/renderer.h"
-
 #include "shaderreader.h"
 
 class ForwardRenderer: public Renderer
