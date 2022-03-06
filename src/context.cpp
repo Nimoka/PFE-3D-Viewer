@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "Eigen/Geometry"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "toml.hpp"
@@ -412,9 +413,11 @@ void Context::ProcessMouseMovement(double x, double y) {
 		if (pitch < -MAX_PITCH) pitch = -MAX_PITCH;
 
 		Eigen::Vector3f front;
-		front[0] = cos(yaw * M_PI / PI_DEGREE) * cos(pitch * M_PI / PI_DEGREE);
-		front[1] = sin(pitch * M_PI / PI_DEGREE);
-		front[2] = sin(yaw * M_PI / PI_DEGREE) * cos(pitch * M_PI / PI_DEGREE);
+		front[0] = cos(yaw * EIGEN_PI / PI_DEGREE)
+				* cos(pitch * EIGEN_PI / PI_DEGREE);
+		front[1] = sin(pitch * EIGEN_PI / PI_DEGREE);
+		front[2] = sin(yaw * EIGEN_PI / PI_DEGREE)
+				* cos(pitch * EIGEN_PI / PI_DEGREE);
 
 		this->scene->GetCamera()->cameraFront = front.normalized();
 	}
