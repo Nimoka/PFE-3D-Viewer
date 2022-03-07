@@ -487,8 +487,8 @@ void Context::SetForcedWindowTitle(std::string title) {
 
 std::string Context::GetWindowTitle() {
 	return this->windowTitleForced.empty()
-			? this->windowTitleForced
-			: this->windowTitle;
+			? this->windowTitle
+			: this->windowTitleForced;
 }
 
 void Context::SetWindowSize(int width, int height) {

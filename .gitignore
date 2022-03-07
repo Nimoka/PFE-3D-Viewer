@@ -3,6 +3,7 @@ archive/
 build/
 data/
 out/
+!tests/data/
 
 # macOS
 .DS_Store
