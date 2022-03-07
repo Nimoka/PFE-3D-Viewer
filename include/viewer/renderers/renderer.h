@@ -6,6 +6,7 @@
 #include <imgui.h>
 
 #include "scene.h"
+#include "shaderreader.h"
 
 class Renderer
 {
@@ -17,12 +18,13 @@ public:
 
 	virtual void Render(ImVec2 size) = 0;
 
-	virtual void ReloadShaders() = 0;
+	void ReloadShaders();
 
 	void* GetContext();
 	const Eigen::Vector4f& GetClearColor();
-	Scene* GetScene();
 	const GLuint& GetRenderTexture() const;
+	Scene* GetScene();
+	ShaderReader* GetShader();
 
 	void SetClearColor(Eigen::Vector4f color);
 	void SetScene(Scene* scene);
@@ -35,6 +37,8 @@ protected:
 
 	Eigen::Vector4f clearColor = Eigen::Vector4f(0., 0., 0., 1.);
 	Scene* scene = nullptr;
+
+	ShaderReader* shader = nullptr;
 
 private:
 	void Init();

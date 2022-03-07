@@ -102,8 +102,3 @@ void ForwardRenderer::Render(ImVec2 size) {
 
 	this->DeactivateContext();
 }
-
-void ForwardRenderer::ReloadShaders() {
-	if (this->shader != nullptr)
-		this->shader->Load();
-}

@@ -20,6 +20,11 @@ Renderer::Renderer(Renderer* renderer)
 	this->Init();
 }
 
+void Renderer::ReloadShaders() {
+	if (this->shader != nullptr)
+		this->shader->Load();
+}
+
 Renderer::~Renderer() {
 	this->Clean();
 }
@@ -32,12 +37,16 @@ const Eigen::Vector4f& Renderer::GetClearColor() {
 	return this->clearColor;
 }
 
+const GLuint& Renderer::GetRenderTexture() const {
+	return this->renderTextureID;
+}
+
 Scene* Renderer::GetScene() {
 	return this->scene;
 }
 
-const GLuint& Renderer::GetRenderTexture() const {
-	return this->renderTextureID;
+ShaderReader* Renderer::GetShader() {
+	return this->shader;
 }
 
 void Renderer::SetClearColor(Eigen::Vector4f color) {

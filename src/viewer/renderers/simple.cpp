@@ -67,8 +67,3 @@ void SimpleRenderer::Render(ImVec2 size) {
 
 	this->DeactivateContext();
 }
-
-void SimpleRenderer::ReloadShaders() {
-	if (this->shader != nullptr)
-		this->shader->Load();
-}
