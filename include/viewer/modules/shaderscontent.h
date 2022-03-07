@@ -2,21 +2,21 @@
 #define MODULES_SHADERSCONTENT_H
 
 #include "modules/module.h"
-#include "shaderreader.h"
+#include "shadersreader.h"
 
 class ShadersContentModule: public GUIModule
 {
 public:
-	ShadersContentModule(void* context, ShaderReader* shader);
+	ShadersContentModule(void* context, ShadersReader* shader);
 	ShadersContentModule(ShadersContentModule* module);
 	~ShadersContentModule();
 
 	void Init();
 	void Render();
 
-	ShaderReader* GetShader();
+	ShadersReader* GetShaders();
 private:
-	ShaderReader* shader;
+	ShadersReader* shaders;
 };
 
 #endif // MODULES_SHADERSCONTENT_H

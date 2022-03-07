@@ -294,7 +294,7 @@ void Context::ToggleMeshContentModule() {
 void Context::ToggleShadersContentModule() {
 	if (this->shadersContent == nullptr) {
 		this->shadersContent = new ShadersContentModule(this,
-				this->viewer->GetRenderer()->GetShader());
+				this->viewer->GetRenderer()->GetShaders());
 		this->AddModule(this->shadersContent);
 	} else {
 		this->shadersContent->Kill();

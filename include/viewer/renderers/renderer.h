@@ -6,7 +6,7 @@
 #include <imgui.h>
 
 #include "scene.h"
-#include "shaderreader.h"
+#include "shadersreader.h"
 
 class Renderer
 {
@@ -24,7 +24,7 @@ public:
 	const Eigen::Vector4f& GetClearColor();
 	const GLuint& GetRenderTexture() const;
 	Scene* GetScene();
-	ShaderReader* GetShader();
+	ShadersReader* GetShaders();
 
 	void SetClearColor(Eigen::Vector4f color);
 	void SetScene(Scene* scene);
@@ -38,7 +38,7 @@ protected:
 	Eigen::Vector4f clearColor = Eigen::Vector4f(0., 0., 0., 1.);
 	Scene* scene = nullptr;
 
-	ShaderReader* shader = nullptr;
+	ShadersReader* shaders = nullptr;
 
 private:
 	void Init();

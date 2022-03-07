@@ -9,7 +9,7 @@
 #include "camera.h"
 #include "light.h"
 #include "mesh.h"
-#include "shaderreader.h"
+#include "shadersreader.h"
 
 class Scene
 {
@@ -18,7 +18,7 @@ public:
 	Scene(Mesh* mesh);
 	~Scene();
 
-	bool RenderMesh(ShaderReader* shader);
+	bool RenderMesh(ShadersReader* shaders);
 	void UpdateCameraViewport(ImVec2 size);
 
 	const Eigen::Vector3f& GetAmbientColor();

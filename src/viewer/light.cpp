@@ -31,12 +31,12 @@ DirectionalLight::DirectionalLight(DirectionalLight* light)
 
 DirectionalLight::~DirectionalLight() {}
 
-void DirectionalLight::Activate(ShaderReader* shader) {
-	if (shader == nullptr)
+void DirectionalLight::Activate(ShadersReader* shaders) {
+	if (shaders == nullptr)
 		return;
-	glUniform3fv(shader->GetUniformLocation("light_intensity"), 1,
+	glUniform3fv(shaders->GetUniformLocation("light_intensity"), 1,
 			this->intensity.data());
-	glUniform3fv(shader->GetUniformLocation("light_direction"), 1,
+	glUniform3fv(shaders->GetUniformLocation("light_direction"), 1,
 			this->direction.data());
 }
 

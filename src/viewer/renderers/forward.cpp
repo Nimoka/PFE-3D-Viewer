@@ -18,12 +18,12 @@ ForwardRenderer::ForwardRenderer(Renderer* renderer)
 }
 
 ForwardRenderer::~ForwardRenderer() {
-	if (this->shader != nullptr)
-		delete this->shader;
+	if (this->shaders != nullptr)
+		delete this->shaders;
 }
 
 void ForwardRenderer::Init() {
-	this->shader = new ShaderReader(this->context,
+	this->shaders = new ShadersReader(this->context,
 			DATA_DIR "shaders/forward.vert",
 			DATA_DIR "shaders/forward.frag",
 			false);
@@ -48,15 +48,16 @@ void ForwardRenderer::Render(ImVec2 size) {
 			this->clearColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	this->shader->Activate();
+	this->shaders->Activate();
 
-	glUniformMatrix4fv(this->shader->GetUniformLocation("projection_matrix"), 1,
-			false, this->scene->GetCamera()->ComputeProjectionMatrix().data());
-	glUniformMatrix4fv(this->shader->GetUniformLocation("view_matrix"), 1,
+	glUniformMatrix4fv(this->shaders->GetUniformLocation("projection_matrix"),
+			1, false,
+			this->scene->GetCamera()->ComputeProjectionMatrix().data());
+	glUniformMatrix4fv(this->shaders->GetUniformLocation("view_matrix"), 1,
 			false, this->scene->GetCamera()->ComputeViewMatrix().data());
-	glUniformMatrix4fv(this->shader->GetUniformLocation("model_matrix"), 1,
+	glUniformMatrix4fv(this->shaders->GetUniformLocation("model_matrix"), 1,
 			false, this->scene->GetMeshTransformationMatrix().data());
-	glUniformMatrix3fv(this->shader->GetUniformLocation("normal_matrix"), 1,
+	glUniformMatrix3fv(this->shaders->GetUniformLocation("normal_matrix"), 1,
 			false, this->scene->GetNormalMatrix().data());
 
 	{
@@ -82,23 +83,23 @@ void ForwardRenderer::Render(ImVec2 size) {
 			directionalLightsIntensity[3 * i + 2] = light->GetIntensity()[2];
 		}
 
-		glUniform1i(this->shader->GetUniformLocation("lights_dir_nb"),
+		glUniform1i(this->shaders->GetUniformLocation("lights_dir_nb"),
 				nbDirectionalLights);
-		glUniform3fv(this->shader->GetUniformLocation("lights_dir_direction"),
+		glUniform3fv(this->shaders->GetUniformLocation("lights_dir_direction"),
 				nbDirectionalLights, directionalLightsDirection);
-		glUniform3fv(this->shader->GetUniformLocation("lights_dir_intensity"),
+		glUniform3fv(this->shaders->GetUniformLocation("lights_dir_intensity"),
 				nbDirectionalLights, directionalLightsIntensity);
 
 		delete directionalLightsDirection;
 		delete directionalLightsIntensity;
 	}
 
-	glUniform3fv(this->shader->GetUniformLocation("ambient_color"), 1,
+	glUniform3fv(this->shaders->GetUniformLocation("ambient_color"), 1,
 			this->scene->GetAmbientColor().data());
 
-	this->scene->RenderMesh(this->shader);
+	this->scene->RenderMesh(this->shaders);
 
-	this->shader->Deactivate();
+	this->shaders->Deactivate();
 
 	this->DeactivateContext();
 }

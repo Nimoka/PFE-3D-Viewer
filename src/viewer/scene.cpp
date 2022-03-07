@@ -23,7 +23,7 @@ Scene::~Scene() {
 	this->Clean();
 }
 
-bool Scene::RenderMesh(ShaderReader* shader) {
+bool Scene::RenderMesh(ShadersReader* shaders) {
 	if (this->mesh == nullptr)
 		return false;
 
@@ -31,21 +31,21 @@ bool Scene::RenderMesh(ShaderReader* shader) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vboID[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vboID[1]);
 
-	int vertexLocation = shader->GetAttribLocation("vtx_position");
+	int vertexLocation = shaders->GetAttribLocation("vtx_position");
 	if (vertexLocation >= 0) {
 		glVertexAttribPointer(vertexLocation, 3, GL_FLOAT, GL_FALSE,
 				sizeof(Vertex), ((void*) 0));
 		glEnableVertexAttribArray(vertexLocation);
 	}
 
-	int colorLocation = shader->GetAttribLocation("vtx_color");
+	int colorLocation = shaders->GetAttribLocation("vtx_color");
 	if (colorLocation >= 0) {
 		glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE,
 				sizeof(Vertex), ((void*) sizeof(Eigen::Vector3f)));
 		glEnableVertexAttribArray(colorLocation);
 	}
 
-	int normalLocation = shader->GetAttribLocation("vtx_normal");
+	int normalLocation = shaders->GetAttribLocation("vtx_normal");
 	if (normalLocation >= 0) {
 		glVertexAttribPointer(normalLocation, 3, GL_FLOAT, GL_FALSE,
 				sizeof(Vertex), ((void*) (2 * sizeof(Eigen::Vector3f))));

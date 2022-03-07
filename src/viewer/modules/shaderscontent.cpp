@@ -1,8 +1,8 @@
 #include "modules/shaderscontent.h"
 
-ShadersContentModule::ShadersContentModule(void* context, ShaderReader* shader)
+ShadersContentModule::ShadersContentModule(void* context, ShadersReader* shaders)
 		: GUIModule(context)
-		, shader(shader) {
+		, shaders(shaders) {
 	this->title = "Shaders content";
 
 	this->Init();
@@ -10,7 +10,7 @@ ShadersContentModule::ShadersContentModule(void* context, ShaderReader* shader)
 
 ShadersContentModule::ShadersContentModule(ShadersContentModule* module)
 		: GUIModule(module->GetContext())
-		, shader(module->GetShader()) {
+		, shaders(module->GetShaders()) {
 	this->title = module->GetTitle();
 
 	this->Init();
@@ -21,25 +21,25 @@ ShadersContentModule::~ShadersContentModule() {}
 void ShadersContentModule::Init() {}
 
 void ShadersContentModule::Render() {
-	if (this->shader != nullptr) {
+	if (this->shaders != nullptr) {
 		if (ImGui::Begin(std::string(this->title + "###"
 				+ std::to_string(this->id)).c_str())) {
 			ImGui::Text("Informations:");
 			ImGui::Text("  Vertex shader: %s",
-					this->shader->GetVertexShaderPath().c_str());
+					this->shaders->GetVertexShaderPath().c_str());
 			ImGui::Text("  Fragment shader: %s",
-					this->shader->GetFragmentShaderPath().c_str());
-			ImGui::Text("  Dynamic: %s",
-					(this->shader->AreDynamic() ? "yes" : "no"));
+					this->shaders->GetFragmentShaderPath().c_str());
+			ImGui::Text("  Are dynamic: %s",
+					(this->shaders->AreDynamic() ? "yes" : "no"));
 			ImGui::Separator();
-			if (this->shader->IsLoaded()) {
-				if (ImGui::CollapsingHeader("Vertex shader")) {
+			if (this->shaders->AreLoaded()) {
+				if (ImGui::CollapsingHeader("Vertex shader source code")) {
 					ImGui::TextUnformatted(
-							this->shader->GetVertexShaderContent().c_str());
+							this->shaders->GetVertexShaderSource().c_str());
 				}
-				if (ImGui::CollapsingHeader("Fragment shader")) {
+				if (ImGui::CollapsingHeader("Fragment shader source code")) {
 					ImGui::TextUnformatted(
-							this->shader->GetFragmentShaderContent().c_str());
+							this->shaders->GetFragmentShaderSource().c_str());
 				}
 			} else {
 				ImGui::Text("Not loaded.");
@@ -49,6 +49,6 @@ void ShadersContentModule::Render() {
 	}
 }
 
-ShaderReader* ShadersContentModule::GetShader() {
-	return this->shader;
+ShadersReader* ShadersContentModule::GetShaders() {
+	return this->shaders;
 }

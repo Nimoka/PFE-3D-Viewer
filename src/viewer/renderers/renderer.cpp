@@ -21,8 +21,8 @@ Renderer::Renderer(Renderer* renderer)
 }
 
 void Renderer::ReloadShaders() {
-	if (this->shader != nullptr)
-		this->shader->Load();
+	if (this->shaders != nullptr)
+		this->shaders->Load();
 }
 
 Renderer::~Renderer() {
@@ -45,8 +45,8 @@ Scene* Renderer::GetScene() {
 	return this->scene;
 }
 
-ShaderReader* Renderer::GetShader() {
-	return this->shader;
+ShadersReader* Renderer::GetShaders() {
+	return this->shaders;
 }
 
 void Renderer::SetClearColor(Eigen::Vector4f color) {
