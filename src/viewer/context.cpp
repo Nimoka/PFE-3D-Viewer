@@ -350,12 +350,12 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 			case GLFW_KEY_LEFT:
 				// Move to the left
 				this->scene->navigate3D = false;
-				this->MoveCamera(-movementSpeed, 0.);
+				this->MoveCamera(movementSpeed, 0.);
 				return;
 			case GLFW_KEY_RIGHT:
 				// Move to the right
 				this->scene->navigate3D = false;
-				this->MoveCamera(movementSpeed, 0.);
+				this->MoveCamera(-movementSpeed, 0.);
 				return;
 			case GLFW_KEY_UP:
 				// Move to the top
@@ -400,12 +400,12 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 			case GLFW_KEY_O:
 				// Zoom out
 				this->scene->navigate3D = false;
-				this->ZoomCamera(-movementSpeed);
+				this->ZoomCamera(movementSpeed);
 				return;
 			case GLFW_KEY_P:
 				// Zoom in
 				this->scene->navigate3D = false;
-				this->ZoomCamera(movementSpeed);
+				this->ZoomCamera(-movementSpeed);
 				return;
 		}
 	}
