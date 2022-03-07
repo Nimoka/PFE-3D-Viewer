@@ -13,6 +13,7 @@
 #include "modules/imguiFPS.h"
 #include "modules/meshcontent.h"
 #include "modules/module.h"
+#include "modules/shaderscontent.h"
 #include "modules/viewer.h"
 #include "plyreader.h"
 
@@ -56,6 +57,7 @@ public:
 	/* Debug commands */
 	void ToggleImGuiDemoModule();
 	void ToggleMeshContentModule();
+	void ToggleShadersContentModule();
 	void ToggleImGuiFPSModule();
 
 	/* Callbacks */
@@ -129,6 +131,7 @@ private:
 	MeshContentModule* meshContent = nullptr;
 	ImGuiDemoModule* imguiDemo = nullptr;
 	ImGuiFPSModule* imguiFPS = nullptr;
+	ShadersContentModule* shadersContent = nullptr;
 
 	std::string configFile = DATA_DIR "configs/default.toml";
 	std::string inputFile;

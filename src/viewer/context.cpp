@@ -291,6 +291,17 @@ void Context::ToggleMeshContentModule() {
 	}
 }
 
+void Context::ToggleShadersContentModule() {
+	if (this->shadersContent == nullptr) {
+		this->shadersContent = new ShadersContentModule(this,
+				this->viewer->GetRenderer()->GetShader());
+		this->AddModule(this->shadersContent);
+	} else {
+		this->shadersContent->Kill();
+		this->shadersContent = nullptr;
+	}
+}
+
 void Context::ToggleImGuiFPSModule() {
 	if (this->imguiFPS == nullptr) {
 		this->imguiFPS = new ImGuiFPSModule(this);
@@ -640,6 +651,9 @@ void Context::RenderMenuBar() {
 				if (ImGui::MenuItem("Show mesh content", "",
 						(this->meshContent != nullptr)))
 					this->ToggleMeshContentModule();
+				if (ImGui::MenuItem("Show shaders content", "",
+						(this->shadersContent != nullptr)))
+					this->ToggleShadersContentModule();
 				if (ImGui::MenuItem("Show FPS", "",
 						(this->imguiFPS != nullptr)))
 					this->ToggleImGuiFPSModule();
