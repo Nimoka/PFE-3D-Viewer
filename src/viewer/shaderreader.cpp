@@ -169,6 +169,8 @@ bool ShaderReader::Load() {
 	this->programID = tmpProgramID;
 	this->vertexShaderID = tmpVertexShaderID;
 	this->fragmentShaderID = tmpFragmentShaderID;
+	this->vertexShaderContent = vertexShaderContent;
+	this->fragmentShaderContent = fragmentShaderContent;
 	this->isLoaded = true;
 
 	return true;
@@ -215,12 +217,24 @@ bool ShaderReader::IsLoaded() {
 	return this->isLoaded;
 }
 
-std::string ShaderReader::GetVertexShaderPath() {
+bool ShaderReader::AreDynamic() {
+	return this->dynamicShaders;
+}
+
+const std::string& ShaderReader::GetVertexShaderPath() {
 	return this->vertexShaderPath;
 }
 
-std::string ShaderReader::GetFragmentShaderPath() {
+const std::string& ShaderReader::GetFragmentShaderPath() {
 	return this->fragmentShaderPath;
+}
+
+const std::string& ShaderReader::GetVertexShaderContent() {
+	return this->vertexShaderContent;
+}
+
+const std::string& ShaderReader::GetFragmentShaderContent() {
+	return this->fragmentShaderContent;
 }
 
 void ShaderReader::Clean() {

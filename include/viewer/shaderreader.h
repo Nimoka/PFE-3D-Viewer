@@ -30,9 +30,12 @@ public:
 			const std::string& fragmentShaderPath);
 
 	bool IsLoaded();
+	bool AreDynamic();
 
-	std::string GetVertexShaderPath();
-	std::string GetFragmentShaderPath();
+	const std::string& GetVertexShaderPath();
+	const std::string& GetFragmentShaderPath();
+	const std::string& GetVertexShaderContent();
+	const std::string& GetFragmentShaderContent();
 
 private:
 	void Clean();
@@ -43,6 +46,9 @@ private:
 	std::string vertexShaderPath;
 	std::string fragmentShaderPath;
 	bool dynamicShaders = false;
+
+	std::string vertexShaderContent;
+	std::string fragmentShaderContent;
 
 	GLuint programID;
 	GLuint vertexShaderID;
