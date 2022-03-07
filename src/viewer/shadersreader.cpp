@@ -1,4 +1,6 @@
-#include "shaderreader.h"
+#include "shadersreader.h"
+
+#include <string>
 
 #include "context.h"
 #include "modules/message.h"
@@ -16,26 +18,26 @@ std::string GetShaderLog(GLuint shader) {
 	return text;
 }
 
-ShaderReader::ShaderReader(void* context)
+ShadersReader::ShadersReader(void* context)
 		: context(context) {}
 
-ShaderReader::ShaderReader(void* context,
+ShadersReader::ShadersReader(void* context,
 		const std::string& vertexShaderPath,
 		const std::string& fragmentShaderPath,
-		bool isDynamic)
+		bool areDynamic)
 		: context(context)
-		, dynamicShaders(isDynamic) {
+		, dynamicShaders(areDynamic) {
 	this->vertexShaderPath = vertexShaderPath;
 	this->fragmentShaderPath = fragmentShaderPath;
 
 	this->Load();
 }
 
-ShaderReader::~ShaderReader() {
+ShadersReader::~ShadersReader() {
 	this->Clean();
 }
 
-bool ShaderReader::Load() {
+bool ShadersReader::Load() {
 	// Check if filepaths were given
 	if (this->vertexShaderPath.empty()
 			|| this->fragmentShaderPath.empty())
@@ -169,70 +171,102 @@ bool ShaderReader::Load() {
 	this->programID = tmpProgramID;
 	this->vertexShaderID = tmpVertexShaderID;
 	this->fragmentShaderID = tmpFragmentShaderID;
-	this->isLoaded = true;
+	this->vertexShaderSource = vertexShaderContent;
+	this->fragmentShaderSource = fragmentShaderContent;
+	this->areLoaded = true;
 
 	return true;
 }
 
-bool ShaderReader::LoadFiles(const std::string& vertexShaderPath,
+bool ShadersReader::LoadFiles(const std::string& vertexShaderPath,
 		const std::string& fragmentShaderPath,
-		bool isDynamic) {
+		bool areDynamic) {
 	this->vertexShaderPath = vertexShaderPath;
 	this->fragmentShaderPath = fragmentShaderPath;
-	this->dynamicShaders = isDynamic;
+	this->dynamicShaders = areDynamic;
 
 	return this->Load();
 }
 
-void ShaderReader::Activate() const {
+void ShadersReader::Activate() const {
 	assert(this->isLoaded);
 	glUseProgram(this->programID);
 }
 
-void ShaderReader::Deactivate() const {
+void ShadersReader::Deactivate() const {
 	glUseProgram(0);
 }
 
-int ShaderReader::GetUniformLocation(const std::string& name) const {
+int ShadersReader::GetUniformLocation(const std::string& name) const {
 	assert(this->isLoaded);
 	return glGetUniformLocation(this->programID, name.c_str());
 }
 
-int ShaderReader::GetAttribLocation(const std::string& name) const {
+int ShadersReader::GetAttribLocation(const std::string& name) const {
 	assert(this->isLoaded);
 	return glGetAttribLocation(this->programID, name.c_str());
 }
 
-bool ShaderReader::ExportShaders(const std::string& vertexShaderPath,
+bool ShadersReader::ExportShaders(const std::string& vertexShaderPath,
 		const std::string& fragmentShaderPath) {
-	return (SaveTextFile(vertexShaderPath,
-					GetFileContent(this->vertexShaderPath))
-			&& SaveTextFile(fragmentShaderPath,
-					GetFileContent(this->fragmentShaderPath)));
+	return (SaveTextFile(vertexShaderPath, this->vertexShaderSource)
+			&& SaveTextFile(fragmentShaderPath, this->fragmentShaderSource));
 }
 
-bool ShaderReader::IsLoaded() {
-	return this->isLoaded;
+bool ShadersReader::AreDynamic() {
+	return this->dynamicShaders;
 }
 
-std::string ShaderReader::GetVertexShaderPath() {
+bool ShadersReader::AreLoaded() {
+	return this->areLoaded;
+}
+
+const std::string& ShadersReader::GetVertexShaderPath() {
 	return this->vertexShaderPath;
 }
 
-std::string ShaderReader::GetFragmentShaderPath() {
+const std::string& ShadersReader::GetFragmentShaderPath() {
 	return this->fragmentShaderPath;
 }
 
-void ShaderReader::Clean() {
-	if (!this->isLoaded)
+const std::string& ShadersReader::GetVertexShaderSource() {
+	return this->vertexShaderSource;
+}
+
+const std::string& ShadersReader::GetFragmentShaderSource() {
+	return this->fragmentShaderSource;
+}
+
+void ShadersReader::Clean() {
+	if (!this->areLoaded)
 		return;
 	glDeleteShader(this->vertexShaderID);
 	glDeleteShader(this->fragmentShaderID);
 	glDeleteProgram(this->programID);
-	this->isLoaded = false;
+	this->areLoaded = false;
 }
 
-std::string ShaderReader::GetFileContent(const std::string& path) {
+std::string ShadersReader::GetFileContent(const std::string& path) {
 	std::string content = LoadTextFile(path);
+
+	// If nothing to add, don’t change anything
+	if (this->preprocessorMacros.size() == 0)
+		return content;
+
+	// Search for first line after #version
+	std::size_t insertPoint = content.find("#version");
+	insertPoint = content.find('\n', insertPoint);
+	if (insertPoint != std::string::npos)
+		insertPoint++;
+	else
+		content += '\n';
+
+	// Add preprocessor macros (#define)
+	for (const std::pair<const std::string, std::string>& item:
+			this->preprocessorMacros) {
+		content.insert(insertPoint,
+				"#define " + item.first + ' ' + item.second + '\n');
+	}
+
 	return content;
 }

@@ -18,12 +18,12 @@ SimpleRenderer::SimpleRenderer(Renderer* renderer)
 }
 
 SimpleRenderer::~SimpleRenderer() {
-	if (this->shader != nullptr)
-		delete this->shader;
+	if (this->shaders != nullptr)
+		delete this->shaders;
 }
 
 void SimpleRenderer::Init() {
-	this->shader = new ShaderReader(this->context,
+	this->shaders = new ShadersReader(this->context,
 			DATA_DIR "shaders/simple.vert",
 			DATA_DIR "shaders/simple.frag",
 			false);
@@ -46,29 +46,25 @@ void SimpleRenderer::Render(ImVec2 size) {
 			this->clearColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	this->shader->Activate();
+	this->shaders->Activate();
 
-	glUniformMatrix4fv(this->shader->GetUniformLocation("projection_matrix"), 1,
-			false, this->scene->GetCamera()->ComputeProjectionMatrix().data());
-	glUniformMatrix4fv(this->shader->GetUniformLocation("model_matrix"), 1,
+	glUniformMatrix4fv(this->shaders->GetUniformLocation("projection_matrix"),
+			1, false,
+			this->scene->GetCamera()->ComputeProjectionMatrix().data());
+	glUniformMatrix4fv(this->shaders->GetUniformLocation("model_matrix"), 1,
 			false, this->scene->GetMeshTransformationMatrix().data());
-	glUniformMatrix3fv(this->shader->GetUniformLocation("normal_matrix"), 1,
+	glUniformMatrix3fv(this->shaders->GetUniformLocation("normal_matrix"), 1,
 			false, this->scene->GetNormalMatrix().data());
-	glUniformMatrix4fv(this->shader->GetUniformLocation("view_matrix"), 1,
+	glUniformMatrix4fv(this->shaders->GetUniformLocation("view_matrix"), 1,
 			false, this->scene->GetCamera()->ComputeViewMatrix().data());
 	if (this->scene->navigate3D) {
-		glUniformMatrix4fv(this->shader->GetUniformLocation("view_matrix"), 1,
+		glUniformMatrix4fv(this->shaders->GetUniformLocation("view_matrix"), 1,
 			false, this->scene->GetCamera()->Compute3DViewMatrix().data());
 	}
 
-	this->scene->RenderMesh(this->shader);
+	this->scene->RenderMesh(this->shaders);
 
-	this->shader->Deactivate();
+	this->shaders->Deactivate();
 
 	this->DeactivateContext();
-}
-
-void SimpleRenderer::ReloadShaders() {
-	if (this->shader != nullptr)
-		this->shader->Load();
 }

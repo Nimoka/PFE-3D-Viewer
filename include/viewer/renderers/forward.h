@@ -2,7 +2,6 @@
 #define RENDERER_FORWARD_H
 
 #include "renderers/renderer.h"
-#include "shaderreader.h"
 
 class ForwardRenderer: public Renderer
 {
@@ -15,11 +14,6 @@ public:
 	void Init();
 
 	void Render(ImVec2 size);
-
-	void ReloadShaders();
-
-private:
-	ShaderReader* shader = nullptr;
 };
 
 #endif // RENDERER_FORWARD_H

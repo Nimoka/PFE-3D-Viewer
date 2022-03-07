@@ -1,19 +1,21 @@
-#ifndef SHADERLOADER_H
-#define SHADERLOADER_H
+#ifndef SHADERSLOADER_H
+#define SHADERSLOADER_H
 
 #include "opengl.h"
 
+#include <unordered_map>
+
 std::string GetShaderLog(GLuint shader);
 
-class ShaderReader
+class ShadersReader
 {
 public:
-	ShaderReader(void* context);
-	ShaderReader(void* context,
+	ShadersReader(void* context);
+	ShadersReader(void* context,
 			const std::string& vertexShaderPath,
 			const std::string& fragmentShaderPath,
 			bool isDynamic = false);
-	~ShaderReader();
+	~ShadersReader();
 
 	bool Load();
 	bool LoadFiles(const std::string& vertexShaderPath,
@@ -29,10 +31,13 @@ public:
 	bool ExportShaders(const std::string& vertexShaderPath,
 			const std::string& fragmentShaderPath);
 
-	bool IsLoaded();
+	bool AreDynamic();
+	bool AreLoaded();
 
-	std::string GetVertexShaderPath();
-	std::string GetFragmentShaderPath();
+	const std::string& GetVertexShaderPath();
+	const std::string& GetFragmentShaderPath();
+	const std::string& GetVertexShaderSource();
+	const std::string& GetFragmentShaderSource();
 
 private:
 	void Clean();
@@ -44,11 +49,16 @@ private:
 	std::string fragmentShaderPath;
 	bool dynamicShaders = false;
 
+	std::string vertexShaderSource;
+	std::string fragmentShaderSource;
+
+	std::unordered_map<std::string, std::string> preprocessorMacros;
+
 	GLuint programID;
 	GLuint vertexShaderID;
 	GLuint fragmentShaderID;
 
-	bool isLoaded = false;
+	bool areLoaded = false;
 };
 
-#endif // SHADERLOADER_H
+#endif // SHADERSLOADER_H

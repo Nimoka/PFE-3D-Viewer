@@ -268,6 +268,19 @@ void Context::Quit() {
 	this->readyToDie = true;
 }
 
+template <class T>
+void Context::SwitchRenderer() {
+	Renderer* renderer = this->viewer->GetRenderer();
+	if (renderer == nullptr)
+		return;
+
+	this->viewer->SetRenderer(new T(renderer));
+	if (this->shadersContent != nullptr) {
+		this->shadersContent->SetShaders(
+				this->viewer->GetRenderer()->GetShaders());
+	}
+}
+
 void Context::ToggleImGuiDemoModule() {
 	if (this->imguiDemo == nullptr) {
 		this->imguiDemo = new ImGuiDemoModule(this);
@@ -288,6 +301,17 @@ void Context::ToggleMeshContentModule() {
 	} else {
 		this->meshContent->Kill();
 		this->meshContent = nullptr;
+	}
+}
+
+void Context::ToggleShadersContentModule() {
+	if (this->shadersContent == nullptr) {
+		this->shadersContent = new ShadersContentModule(this,
+				this->viewer->GetRenderer()->GetShaders());
+		this->AddModule(this->shadersContent);
+	} else {
+		this->shadersContent->Kill();
+		this->shadersContent = nullptr;
 	}
 }
 
@@ -339,12 +363,12 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 			case GLFW_KEY_LEFT:
 				// Move to the left
 				this->scene->navigate3D = false;
-				this->MoveCamera(-movementSpeed, 0.);
+				this->MoveCamera(movementSpeed, 0.);
 				return;
 			case GLFW_KEY_RIGHT:
 				// Move to the right
 				this->scene->navigate3D = false;
-				this->MoveCamera(movementSpeed, 0.);
+				this->MoveCamera(-movementSpeed, 0.);
 				return;
 			case GLFW_KEY_UP:
 				// Move to the top
@@ -389,12 +413,12 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 			case GLFW_KEY_O:
 				// Zoom out
 				this->scene->navigate3D = false;
-				this->ZoomCamera(-movementSpeed);
+				this->ZoomCamera(movementSpeed);
 				return;
 			case GLFW_KEY_P:
 				// Zoom in
 				this->scene->navigate3D = false;
-				this->ZoomCamera(movementSpeed);
+				this->ZoomCamera(-movementSpeed);
 				return;
 		}
 	}
@@ -579,20 +603,16 @@ void Context::RenderMenuBar() {
 				if (ImGui::BeginMenu("Render method")) {
 					if (ImGui::MenuItem("Simple shading (no lights)", "",
 							dynamic_cast<SimpleRenderer*>(renderer))) {
-						this->viewer->SetRenderer(new SimpleRenderer(renderer));
+						this->SwitchRenderer<SimpleRenderer>();
 					} else if (ImGui::MenuItem("Forward shading", "",
 							dynamic_cast<ForwardRenderer*>(renderer))) {
-						this->viewer->SetRenderer(
-								new ForwardRenderer(renderer));
+						this->SwitchRenderer<ForwardRenderer>();
 					// } else if (ImGui::MenuItem("Deferred shading", "",
 					// 		dynamic_cast<DeferredRenderer*>(renderer))) {
-					// 	this->viewer->SetRenderer(
-					// 			new DeferredRenderer(renderer));
-					// }
-					// else if (ImGui::MenuItem("Clustured deferred shading", "",
+					// 	this->SwitchRenderer<DeferredRenderer>();
+					// } else if (ImGui::MenuItem("Clustured deferred shading", "",
 					// 		dynamic_cast<ClusturedRenderer*>(renderer))) {
-					// 	this->viewer->SetRenderer(
-					// 			new ClusturedRenderer(renderer));
+					// 	this->SwitchRenderer<ClusturedRenderer>();
 					}
 					ImGui::EndMenu();
 				}
@@ -640,6 +660,9 @@ void Context::RenderMenuBar() {
 				if (ImGui::MenuItem("Show mesh content", "",
 						(this->meshContent != nullptr)))
 					this->ToggleMeshContentModule();
+				if (ImGui::MenuItem("Show shaders content", "",
+						(this->shadersContent != nullptr)))
+					this->ToggleShadersContentModule();
 				if (ImGui::MenuItem("Show FPS", "",
 						(this->imguiFPS != nullptr)))
 					this->ToggleImGuiFPSModule();

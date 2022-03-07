@@ -3,7 +3,7 @@
 
 #include <Eigen/Geometry>
 
-#include "shaderreader.h"
+#include "shadersreader.h"
 
 class Light
 {
@@ -12,7 +12,7 @@ public:
 	Light(Light* light);
 	virtual ~Light();
 
-	virtual void Activate(ShaderReader* shader) = 0;
+	virtual void Activate(ShadersReader* shaders) = 0;
 
 	Eigen::Vector3f GetIntensity();
 
@@ -30,7 +30,7 @@ public:
 	DirectionalLight(DirectionalLight* light);
 	~DirectionalLight();
 
-	void Activate(ShaderReader* shader);
+	void Activate(ShadersReader* shaders);
 
 	Eigen::Vector3f GetDirection();
 
