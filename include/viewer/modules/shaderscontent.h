@@ -15,6 +15,7 @@ public:
 	void Render();
 
 	ShadersReader* GetShaders();
+	void SetShaders(ShadersReader* shaders);
 private:
 	ShadersReader* shaders;
 };

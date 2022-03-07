@@ -268,6 +268,19 @@ void Context::Quit() {
 	this->readyToDie = true;
 }
 
+template <class T>
+void Context::SwitchRenderer() {
+	Renderer* renderer = this->viewer->GetRenderer();
+	if (renderer == nullptr)
+		return;
+
+	this->viewer->SetRenderer(new T(renderer));
+	if (this->shadersContent != nullptr) {
+		this->shadersContent->SetShaders(
+				this->viewer->GetRenderer()->GetShaders());
+	}
+}
+
 void Context::ToggleImGuiDemoModule() {
 	if (this->imguiDemo == nullptr) {
 		this->imguiDemo = new ImGuiDemoModule(this);
@@ -590,20 +603,16 @@ void Context::RenderMenuBar() {
 				if (ImGui::BeginMenu("Render method")) {
 					if (ImGui::MenuItem("Simple shading (no lights)", "",
 							dynamic_cast<SimpleRenderer*>(renderer))) {
-						this->viewer->SetRenderer(new SimpleRenderer(renderer));
+						this->SwitchRenderer<SimpleRenderer>();
 					} else if (ImGui::MenuItem("Forward shading", "",
 							dynamic_cast<ForwardRenderer*>(renderer))) {
-						this->viewer->SetRenderer(
-								new ForwardRenderer(renderer));
+						this->SwitchRenderer<ForwardRenderer>();
 					// } else if (ImGui::MenuItem("Deferred shading", "",
 					// 		dynamic_cast<DeferredRenderer*>(renderer))) {
-					// 	this->viewer->SetRenderer(
-					// 			new DeferredRenderer(renderer));
-					// }
-					// else if (ImGui::MenuItem("Clustured deferred shading", "",
+					// 	this->SwitchRenderer<DeferredRenderer>();
+					// } else if (ImGui::MenuItem("Clustured deferred shading", "",
 					// 		dynamic_cast<ClusturedRenderer*>(renderer))) {
-					// 	this->viewer->SetRenderer(
-					// 			new ClusturedRenderer(renderer));
+					// 	this->SwitchRenderer<ClusturedRenderer>();
 					}
 					ImGui::EndMenu();
 				}

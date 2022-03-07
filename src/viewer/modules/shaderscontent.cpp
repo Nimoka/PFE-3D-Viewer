@@ -52,3 +52,7 @@ void ShadersContentModule::Render() {
 ShadersReader* ShadersContentModule::GetShaders() {
 	return this->shaders;
 }
+
+void ShadersContentModule::SetShaders(ShadersReader* shaders) {
+	this->shaders = shaders;
+}

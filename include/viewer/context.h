@@ -54,6 +54,9 @@ public:
 	void ToggleDebugMode();
 	void Quit();
 
+	template<class T>
+	void SwitchRenderer();
+
 	/* Debug commands */
 	void ToggleImGuiDemoModule();
 	void ToggleMeshContentModule();
