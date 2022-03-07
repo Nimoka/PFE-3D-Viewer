@@ -3,6 +3,8 @@
 
 #include "opengl.h"
 
+#include <unordered_map>
+
 std::string GetShaderLog(GLuint shader);
 
 class ShaderReader
@@ -49,6 +51,8 @@ private:
 
 	std::string vertexShaderContent;
 	std::string fragmentShaderContent;
+
+	std::unordered_map<std::string, std::string> preprocessorMacros;
 
 	GLuint programID;
 	GLuint vertexShaderID;

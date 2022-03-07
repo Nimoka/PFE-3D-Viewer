@@ -1,5 +1,7 @@
 #include "shaderreader.h"
 
+#include <string>
+
 #include "context.h"
 #include "modules/message.h"
 #include "utils.h"
@@ -248,5 +250,25 @@ void ShaderReader::Clean() {
 
 std::string ShaderReader::GetFileContent(const std::string& path) {
 	std::string content = LoadTextFile(path);
+
+	// If nothing to add, don’t change anything
+	if (this->preprocessorMacros.size() == 0)
+		return content;
+
+	// Search for first line after #version
+	std::size_t insertPoint = content.find("#version");
+	insertPoint = content.find('\n', insertPoint);
+	if (insertPoint != std::string::npos)
+		insertPoint++;
+	else
+		content += '\n';
+
+	// Add preprocessor macros (#define)
+	for (const std::pair<const std::string, std::string>& item:
+			this->preprocessorMacros) {
+		content.insert(insertPoint,
+				"#define " + item.first + ' ' + item.second + '\n');
+	}
+
 	return content;
 }
