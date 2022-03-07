@@ -98,10 +98,10 @@ void Camera::MoveCameraPolar(Eigen::Vector2f coordinates) {
 }
 
 void Camera::ZoomCameraPolar(float intensity) {
-	this->sceneDistance += intensity;
+	this->sceneRadius += intensity;
 
-	if (this->sceneDistance < .0001)
-		this->sceneDistance -= intensity;
+	if (this->sceneRadius < .0001)
+		this->sceneRadius -= intensity;
 }
 
 Eigen::Matrix4f Camera::ComputeViewMatrix() const {
