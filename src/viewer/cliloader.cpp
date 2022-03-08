@@ -66,7 +66,7 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 
 	// Configuration file
 	if (!configFile.empty()) {
-		if (!context->LoadTOMLContext(configFile))
+		if (!context->GetTOML().LoadContext(context, configFile))
 			return ERROR_CLI_MISS_TOML;
 		context->SetConfigFile(configFile);
 	}
