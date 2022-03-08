@@ -30,11 +30,15 @@ public:
 
 	void SetCamera(Camera* camera);
 	void SetMesh(Mesh* mesh);
+	void SetRenderer(void* renderer);
+
 	bool navigate3D;
 
 private:
 	void Init();
 	void Clean();
+
+	void* renderer = nullptr;
 
 	Camera* camera = nullptr;
 	Mesh* mesh = nullptr;

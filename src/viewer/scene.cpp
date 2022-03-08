@@ -1,5 +1,7 @@
 #include "scene.h"
 
+#include "renderers/renderer.h"
+
 Scene::Scene()
 		: camera(new Camera()) {
 	// TODO: To remove, only for test purpose
@@ -111,6 +113,10 @@ void Scene::SetMesh(Mesh* mesh) {
 		this->Clean();
 	this->mesh = mesh;
 	this->Init();
+}
+
+void Scene::SetRenderer(void* renderer) {
+	this->renderer = renderer;
 }
 
 void Scene::Init() {
