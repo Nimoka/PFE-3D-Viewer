@@ -5,6 +5,9 @@
 
 #include <unordered_map>
 
+// Shaders pre-processor macros’ names
+#define SPPM_NB_DIR_LIGHTS	"NB_DIR_LIGHTS"
+
 std::string GetShaderLog(GLuint shader);
 
 class ShadersReader
@@ -24,6 +27,9 @@ public:
 
 	void Activate() const;
 	void Deactivate() const;
+
+	void SetPreProcessorMacro(const std::string& name,
+			const std::string& value);
 
 	int GetUniformLocation(const std::string& name) const;
 	int GetAttribLocation(const std::string& name) const;

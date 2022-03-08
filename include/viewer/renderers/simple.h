@@ -14,6 +14,8 @@ public:
 	void Init();
 
 	void Render(ImVec2 size);
+
+	void UpdateDirectionalLightList();
 };
 
 #endif // RENDERERS_SIMPLE_H

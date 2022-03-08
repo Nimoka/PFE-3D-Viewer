@@ -30,6 +30,8 @@ ShadersReader::ShadersReader(void* context,
 	this->vertexShaderPath = vertexShaderPath;
 	this->fragmentShaderPath = fragmentShaderPath;
 
+	this->preprocessorMacros[SPPM_NB_DIR_LIGHTS] = "0";
+
 	this->Load();
 }
 
@@ -195,6 +197,11 @@ void ShadersReader::Activate() const {
 
 void ShadersReader::Deactivate() const {
 	glUseProgram(0);
+}
+
+void ShadersReader::SetPreProcessorMacro(const std::string& name,
+			const std::string& value) {
+	this->preprocessorMacros[name] = value;
 }
 
 int ShadersReader::GetUniformLocation(const std::string& name) const {

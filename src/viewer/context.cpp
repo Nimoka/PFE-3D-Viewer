@@ -300,6 +300,13 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 			}
 		} else {
 			switch (key) {
+				case GLFW_KEY_L:
+					if (this->scene != nullptr)
+						this->scene->AddDirectionalLight(
+								new DirectionalLight(
+										Eigen::Vector3f(.2, .2, .2),
+										Eigen::Vector3f(1., 1., 0.)));
+					return;
 				case GLFW_KEY_R:
 					this->ReloadShaders();
 					return;

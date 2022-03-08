@@ -18,6 +18,7 @@ public:
 
 	virtual void Render(ImVec2 size) = 0;
 
+	virtual void UpdateDirectionalLightList() = 0;
 	void ReloadShaders();
 
 	void* GetContext();
