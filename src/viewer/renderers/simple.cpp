@@ -55,11 +55,12 @@ void SimpleRenderer::Render(ImVec2 size) {
 			false, this->scene->GetMeshTransformationMatrix().data());
 	glUniformMatrix3fv(this->shaders->GetUniformLocation("normal_matrix"), 1,
 			false, this->scene->GetNormalMatrix().data());
-	glUniformMatrix4fv(this->shaders->GetUniformLocation("view_matrix"), 1,
-			false, this->scene->GetCamera()->ComputeViewMatrix().data());
 	if (this->scene->navigate3D) {
 		glUniformMatrix4fv(this->shaders->GetUniformLocation("view_matrix"), 1,
 			false, this->scene->GetCamera()->Compute3DViewMatrix().data());
+	}else{
+		glUniformMatrix4fv(	this->shaders->GetUniformLocation("view_matrix"),1,
+			false,this->scene->GetCamera()->ComputeViewMatrix().data());
 	}
 
 	this->scene->RenderMesh(this->shaders);

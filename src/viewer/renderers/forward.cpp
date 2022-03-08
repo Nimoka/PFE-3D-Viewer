@@ -53,12 +53,17 @@ void ForwardRenderer::Render(ImVec2 size) {
 	glUniformMatrix4fv(this->shaders->GetUniformLocation("projection_matrix"),
 			1, false,
 			this->scene->GetCamera()->ComputeProjectionMatrix().data());
-	glUniformMatrix4fv(this->shaders->GetUniformLocation("view_matrix"), 1,
-			false, this->scene->GetCamera()->ComputeViewMatrix().data());
 	glUniformMatrix4fv(this->shaders->GetUniformLocation("model_matrix"), 1,
 			false, this->scene->GetMeshTransformationMatrix().data());
 	glUniformMatrix3fv(this->shaders->GetUniformLocation("normal_matrix"), 1,
 			false, this->scene->GetNormalMatrix().data());
+	if (this->scene->navigate3D){
+		glUniformMatrix4fv(this->shaders->GetUniformLocation("view_matrix"),1,
+			false, this->scene->GetCamera()->Compute3DViewMatrix().data());
+	}else{
+		glUniformMatrix4fv(this->shaders->GetUniformLocation("view_matrix"), 1,
+			false, this->scene->GetCamera()->ComputeViewMatrix().data());
+	}
 
 	{
 		unsigned int nbDirectionalLights;
