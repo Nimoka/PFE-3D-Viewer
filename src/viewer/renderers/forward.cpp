@@ -1,6 +1,9 @@
 #include "renderers/forward.h"
 
+#include <string>
+
 #include "light.h"
+#include "shadersreader.h"
 
 ForwardRenderer::ForwardRenderer(void* context)
 		: Renderer(context) {
@@ -23,7 +26,12 @@ ForwardRenderer::~ForwardRenderer() {
 }
 
 void ForwardRenderer::Init() {
-	this->shaders = new ShadersReader(this->context,
+	if (this->scene != nullptr)
+		this->scene->SetRenderer(this);
+
+	this->shaders = new ShadersReader(this->context);
+	this->UpdateDirectionalLightList();
+	this->shaders->LoadFiles(
 			DATA_DIR "shaders/forward.vert",
 			DATA_DIR "shaders/forward.frag",
 			false);
@@ -60,39 +68,10 @@ void ForwardRenderer::Render(ImVec2 size) {
 	glUniformMatrix3fv(this->shaders->GetUniformLocation("normal_matrix"), 1,
 			false, this->scene->GetNormalMatrix().data());
 
-	{
-		unsigned int nbDirectionalLights;
-		float* directionalLightsDirection;
-		float* directionalLightsIntensity;
-
-		std::vector<DirectionalLight*>* lights = this->scene->GetLights();
-		nbDirectionalLights = lights->size();
-		directionalLightsDirection =
-				(float*) malloc(sizeof(float) * 3 * nbDirectionalLights);
-		directionalLightsIntensity =
-				(float*) malloc(sizeof(float) * 3 * nbDirectionalLights);
-
-		DirectionalLight* light;
-		for (unsigned int i = 0; i < nbDirectionalLights; i++) {
-			light = lights->at(i);
-			directionalLightsDirection[3 * i] = light->GetDirection()[0];
-			directionalLightsDirection[3 * i + 1] = light->GetDirection()[1];
-			directionalLightsDirection[3 * i + 2] = light->GetDirection()[2];
-			directionalLightsIntensity[3 * i] = light->GetIntensity()[0];
-			directionalLightsIntensity[3 * i + 1] = light->GetIntensity()[1];
-			directionalLightsIntensity[3 * i + 2] = light->GetIntensity()[2];
-		}
-
-		glUniform1i(this->shaders->GetUniformLocation("lights_dir_nb"),
-				nbDirectionalLights);
-		glUniform3fv(this->shaders->GetUniformLocation("lights_dir_direction"),
-				nbDirectionalLights, directionalLightsDirection);
-		glUniform3fv(this->shaders->GetUniformLocation("lights_dir_intensity"),
-				nbDirectionalLights, directionalLightsIntensity);
-
-		delete directionalLightsDirection;
-		delete directionalLightsIntensity;
-	}
+	glUniform3fv(this->shaders->GetUniformLocation("lights_dir_direction"),
+			this->nbDirectionalLights, this->directionalLightsDirection);
+	glUniform3fv(this->shaders->GetUniformLocation("lights_dir_intensity"),
+			this->nbDirectionalLights, this->directionalLightsIntensity);
 
 	glUniform3fv(this->shaders->GetUniformLocation("ambient_color"), 1,
 			this->scene->GetAmbientColor().data());
@@ -102,4 +81,42 @@ void ForwardRenderer::Render(ImVec2 size) {
 	this->shaders->Deactivate();
 
 	this->DeactivateContext();
+}
+
+void ForwardRenderer::UpdateDirectionalLightList() {
+	if (this->directionalLightsDirection != nullptr)
+		delete this->directionalLightsDirection;
+	if (this->directionalLightsDirection != nullptr)
+		delete this->directionalLightsIntensity;
+
+	std::vector<DirectionalLight*>* lights =
+			this->scene->GetDirectionalLights();
+	this->nbDirectionalLights = lights->size();
+	this->directionalLightsDirection =
+			(float*) malloc(sizeof(float) * 3 * nbDirectionalLights);
+	this->directionalLightsIntensity =
+			(float*) malloc(sizeof(float) * 3 * nbDirectionalLights);
+
+	DirectionalLight* light;
+	for (unsigned int i = 0; i < this->nbDirectionalLights; i++) {
+		light = lights->at(i);
+		this->directionalLightsDirection[3 * i] = light->GetDirection()[0];
+		this->directionalLightsDirection[3 * i + 1] = light->GetDirection()[1];
+		this->directionalLightsDirection[3 * i + 2] = light->GetDirection()[2];
+		this->directionalLightsIntensity[3 * i] = light->GetIntensity()[0];
+		this->directionalLightsIntensity[3 * i + 1] = light->GetIntensity()[1];
+		this->directionalLightsIntensity[3 * i + 2] = light->GetIntensity()[2];
+	}
+
+	if (this->shaders != nullptr) {
+		this->shaders->SetPreProcessorMacro(SPPM_NB_DIR_LIGHTS,
+				std::to_string(this->nbDirectionalLights));
+		this->shaders->Load();
+	}
+}
+
+void ForwardRenderer::SetScene(Scene* scene) {
+	this->scene = scene;
+	if (this->scene != nullptr)
+		this->scene->SetRenderer(this);
 }

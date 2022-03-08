@@ -3,15 +3,7 @@
 #include "renderers/renderer.h"
 
 Scene::Scene()
-		: camera(new Camera()) {
-	// TODO: To remove, only for test purpose
-	this->lights.push_back(new DirectionalLight(
-			Eigen::Vector3f(1., 1., 1.),
-			Eigen::Vector3f(0., 1., 0.)));
-	this->lights.push_back(new DirectionalLight(
-			Eigen::Vector3f(1., 0., 0.),
-			Eigen::Vector3f(0., -1., 0.)));
-}
+		: camera(new Camera()) {}
 
 Scene::Scene(Mesh* mesh) {
 	this->mesh = mesh;
@@ -19,7 +11,7 @@ Scene::Scene(Mesh* mesh) {
 }
 
 Scene::~Scene() {
-	for (auto i: this->lights)
+	for (auto i: this->directionalLights)
 		delete i;
 
 	this->Clean();
@@ -76,12 +68,26 @@ void Scene::UpdateCameraViewport(ImVec2 size) {
 	}
 }
 
+void Scene::AddDirectionalLight(DirectionalLight* light) {
+	if (light == nullptr)
+		return;
+
+	this->directionalLights.push_back(light);
+
+	if (this->renderer != nullptr)
+		((Renderer*) this->renderer)->UpdateDirectionalLightList();
+}
+
 const Eigen::Vector3f& Scene::GetAmbientColor() {
 	return this->ambientColor;
 }
 
 Camera* Scene::GetCamera() {
 	return this->camera;
+}
+
+std::vector<DirectionalLight*>* Scene::GetDirectionalLights() {
+	return &this->directionalLights;
 }
 
 Mesh* Scene::GetMesh() {
@@ -96,10 +102,6 @@ Eigen::Matrix3f Scene::GetNormalMatrix() {
 	Eigen::Matrix4f normalMatrix = this->camera->ComputeViewMatrix()
 			* this->meshTransformationMatrix;
 	return normalMatrix.block<3, 3>(0, 0).inverse().transpose();
-}
-
-std::vector<DirectionalLight*>* Scene::GetLights() {
-	return &this->lights;
 }
 
 void Scene::SetCamera(Camera* camera) {

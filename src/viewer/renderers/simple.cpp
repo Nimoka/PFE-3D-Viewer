@@ -23,6 +23,9 @@ SimpleRenderer::~SimpleRenderer() {
 }
 
 void SimpleRenderer::Init() {
+	if (this->scene != nullptr)
+		this->scene->SetRenderer(nullptr);
+
 	this->shaders = new ShadersReader(this->context,
 			DATA_DIR "shaders/simple.vert",
 			DATA_DIR "shaders/simple.frag",
@@ -68,3 +71,5 @@ void SimpleRenderer::Render(ImVec2 size) {
 
 	this->DeactivateContext();
 }
+
+void SimpleRenderer::UpdateDirectionalLightList() {}

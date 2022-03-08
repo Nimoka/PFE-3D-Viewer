@@ -55,6 +55,8 @@ void Renderer::SetClearColor(Eigen::Vector4f color) {
 
 void Renderer::SetScene(Scene* scene) {
 	this->scene = scene;
+	if (this->scene != nullptr)
+		this->scene->SetRenderer(nullptr);
 }
 
 void Renderer::ActivateContext() {

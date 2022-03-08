@@ -14,6 +14,15 @@ public:
 	void Init();
 
 	void Render(ImVec2 size);
+
+	void UpdateDirectionalLightList();
+
+	void SetScene(Scene* scene);
+private:
+	// Directional lights data
+	unsigned int nbDirectionalLights = 0;
+	float* directionalLightsDirection = nullptr;
+	float* directionalLightsIntensity = nullptr;
 };
 
 #endif // RENDERER_FORWARD_H
