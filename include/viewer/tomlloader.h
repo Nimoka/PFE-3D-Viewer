@@ -6,7 +6,7 @@
 class TOMLLoader
 {
 public:
-	int LoadContext(void *c, std::string filepath);
+	bool LoadContext(void *c, std::string filepath);
 };
 
 #endif // TOMLLOADER_H

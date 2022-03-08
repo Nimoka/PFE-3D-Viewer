@@ -10,3 +10,4 @@ make tests
 
 [ -f tests/viewer/plyreader ] && ./tests/viewer/plyreader
 [ -f tests/viewer/cliloader ] && ./tests/viewer/cliloader
+[ -f tests/viewer/tomlloader ] && ./tests/viewer/tomlloader
