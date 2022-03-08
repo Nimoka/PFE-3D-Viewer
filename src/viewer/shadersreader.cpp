@@ -191,7 +191,7 @@ bool ShadersReader::LoadFiles(const std::string& vertexShaderPath,
 }
 
 void ShadersReader::Activate() const {
-	assert(this->isLoaded);
+	assert(this->areLoaded);
 	glUseProgram(this->programID);
 }
 
@@ -205,12 +205,12 @@ void ShadersReader::SetPreProcessorMacro(const std::string& name,
 }
 
 int ShadersReader::GetUniformLocation(const std::string& name) const {
-	assert(this->isLoaded);
+	assert(this->areLoaded);
 	return glGetUniformLocation(this->programID, name.c_str());
 }
 
 int ShadersReader::GetAttribLocation(const std::string& name) const {
-	assert(this->isLoaded);
+	assert(this->areLoaded);
 	return glGetAttribLocation(this->programID, name.c_str());
 }
 
