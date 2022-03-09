@@ -31,15 +31,6 @@ DirectionalLight::DirectionalLight(DirectionalLight* light)
 
 DirectionalLight::~DirectionalLight() {}
 
-void DirectionalLight::Activate(ShadersReader* shaders) {
-	if (shaders == nullptr)
-		return;
-	glUniform3fv(shaders->GetUniformLocation("light_intensity"), 1,
-			this->intensity.data());
-	glUniform3fv(shaders->GetUniformLocation("light_direction"), 1,
-			this->direction.data());
-}
-
 Eigen::Vector3f DirectionalLight::GetDirection() {
 	return this->direction;
 }

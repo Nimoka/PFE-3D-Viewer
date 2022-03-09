@@ -12,8 +12,6 @@ public:
 	Light(Light* light);
 	virtual ~Light();
 
-	virtual void Activate(ShadersReader* shaders) = 0;
-
 	Eigen::Vector3f GetIntensity();
 
 	void SetIntensity(const Eigen::Vector3f& intensity);
@@ -29,8 +27,6 @@ public:
 			const Eigen::Vector3f& direction);
 	DirectionalLight(DirectionalLight* light);
 	~DirectionalLight();
-
-	void Activate(ShadersReader* shaders);
 
 	Eigen::Vector3f GetDirection();
 
