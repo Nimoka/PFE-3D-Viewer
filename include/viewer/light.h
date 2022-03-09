@@ -36,4 +36,20 @@ private:
 	Eigen::Vector3f direction;
 };
 
+class PointLight: public Light
+{
+public:
+	PointLight(const Eigen::Vector3f& intensity,
+			const Eigen::Vector3f& position);
+	PointLight(PointLight* light);
+	~PointLight();
+
+	Eigen::Vector3f GetPosition();
+
+	void SetPosition(const Eigen::Vector3f& position);
+
+private:
+	Eigen::Vector3f position;
+};
+
 #endif // LIGHT_H
