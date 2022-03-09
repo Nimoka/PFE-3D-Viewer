@@ -1,7 +1,7 @@
 #version 410 core
 
-uniform vec3 lights_dir_direction[2];
-uniform vec3 lights_dir_intensity[2];
+uniform vec3 lights_dir_direction[NB_DIR_LIGHTS];
+uniform vec3 lights_dir_intensity[NB_DIR_LIGHTS];
 
 uniform vec3 ambient_color;
 uniform mat3 normal_matrix;
