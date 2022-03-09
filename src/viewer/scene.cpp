@@ -3,7 +3,12 @@
 #include "renderers/renderer.h"
 
 Scene::Scene()
-		: camera(new Camera()) {}
+		: camera(new Camera()) {
+	this->AddDirectionalLight(
+			new DirectionalLight(
+					Eigen::Vector3f(.2, .2, .2),
+					Eigen::Vector3f(1., 1., 0.)));
+}
 
 Scene::Scene(Mesh* mesh) {
 	this->mesh = mesh;

@@ -65,9 +65,11 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 		context->SetInputFile(inputFile);
 
 	// Configuration file
-	if (!configFile.empty())
-		if (!context->LoadTOMLContext(configFile))
+	if (!configFile.empty()) {
+		if (!context->GetTOML().LoadContext(context, configFile))
 			return ERROR_CLI_MISS_TOML;
+		context->SetConfigFile(configFile);
+	}
 
 	// Window’s size
 	if (windowWidth && windowHeight) 

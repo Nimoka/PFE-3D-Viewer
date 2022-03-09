@@ -1,12 +1,67 @@
+#include "opengl.h"
+
+#include <cmath>
+#include <ctype.h>
 #include <iostream>
 
+#include <backends/imgui_impl_glfw.h>
+
 #define CATCH_CONFIG_MAIN
+#define ERROR_GLFW_INIT
 
 #include <catch2/catch.hpp>
 
 #include "context.h"
 
 Context* context;
+std::string glslVersion;
+
+static void PrintGLFWError(int error, const char* description) {
+	std::cerr << "GLFW Error " << error << ": " << description << std::endl;
+}
+
+int InitializeGLFW() {
+	glfwSetErrorCallback(PrintGLFWError);
+	int err = glfwInit();
+	if (err) {
+#ifdef __APPLE__
+		glslVersion = "#version 150";
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, (GLint) GL_TRUE);
+
+#ifdef ENABLE_HIGH_DPI
+		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
+#endif
+#else
+#ifdef _WIN32
+		glslVersion = "#version 130";
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, (GLint) GL_TRUE);
+#else
+		glslVersion = "#version 130";
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, (GLint) GL_TRUE);
+#endif
+#endif
+	}
+
+	return err;
+}
+
+void CleanupGLFW() {
+	glfwTerminate();
+}
+
+void CleanupEverything() {
+	delete context;
+	CleanupGLFW();
+}
 
 char* CstrFromString(std::string str) {
 	char *cstr = new char[str.length() + 1];
@@ -14,306 +69,184 @@ char* CstrFromString(std::string str) {
 	return cstr;
 }
 
+char** getArgv(int argc, std::vector<std::string> strs) {
+	char **argv = (char**) malloc(sizeof(char*) * argc);
+	for (int i = 0; i < argc; i++)
+		argv[i] = CstrFromString(strs[i]);
+	return argv;
+}
+
+void freeArgv(int argc, char **argv) {
+	for (int i = 0; i < argc; i++)
+		free(argv[i]);
+	free(argv);
+}
+
 
 static void TestHelp() {
 	int argc = 2;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("--help");
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "--help" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 
 static void TestMissingInput() {
 	int argc = 1;
-	char **argv = (char**) malloc(sizeof(char*));
-	argv[0] = CstrFromString("command");
-	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
-
-	delete [] argv;
-	free(argv);
+	char **argv = getArgv(argc, std::vector<std::string>{ "command" });
+	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
+	freeArgv(argc, argv);
 }
 static void TestWrongInput() {
 	int argc = 3;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "configs/default.toml");
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "-i", TEST_DATA_DIR "configs/default.toml" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 static void TestRightInput() {
 	int argc = 3;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "-i", TEST_DATA_DIR "models/cube.ply" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
-	REQUIRE(context->GetInputFile() == DATA_DIR "models/cube.ply");
-
-	delete [] argv;
-	free(argv);
+	REQUIRE(context->GetInputFile() == TEST_DATA_DIR "models/cube.ply");
+	freeArgv(argc, argv);
 }
 
 static void TestWrongConfig() {
-	int argc = 5;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("-c");
-	argv[4] = CstrFromString(DATA_DIR "configs/defaulttt.toml");
+	int argc = 3;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "-c", TEST_DATA_DIR "configs/defaulttt.toml" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 static void TestRightConfig() {
-	int argc = 5;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("-c");
-	argv[4] = CstrFromString(DATA_DIR "configs/default-2.toml");
+	int argc = 3;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "-c", TEST_DATA_DIR "configs/default-2.toml" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
-	REQUIRE(context->GetConfigFile() == (DATA_DIR "configs/default-2.toml"));
-
-	delete [] argv;
-	free(argv);
+	REQUIRE(context->GetConfigFile() == (TEST_DATA_DIR "configs/default-2.toml"));
+	freeArgv(argc, argv);
 }
 
 static void TestNonIntegerWidth() {
-	int argc = 5;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("--width");
-	argv[4] = CstrFromString("wowza");
+	int argc = 3;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "--width", "test" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 static void TestNegativeWidth() {
-	int argc = 5;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("--width");
-	argv[4] = CstrFromString("-480");
+	int argc = 3;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "--width", "-480" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 static void TestRightWidth() {
-	int argc = 5;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("--width");
-	argv[4] = CstrFromString("1000");
+	int argc = 3;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "--width", "1000" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(context->GetWindowWidth() == 1000);
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 
 static void TestNonIntegerHeight() {
-	int argc = 5;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("--height");
-	argv[4] = CstrFromString("wowza");
+	int argc = 3;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "--height", "test" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 static void TestNegativeHeight() {
-	int argc = 5;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("--height");
-	argv[4] = CstrFromString("-480");
+	int argc = 3;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "--height", "-480" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 static void TestRightHeight() {
-	int argc = 5;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("--height");
-	argv[4] = CstrFromString("1000");
+	int argc = 3;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "--height", "1000" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(context->GetWindowHeight() == 1000);
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 
 static void TestTitle() {
-	int argc = 5;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("-t");
-	argv[4] = CstrFromString("This is my test title");
+	int argc = 3;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "-t", "Test title" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
-	REQUIRE(context->GetWindowTitle() == "This is my test title");
-
-	delete [] argv;
-	free(argv);
+	REQUIRE(context->GetWindowTitle() == "Test title");
+	freeArgv(argc, argv);
 }
 
 static void TestExclusiveBenchmark() {
-	int argc = 5;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("-b");
-	argv[4] = CstrFromString("--nb");
+	int argc = 3;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "-b", "--nb" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 static void TestBenchmark() {
-	int argc = 4;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("-b");
+	int argc = 2;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "-b" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(context->GetBenchmarkMode());
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 static void TestNoBenchmark() {
 	context->SetBenchmarkMode(true);
-
-	int argc = 4;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("--nb");
+	int argc = 2;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "--nb" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(!context->GetBenchmarkMode());
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 
 static void TestExclusiveDebug() {
-	int argc = 5;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("-d");
-	argv[4] = CstrFromString("--nd");
+	int argc = 3;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "-d", "--nd" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 static void TestDebug() {
-	int argc = 4;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("-d");
+	int argc = 2;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "-d" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(context->GetDebugMode());
-
-	delete[] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 static void TestNoDebug() {
 	context->SetDebugMode(true);
-
-	int argc = 4;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("--nd");
+	int argc = 2;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "--nd" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(!context->GetDebugMode());
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 
 static void TestExclusiveTheme() {
-	int argc = 5;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("--dark");
-	argv[4] = CstrFromString("--light");
+	int argc = 3;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "--dark", "--light" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) != 0);
-
-	delete [] argv;
-	free(argv);
-}
-static void TestLight() {
-	int argc = 4;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("--dark");
-	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
-	REQUIRE(context->GetDarkMode());
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 static void TestDark() {
+	int argc = 2;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "--dark" });
+	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
+	REQUIRE(context->GetDarkMode());
+	freeArgv(argc, argv);
+}
+static void TestLight() {
 	context->SetDarkMode(true);
-
-	int argc = 4;
-	char **argv = (char**) malloc(sizeof(char*) * argc);
-	argv[0] = CstrFromString("command");
-	argv[1] = CstrFromString("-i");
-	argv[2] = CstrFromString(DATA_DIR "models/cube.ply");
-	argv[3] = CstrFromString("--light");
+	int argc = 2;
+	char **argv = getArgv(argc, std::vector<std::string>{ "command", "--light" });
 	REQUIRE(context->GetCLI().LoadContext(context, argc, argv) == 0);
 	REQUIRE(!context->GetDarkMode());
-
-	delete [] argv;
-	free(argv);
+	freeArgv(argc, argv);
 }
 
 
 TEST_CASE("CLI testing") {
+	if (!InitializeGLFW())
+		return ERROR_GLFW_INIT;
+
 	context = new Context("");
 	context->Init();
+
+	GLFWwindow* window = context->GetWindow();
 
 	SECTION("--help") {
 		TestHelp();
@@ -355,4 +288,6 @@ TEST_CASE("CLI testing") {
 		TestDark();
 		TestLight();
 	}
+
+	CleanupEverything();
 }

@@ -32,3 +32,22 @@ target_link_libraries(cliloader PRIVATE Catch2::Catch2 ${VIEWER_LIBRARIES})
 target_compile_definitions(cliloader PRIVATE GLFW_INCLUDE_NONE)
 
 add_test(cliloader cliloader)
+
+# TOML Tester --------------------------------------------------
+
+file(GLOB TESTS_TOMLLOADER_SOURCES
+		tomlloader.cpp
+		${VIEWER_SOURCES})
+list(REMOVE_ITEM TESTS_TOMLLOADER_SOURCES ${ROOT_DIR}/src/viewer/main.cpp)
+
+add_executable(tomlloader
+		${TESTS_TOMLLOADER_SOURCES}
+		${VIEWER_HEADERS})
+target_include_directories(tomlloader PUBLIC
+		${ROOT_DIR}/include
+		${ROOT_DIR}/${TOML11_DIR})
+target_include_directories(tomlloader PUBLIC ${VIEWER_INCLUDE})
+target_link_libraries(tomlloader PRIVATE Catch2::Catch2 ${VIEWER_LIBRARIES})
+target_compile_definitions(tomlloader PRIVATE GLFW_INCLUDE_NONE)
+
+add_test(tomlloader tomlloader)

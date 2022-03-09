@@ -129,6 +129,7 @@ include_directories(include)
 # Executables ==================================================
 
 add_definitions(-DDATA_DIR="${PROJECT_SOURCE_DIR}/data/")
+add_definitions(-DTEST_DATA_DIR="${PROJECT_SOURCE_DIR}/tests/data/")
 
 # Viewer -------------------------------------------------------
 

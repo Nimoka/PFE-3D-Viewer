@@ -89,6 +89,9 @@ void ForwardRenderer::Render(ImVec2 size) {
 }
 
 void ForwardRenderer::UpdateDirectionalLightList() {
+	if (this->scene == nullptr)
+		return;
+
 	if (this->directionalLightsDirection != nullptr)
 		delete this->directionalLightsDirection;
 	if (this->directionalLightsDirection != nullptr)

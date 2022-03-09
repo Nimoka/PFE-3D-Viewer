@@ -9,6 +9,7 @@
 #include <ImGuiFileBrowser.h>
 
 #include "cliloader.h"
+#include "tomlloader.h"
 #include "modules/imguidemo.h"
 #include "modules/imguiFPS.h"
 #include "modules/meshcontent.h"
@@ -41,7 +42,6 @@ public:
 	/* Initialization */
 	int Init();
 	int LoadOptions(int argc, char** argv);
-	bool LoadTOMLContext(std::string filepath);
 
 	/* Commands */
 	void CreateOpenPLYFileSelectionDialog();
@@ -98,6 +98,7 @@ public:
 	bool GetDarkMode();
 
 	CLILoader GetCLI();
+	TOMLLoader GetTOML();
 
 	GLFWwindow* GetWindow();
 
@@ -138,6 +139,7 @@ private:
 	int windowHeight = DEFAULT_WINDOW_HEIGHT;
 
 	CLILoader cli;
+	TOMLLoader toml;
 
 	bool showTools = true;
 
