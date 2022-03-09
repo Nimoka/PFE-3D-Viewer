@@ -28,7 +28,7 @@
 
 #define MOUSE_SPEED				0.1
 #define PI_DEGREE				180.0
-#define MAX_PITCH				89.0
+
 
 class Context
 {
@@ -117,12 +117,6 @@ private:
 	bool darkMode = false;
 	bool mouseLeftPressed = false;
 	bool firstMouse = true;
-	
-	float yaw = -90.0f;
-	float pitch = 0.0f;
-	float lastX = 800.0f / 2.0;
-	float lastY = 600.0 / 2.0;
-	float fov = 45.0f;
 
 	ViewerModule* viewer = nullptr;
 	PLYReader* reader = nullptr;

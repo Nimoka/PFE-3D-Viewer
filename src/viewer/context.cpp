@@ -438,29 +438,25 @@ void Context::ProcessMouseMovement(double x, double y) {
 		float ypos = static_cast<float>(y);
 
 		if (firstMouse) {
-			lastX = xpos;
-			lastY = ypos;
+			this->scene->GetCamera()->SetLastX(xpos);
+			this->scene->GetCamera()->SetLastY(ypos);
 			firstMouse = false;
 		}
 
-		float xoffset = (xpos - lastX) * MOUSE_SPEED;
-		float yoffset = (lastY - ypos) * MOUSE_SPEED;
-		lastX = xpos;
-		lastY = ypos;
+		float xoffset = (xpos - this->scene->GetCamera()->GetLastX()) * MOUSE_SPEED;
+		float yoffset = (this->scene->GetCamera()->GetLastY() - ypos) * MOUSE_SPEED;
+		this->scene->GetCamera()->SetLastX(xpos);
+		this->scene->GetCamera()->SetLastY(ypos);
 
-		yaw += xoffset;
-		pitch += yoffset;
-		if (pitch > MAX_PITCH)
-			pitch = MAX_PITCH;
-		if (pitch < -MAX_PITCH)
-			pitch = -MAX_PITCH;
+		this->scene->GetCamera()->MoveYaw(xoffset);
+		this->scene->GetCamera()->MovePitch(yoffset);
 
 		Eigen::Vector3f front;
-		front[0] = cos(yaw * EIGEN_PI / PI_DEGREE)
-				* cos(pitch * EIGEN_PI / PI_DEGREE);
-		front[1] = sin(pitch * EIGEN_PI / PI_DEGREE);
-		front[2] = sin(yaw * EIGEN_PI / PI_DEGREE)
-				* cos(pitch * EIGEN_PI / PI_DEGREE);
+		front[0] = cos(this->scene->GetCamera()->GetYaw() * EIGEN_PI / PI_DEGREE)
+               * cos(this->scene->GetCamera()->GetPitch()* EIGEN_PI / PI_DEGREE);
+		front[1] = sin(this->scene->GetCamera()->GetPitch() * EIGEN_PI / PI_DEGREE);
+		front[2] = sin(this->scene->GetCamera()->GetYaw() * EIGEN_PI / PI_DEGREE)
+               * cos(this->scene->GetCamera()->GetPitch() * EIGEN_PI / PI_DEGREE);
 
 		this->scene->GetCamera()->cameraFront = front.normalized();
 	}
@@ -478,7 +474,7 @@ void Context::ProcessMouseButton(int button, int action, int mods) {
 }
 
 void Context::ProcessMouseScroll(double x, double y) {
-	this->scene->navigate3D = true;
+	//this->scene->navigate3D = true;
 	this->ZoomCamera(-y);
 }
 
