@@ -80,8 +80,8 @@ Eigen::Vector3f PolarToCartesian(Eigen::Vector2f coordinates,
 
 Camera::Camera()
 		: cameraPolarCoordinates(Eigen::Vector2f(0., 0.))
-		, camera3DCoordinates(Eigen::Vector3f(0.5,0.5,3.5))
-		, cameraFront(Eigen::Vector3f(0.,0.,-1))
+		, camera3DCoordinates(Eigen::Vector3f(0.5,0.5,3))
+		, cameraFront(Eigen::Vector3f(0.,0.,-0.5))
 		, sceneCenter(Eigen::Vector3f(0., 0., 0.))
 		, up(Eigen::Vector3f(0., 1., 0.)) {}
 
@@ -100,8 +100,8 @@ void Camera::MoveCameraPolar(Eigen::Vector2f coordinates) {
 void Camera::ZoomCameraPolar(float intensity) {
 	this->sceneRadius += intensity;
 
-	if (this->sceneRadius < .0001)
-		this->sceneRadius -= intensity;
+	/* if (this->sceneRadius < .0001)
+		this->sceneRadius -= intensity;*/
 }
 
 Eigen::Matrix4f Camera::ComputeViewMatrix() const {
@@ -154,6 +154,24 @@ float Camera::GetSceneRadius() const {
 	return this->sceneRadius;
 }
 
+float Camera::GetYaw() const{
+	return this->yaw;
+}
+
+float Camera::GetPitch() const{
+	return this->pitch;
+}
+
+float Camera::GetLastX() const{
+	return this->lastX;
+}
+
+float Camera::GetLastY() const{
+	return this->lastY;
+}
+
+
+
 void Camera::SetSceneCenter(const Eigen::Vector3f& sceneCenter) {
 	this->sceneCenter = sceneCenter;
 }
@@ -177,4 +195,22 @@ void Camera::SetMinNear(float minNear) {
 void Camera::SetNearFarOffsets(float nearOffset, float farOffset) {
 	this->nearOffset = nearOffset;
 	this->farOffset = farOffset;
+}
+
+void Camera::MoveYaw(float degree){
+	this->yaw += degree;
+}
+
+void Camera::MovePitch(float degree){
+  this->pitch += degree;
+  if (this->pitch > MAX_PITCH) this->yaw = MAX_PITCH;
+  if (this->pitch < -MAX_PITCH) this->pitch = -MAX_PITCH;
+}
+
+void Camera::SetLastX(float positionX){
+	this->lastX = positionX;
+}
+
+void Camera::SetLastY(float positionY){
+	this->lastY = positionY;
 }

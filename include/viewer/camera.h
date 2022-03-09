@@ -1,6 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#define MAX_PITCH 89.0
 /* ************************************************************
  * A part of this class (and his implementation) come from    *
  * files `trackball.h`, `trackball.cpp`, `camera.h` and       *
@@ -42,7 +43,15 @@ public:
 	bool IsOrthographic() const;
 	bool IsPerspective() const;
 	float GetSceneRadius() const;
+	float GetYaw() const;
+	float GetPitch() const;
+	float GetLastX() const;
+	float GetLastY() const;
 
+	void SetLastX(float positionX);
+	void SetLastY(float positionY);
+	void MoveYaw(float degree);
+	void MovePitch(float degree);
 	void SetSceneCenter(const Eigen::Vector3f& sceneCenter);
 	void SetSceneDistance(float sceneDistance);
 	void SetSceneRadius(float sceneRadius);
@@ -65,6 +74,11 @@ private:
 
 	Eigen::Matrix4f cameraMatrix;
 	Eigen::Vector2f cameraPolarCoordinates;
+
+	float yaw   = -90.0f;
+	float pitch = 0.0f;
+	float lastX = 1280.0 / 2.0;
+	float lastY = 800 / 2.0;
 	
 };
 
