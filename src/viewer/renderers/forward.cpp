@@ -90,7 +90,7 @@ void ForwardRenderer::Render(ImVec2 size) {
 	this->DeactivateContext();
 }
 
-void ForwardRenderer::UpdateDirectionalLightList() {
+void ForwardRenderer::UpdateDirectionalLightList(bool reload) {
 	if (this->scene == nullptr)
 		return;
 	if (this->directionalLightsDirection != nullptr)
@@ -120,11 +120,12 @@ void ForwardRenderer::UpdateDirectionalLightList() {
 	if (this->shaders != nullptr) {
 		this->shaders->SetPreProcessorMacro(SPPM_NB_DIR_LIGHTS,
 				std::to_string(this->nbDirectionalLights));
-		this->shaders->Load();
+		if (reload)
+			this->shaders->Load();
 	}
 }
 
-void ForwardRenderer::UpdatePointLightList() {
+void ForwardRenderer::UpdatePointLightList(bool reload) {
 	if (this->scene == nullptr)
 		return;
 	if (this->pointLightsPosition != nullptr)

@@ -15,8 +15,8 @@ public:
 
 	void Render(ImVec2 size);
 
-	void UpdateDirectionalLightList();
-	void UpdatePointLightList();
+	void UpdateDirectionalLightList(bool reload = true);
+	void UpdatePointLightList(bool reload = true);
 
 	void SetScene(Scene* scene);
 
