@@ -31,7 +31,7 @@ ShadersReader::ShadersReader(void* context,
 	this->fragmentShaderPath = fragmentShaderPath;
 
 	this->preprocessorMacros[SPPM_NB_DIR_LIGHTS] = "0";
-
+	this->preprocessorMacros[SPPM_NB_PT_LIGHTS]  = "0";
 	this->Load();
 }
 
@@ -50,6 +50,7 @@ bool ShadersReader::Load() {
 			this->GetFileContent(this->vertexShaderPath);
 	std::string fragmentShaderContent =
 			this->GetFileContent(this->fragmentShaderPath);
+	std::cout << fragmentShaderContent << std::endl;
 
 	// Check if both files have content
 	if (vertexShaderContent.empty()) {
@@ -72,7 +73,6 @@ bool ShadersReader::Load() {
 		}
 		return false;
 	}
-
 	// Create program
 	GLuint tmpProgramID = glCreateProgram();
 	GLuint tmpVertexShaderID, tmpFragmentShaderID;
@@ -88,7 +88,6 @@ bool ShadersReader::Load() {
 
 		// Compile
 		glCompileShader(tmpVertexShaderID);
-
 		// Check compilation status
 		int compiled;
 		glGetShaderiv(tmpVertexShaderID, GL_COMPILE_STATUS, &compiled);
@@ -104,10 +103,8 @@ bool ShadersReader::Load() {
 			// Delete new shader and program
 			glDeleteShader(tmpVertexShaderID);
 			glDeleteProgram(tmpProgramID);
-
 			return false;
 		}
-
 		// Attach the shader to the program
 		glAttachShader(tmpProgramID, tmpVertexShaderID);
 	}
@@ -120,6 +117,7 @@ bool ShadersReader::Load() {
 		// Load shader source code
 		const GLchar* content = fragmentShaderContent.c_str();
 		glShaderSource(tmpFragmentShaderID, 1, (const GLchar**) &content, 0);
+
 
 		// Compile
 		glCompileShader(tmpFragmentShaderID);
@@ -140,10 +138,8 @@ bool ShadersReader::Load() {
 			glDeleteShader(tmpVertexShaderID);
 			glDeleteShader(tmpFragmentShaderID);
 			glDeleteProgram(tmpProgramID);
-
 			return false;
 		}
-
 		// Attach the shader to the program
 		glAttachShader(tmpProgramID, tmpFragmentShaderID);
 	}
