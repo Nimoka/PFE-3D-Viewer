@@ -41,11 +41,17 @@ void DirectionalLight::SetDirection(const Eigen::Vector3f& direction) {
 	this->direction = direction.normalized();
 }
 
-PointLight::PointLight(const Eigen::Vector3f& intensity,
+PointLight::PointLight(const Eigen::Vector3f& color,
 		const Eigen::Vector3f& position)
 		: Light(intensity) {
 	this->SetPosition(position);
 }
+
+PointLight::PointLight(const Eigen::Vector3f &color): Light(intensity){
+	this->color = color;
+	this->SetRandomPosition(50);
+}
+
 
 PointLight::PointLight(PointLight* light)
 		: Light((Light*) light) {
@@ -56,6 +62,10 @@ PointLight::~PointLight() {}
 
 Eigen::Vector3f PointLight::GetPosition() {
 	return this->position;
+}
+
+Eigen::Vector3f PointLight::GetColor(){
+  return this->color;
 }
 
 void PointLight::SetPosition(const Eigen::Vector3f& position) {
@@ -71,4 +81,8 @@ void PointLight::SetRandomPosition(float radius) {
 	this->position[0] = radius * cos(latitude) * cos(longitude);
 	this->position[1] = radius * cos(latitude) * sin(longitude);
 	this->position[2] = radius * sin(latitude);
+}
+
+void PointLight::SetColor(const Eigen::Vector3f &color) {
+	this->color = color;
 }
