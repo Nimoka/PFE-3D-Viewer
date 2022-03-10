@@ -2,11 +2,12 @@
 
 #define MAX_CONTENT		15
 
-MeshContentModule::MeshContentModule(void* context, std::string name,
+MeshContentModule::MeshContentModule(void* context, std::string filename,
 		Mesh* mesh)
 		: GUIModule(context)
 		, mesh(mesh) {
-	this->title = name;
+	this->title = "Mesh content";
+	this->filename = filename;
 
 	this->Init();
 }
@@ -15,15 +16,12 @@ MeshContentModule::MeshContentModule(MeshContentModule* module)
 		: GUIModule(module->GetContext())
 		, mesh(module->GetMesh()) {
 	this->title = module->GetTitle();
+	this->filename = module->GetFilename();
 
 	this->Init();
 }
 
 MeshContentModule::~MeshContentModule() {}
-
-Mesh* MeshContentModule::GetMesh() {
-	return this->mesh;
-}
 
 void MeshContentModule::Init() {
 	this->tableFlags = ImGuiTableFlags_Borders;
@@ -34,6 +32,7 @@ void MeshContentModule::Render() {
 		if (ImGui::Begin(std::string(this->title + "###"
 				+ std::to_string(this->id)).c_str())) {
 			ImGui::Text("Informations:");
+			ImGui::Text("  Filename: %s", this->filename.c_str());
 			ImGui::Text("  Nb vertices: %u",
 					this->mesh->nbVertices);
 			ImGui::Text("  Nb faces: %u",
@@ -191,4 +190,12 @@ void MeshContentModule::Render() {
 		}
 		ImGui::End();
 	}
+}
+
+Mesh* MeshContentModule::GetMesh() {
+	return this->mesh;
+}
+
+const std::string& MeshContentModule::GetFilename() {
+	return this->filename;
 }

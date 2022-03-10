@@ -7,7 +7,7 @@
 class MeshContentModule: public GUIModule
 {
 public:
-	MeshContentModule(void* context, std::string name, Mesh* mesh);
+	MeshContentModule(void* context, std::string filename, Mesh* mesh);
 	MeshContentModule(MeshContentModule* module);
 	~MeshContentModule();
 
@@ -15,8 +15,10 @@ public:
 	void Render();
 
 	Mesh* GetMesh();
+	const std::string& GetFilename();
 private:
 	Mesh* mesh = nullptr;
+	std::string filename;
 
 	ImGuiTableFlags tableFlags;
 };
