@@ -31,7 +31,7 @@ ShadersReader::ShadersReader(void* context,
 	this->fragmentShaderPath = fragmentShaderPath;
 
 	this->preprocessorMacros[SPPM_NB_DIR_LIGHTS] = "0";
-	this->preprocessorMacros[SPPM_NB_PT_LIGHTS]  = "0";
+	this->preprocessorMacros[SPPM_NB_PT_LIGHTS] = "0";
 	this->Load();
 }
 
@@ -116,7 +116,6 @@ bool ShadersReader::Load() {
 		// Load shader source code
 		const GLchar* content = fragmentShaderContent.c_str();
 		glShaderSource(tmpFragmentShaderID, 1, (const GLchar**) &content, 0);
-
 
 		// Compile
 		glCompileShader(tmpFragmentShaderID);

@@ -8,8 +8,7 @@ Scene::Scene()
 			new DirectionalLight(
 					Eigen::Vector3f(.2, .2, .2),
 					Eigen::Vector3f(1., 1., 0.)));
-	this->AddPointLight(new PointLight(
-					Eigen::Vector3f(.1,.1,.1)));
+	this->AddPointLight(new PointLight(Eigen::Vector3f(.1,.1,.1)));
 }
 
 Scene::Scene(Mesh* mesh) {
