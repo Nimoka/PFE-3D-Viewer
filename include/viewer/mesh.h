@@ -47,7 +47,7 @@ public:
 	~Mesh();
 
 	void ChangeDefaultColor(Eigen::Vector3f color);
-	void ChangeDefaultMaterial(unsigned int material);
+	void ChangeDefaultMaterial(unsigned char material);
 
 	bool HaveColors();
 	bool HaveMaterials();
@@ -59,7 +59,7 @@ public:
 
 	Vertex* verticesData = nullptr;
 	unsigned int* facesVertices = nullptr;
-	unsigned int* facesMaterials = nullptr;
+	unsigned char* facesMaterials = nullptr;
 
 	unsigned int nbVertices = 0;
 	unsigned int nbFaces = 0;

@@ -107,7 +107,8 @@ Mesh::Mesh(Mesh* mesh)
 		this->facesVertices[i] = mesh->facesVertices[i];
 
 	// Copy faces’ materials (IDs)
-	this->facesMaterials = (unsigned int*) malloc(sizeof(int) * this->nbFaces);
+	this->facesMaterials =
+			(unsigned char*) malloc(sizeof(char) * this->nbFaces);
 	for (unsigned int i = 0; i < this->nbFaces; i++)
 		this->facesMaterials[i] = mesh->facesMaterials[i];
 }
@@ -133,7 +134,7 @@ void Mesh::ChangeDefaultColor(Eigen::Vector3f color) {
 		this->verticesData->color = color;
 }
 
-void Mesh::ChangeDefaultMaterial(unsigned int material) {
+void Mesh::ChangeDefaultMaterial(unsigned char material) {
 	// Check if there were materials in the loaded mesh
 	// (If so, don’t alterate them.)
 	if (this->haveMaterials)
@@ -329,7 +330,8 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 	}
 
 	// Copy faces’ materials (IDs)
-	this->facesMaterials = (unsigned int*) malloc(sizeof(int) * this->nbFaces);
+	this->facesMaterials =
+			(unsigned char*) malloc(sizeof(char) * this->nbFaces);
 	if (this->haveMaterials) {
 		for (unsigned int i = 0; i < this->nbFaces; i++) {
 			// Copy data
@@ -452,8 +454,8 @@ void Mesh::ComputeRanges() {
 	{
 		if (this->haveMaterials) {
 			// Search material range
-			unsigned int minMatID = this->facesMaterials[0];
-			unsigned int maxMatID = this->facesMaterials[0];
+			unsigned char minMatID = this->facesMaterials[0];
+			unsigned char maxMatID = this->facesMaterials[0];
 			for (unsigned int i = 1; i < this->nbFaces; i++) {
 				if (minMatID > this->facesMaterials[i])
 					minMatID = this->facesMaterials[i];
