@@ -25,9 +25,9 @@ void ShadersContentModule::Render() {
 		if (ImGui::Begin(std::string(this->title + "###"
 				+ std::to_string(this->id)).c_str())) {
 			ImGui::Text("Informations:");
-			ImGui::Text("  Vertex shader: %s",
+			ImGui::TextWrapped("  Vertex shader: %s",
 					this->shaders->GetVertexShaderPath().c_str());
-			ImGui::Text("  Fragment shader: %s",
+			ImGui::TextWrapped("  Fragment shader: %s",
 					this->shaders->GetFragmentShaderPath().c_str());
 			ImGui::Text("  Are dynamic: %s",
 					(this->shaders->AreDynamic() ? "yes" : "no"));
