@@ -22,10 +22,12 @@ public:
 	void UpdateCameraViewport(ImVec2 size);
 
 	void AddDirectionalLight(DirectionalLight* light);
+	void AddPointLight(PointLight *light);
 
 	const Eigen::Vector3f& GetAmbientColor();
 	Camera* GetCamera();
 	std::vector<DirectionalLight*>* GetDirectionalLights();
+	std::vector<PointLight*>*GetPointLights();
 	Mesh* GetMesh();
 	const Eigen::Matrix4f& GetMeshTransformationMatrix();
 	Eigen::Matrix3f GetNormalMatrix();
@@ -47,6 +49,7 @@ private:
 
 	Eigen::Vector3f ambientColor = Eigen::Vector3f(.1, .1, .1);
 	std::vector<DirectionalLight*> directionalLights;
+	std::vector<PointLight*> pointLights;
 
 	Eigen::Matrix4f meshTransformationMatrix = Eigen::Matrix4f::Identity();
 

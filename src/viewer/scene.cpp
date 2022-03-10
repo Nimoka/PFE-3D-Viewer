@@ -8,6 +8,8 @@ Scene::Scene()
 			new DirectionalLight(
 					Eigen::Vector3f(.2, .2, .2),
 					Eigen::Vector3f(1., 1., 0.)));
+	this->AddPointLight(new PointLight(
+					Eigen::Vector3f(.1,.1,.1)));
 }
 
 Scene::Scene(Mesh* mesh) {
@@ -17,6 +19,9 @@ Scene::Scene(Mesh* mesh) {
 
 Scene::~Scene() {
 	for (auto i: this->directionalLights)
+		delete i;
+
+	for (auto i : this->pointLights)
 		delete i;
 
 	this->Clean();
@@ -83,6 +88,16 @@ void Scene::AddDirectionalLight(DirectionalLight* light) {
 		((Renderer*) this->renderer)->UpdateDirectionalLightList();
 }
 
+void Scene::AddPointLight(PointLight *light){
+	if (light == nullptr)
+		return;
+
+	this->pointLights.push_back(light);
+
+	if (this->renderer != nullptr)
+		((Renderer *)this->renderer)->UpdatePointLightList();
+ }
+
 const Eigen::Vector3f& Scene::GetAmbientColor() {
 	return this->ambientColor;
 }
@@ -93,6 +108,10 @@ Camera* Scene::GetCamera() {
 
 std::vector<DirectionalLight*>* Scene::GetDirectionalLights() {
 	return &this->directionalLights;
+}
+
+std::vector<PointLight*>* Scene::GetPointLights(){
+  return &this->pointLights;
 }
 
 Mesh* Scene::GetMesh() {
