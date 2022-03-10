@@ -74,3 +74,4 @@ void SimpleRenderer::Render(ImVec2 size) {
 }
 
 void SimpleRenderer::UpdateDirectionalLightList() {}
+void SimpleRenderer::UpdatePointLightList() {}
