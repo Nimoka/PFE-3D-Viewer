@@ -91,6 +91,17 @@ int Context::Init() {
 			<< glGetString(GL_VERSION) << std::endl;
 	std::cout << "[DEBUG_OPENGL_CONTEXT] GLSL version: "
 			<< glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+	{
+		int data = 0;
+		glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &data);
+		std::cout << "[DEBUG_OPENGL_CONTEXT] Max uniform block size: "
+				<< data << " bytes" << std::endl;
+		glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE, &data);
+		std::cout << "[DEBUG_OPENGL_CONTEXT] Max texture buffer size: "
+				<< data << " bytes" << std::endl;
+	}
+
+	glbinding::aux::enableGetErrorCallback();
 #endif
 
 	/* Initialize OpenGL */
