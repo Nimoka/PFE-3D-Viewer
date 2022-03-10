@@ -72,12 +72,14 @@ void ForwardRenderer::Render(ImVec2 size) {
 		glUniformMatrix4fv(this->shaders->GetUniformLocation("view_matrix"), 1,
 			false, this->scene->GetCamera()->ComputeViewMatrix().data());
 	}
-
 	glUniform3fv(this->shaders->GetUniformLocation("lights_dir_direction"),
 			this->nbDirectionalLights, this->directionalLightsDirection);
 	glUniform3fv(this->shaders->GetUniformLocation("lights_dir_intensity"),
 			this->nbDirectionalLights, this->directionalLightsIntensity);
-
+	glUniform3fv(this->shaders->GetUniformLocation("lights_pt_position"),
+			this->nbPointLights, this->pointLightsPosition);
+	glUniform3fv(this->shaders->GetUniformLocation("lights_pt_color"),
+			this->nbPointLights, this->pointLightsColor);
 	glUniform3fv(this->shaders->GetUniformLocation("ambient_color"), 1,
 			this->scene->GetAmbientColor().data());
 
@@ -91,7 +93,6 @@ void ForwardRenderer::Render(ImVec2 size) {
 void ForwardRenderer::UpdateDirectionalLightList() {
 	if (this->scene == nullptr)
 		return;
-
 	if (this->directionalLightsDirection != nullptr)
 		delete this->directionalLightsDirection;
 	if (this->directionalLightsDirection != nullptr)
@@ -119,6 +120,36 @@ void ForwardRenderer::UpdateDirectionalLightList() {
 	if (this->shaders != nullptr) {
 		this->shaders->SetPreProcessorMacro(SPPM_NB_DIR_LIGHTS,
 				std::to_string(this->nbDirectionalLights));
+		this->shaders->Load();
+	}
+}
+
+void ForwardRenderer::UpdatePointLightList() {
+	if (this->scene == nullptr)
+		return;
+	if (this->pointLightsPosition != nullptr)
+		delete this->pointLightsPosition;
+	if (this->pointLightsColor != nullptr)
+		delete this->pointLightsColor;
+
+	std::vector<PointLight*>* lights = this->scene->GetPointLights();
+	this->nbPointLights = lights->size();
+	this->pointLightsPosition  = (float *)malloc(sizeof(float) * 3 * nbPointLights);
+	this->pointLightsColor  = (float *)malloc(sizeof(float) * 3 *nbPointLights);
+
+	PointLight *light;
+	for (unsigned int i = 0; i < this->nbPointLights; i++){
+		light  = lights->at(i);
+		this->pointLightsPosition[3 * i] = light->GetPosition()[0];
+		this->pointLightsPosition[3 * i+1] = light->GetPosition()[1];
+		this->pointLightsPosition[3 * i+2] = light->GetPosition()[2];
+		this->pointLightsColor[3 * i] = light->GetColor()[0];
+		this->pointLightsColor[3 * i + 1]  = light->GetColor()[1];
+		this->pointLightsColor[3 * i + 2]  = light->GetColor()[2];
+	}
+
+	if (this->shaders != nullptr){
+		this->shaders->SetPreProcessorMacro(SPPM_NB_PT_LIGHTS, std::to_string(this->nbPointLights));
 		this->shaders->Load();
 	}
 }
