@@ -50,7 +50,6 @@ bool ShadersReader::Load() {
 			this->GetFileContent(this->vertexShaderPath);
 	std::string fragmentShaderContent =
 			this->GetFileContent(this->fragmentShaderPath);
-	std::cout << fragmentShaderContent << std::endl;
 
 	// Check if both files have content
 	if (vertexShaderContent.empty()) {
