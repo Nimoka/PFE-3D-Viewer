@@ -307,6 +307,11 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 										Eigen::Vector3f(.2, .2, .2),
 										Eigen::Vector3f(1., 1., 0.)));
 					return;
+			 case GLFW_KEY_Y:
+						if (this->scene != nullptr)
+							this->scene->AddPointLight(
+								new PointLight(Eigen::Vector3f(.1, .2, .5)));
+					return;
 				case GLFW_KEY_R:
 					this->ReloadShaders();
 					return;
