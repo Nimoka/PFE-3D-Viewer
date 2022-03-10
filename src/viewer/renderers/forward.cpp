@@ -30,7 +30,8 @@ void ForwardRenderer::Init() {
 		this->scene->SetRenderer(this);
 
 	this->shaders = new ShadersReader(this->context);
-	this->UpdateDirectionalLightList();
+	this->UpdateDirectionalLightList(false);
+	this->UpdatePointLightList(false);
 	this->shaders->LoadFiles(
 			DATA_DIR "shaders/forward.vert",
 			DATA_DIR "shaders/forward.frag",
@@ -151,12 +152,16 @@ void ForwardRenderer::UpdatePointLightList(bool reload) {
 
 	if (this->shaders != nullptr){
 		this->shaders->SetPreProcessorMacro(SPPM_NB_PT_LIGHTS, std::to_string(this->nbPointLights));
-		this->shaders->Load();
+		if (reload)
+			this->shaders->Load();
 	}
 }
 
 void ForwardRenderer::SetScene(Scene* scene) {
 	this->scene = scene;
-	if (this->scene != nullptr)
+	if (this->scene != nullptr) {
 		this->scene->SetRenderer(this);
+		this->UpdateDirectionalLightList(false);
+		this->UpdatePointLightList();
+	}
 }
