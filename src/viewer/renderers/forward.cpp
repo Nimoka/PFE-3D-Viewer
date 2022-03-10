@@ -79,8 +79,8 @@ void ForwardRenderer::Render(ImVec2 size) {
 			this->nbDirectionalLights, this->directionalLightsIntensity);
 	glUniform3fv(this->shaders->GetUniformLocation("lights_pt_position"),
 			this->nbPointLights, this->pointLightsPosition);
-	glUniform3fv(this->shaders->GetUniformLocation("lights_pt_color"),
-			this->nbPointLights, this->pointLightsColor);
+	glUniform3fv(this->shaders->GetUniformLocation("lights_pt_intensity"),
+			this->nbPointLights, this->pointLightsIntensity);
 	glUniform3fv(this->shaders->GetUniformLocation("ambient_color"), 1,
 			this->scene->GetAmbientColor().data());
 
@@ -131,27 +131,30 @@ void ForwardRenderer::UpdatePointLightList(bool reload) {
 		return;
 	if (this->pointLightsPosition != nullptr)
 		delete this->pointLightsPosition;
-	if (this->pointLightsColor != nullptr)
-		delete this->pointLightsColor;
+	if (this->pointLightsIntensity != nullptr)
+		delete this->pointLightsIntensity;
 
 	std::vector<PointLight*>* lights = this->scene->GetPointLights();
 	this->nbPointLights = lights->size();
-	this->pointLightsPosition  = (float *)malloc(sizeof(float) * 3 * nbPointLights);
-	this->pointLightsColor  = (float *)malloc(sizeof(float) * 3 *nbPointLights);
+	this->pointLightsPosition =
+			(float*) malloc(sizeof(float) * 3 * nbPointLights);
+	this->pointLightsIntensity =
+			(float*) malloc(sizeof(float) * 3 * nbPointLights);
 
-	PointLight *light;
+	PointLight* light;
 	for (unsigned int i = 0; i < this->nbPointLights; i++){
-		light  = lights->at(i);
+		light = lights->at(i);
 		this->pointLightsPosition[3 * i] = light->GetPosition()[0];
-		this->pointLightsPosition[3 * i+1] = light->GetPosition()[1];
-		this->pointLightsPosition[3 * i+2] = light->GetPosition()[2];
-		this->pointLightsColor[3 * i] = light->GetColor()[0];
-		this->pointLightsColor[3 * i + 1]  = light->GetColor()[1];
-		this->pointLightsColor[3 * i + 2]  = light->GetColor()[2];
+		this->pointLightsPosition[3 * i + 1] = light->GetPosition()[1];
+		this->pointLightsPosition[3 * i + 2] = light->GetPosition()[2];
+		this->pointLightsIntensity[3 * i] = light->GetIntensity()[0];
+		this->pointLightsIntensity[3 * i + 1]  = light->GetIntensity()[1];
+		this->pointLightsIntensity[3 * i + 2]  = light->GetIntensity()[2];
 	}
 
 	if (this->shaders != nullptr){
-		this->shaders->SetPreProcessorMacro(SPPM_NB_PT_LIGHTS, std::to_string(this->nbPointLights));
+		this->shaders->SetPreProcessorMacro(SPPM_NB_PT_LIGHTS,
+				std::to_string(this->nbPointLights));
 		if (reload)
 			this->shaders->Load();
 	}

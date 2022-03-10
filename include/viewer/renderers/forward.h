@@ -29,7 +29,7 @@ private:
 	// Point lights data
 	unsigned int nbPointLights = 0;
 	float* pointLightsPosition = nullptr;
-	float* pointLightsColor = nullptr;
+	float* pointLightsIntensity = nullptr;
 };
 
 #endif // RENDERER_FORWARD_H

@@ -4,7 +4,7 @@ uniform vec3 lights_dir_direction[NB_DIR_LIGHTS];
 uniform vec3 lights_dir_intensity[NB_DIR_LIGHTS];
 
 //uniform vec3 lights_pt_position[NB_PT_LIGHTS];
-//uniform vec3 lights_pt_color[NB_PT_LIGHTS];
+//uniform vec3 lights_pt_intensity[NB_PT_LIGHTS];
 
 uniform vec3 ambient_color;
 uniform mat3 normal_matrix;
