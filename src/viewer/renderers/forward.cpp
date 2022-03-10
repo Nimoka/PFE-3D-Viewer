@@ -23,6 +23,15 @@ ForwardRenderer::ForwardRenderer(Renderer* renderer)
 ForwardRenderer::~ForwardRenderer() {
 	if (this->shaders != nullptr)
 		delete this->shaders;
+
+	if (this->pointLightsPosition != nullptr)
+		delete this->pointLightsPosition;
+	if (this->pointLightsIntensity != nullptr)
+		delete this->pointLightsIntensity;
+	if (this->pointLightsPosition != nullptr)
+		delete this->pointLightsPosition;
+	if (this->pointLightsIntensity != nullptr)
+		delete this->pointLightsIntensity;
 }
 
 void ForwardRenderer::Init() {
