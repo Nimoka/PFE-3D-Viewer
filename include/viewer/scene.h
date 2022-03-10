@@ -52,6 +52,8 @@ private:
 
 	GLuint vaoID;
 	GLuint vboID[2];
+	GLuint tboMaterialsID;
+	GLuint tboMaterialsTex;
 };
 
 #endif // SCENE_H

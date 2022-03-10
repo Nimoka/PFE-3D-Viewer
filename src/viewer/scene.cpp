@@ -51,6 +51,14 @@ bool Scene::RenderMesh(ShadersReader* shaders) {
 		glEnableVertexAttribArray(normalLocation);
 	}
 
+	int materialTexLocation = shaders->GetUniformLocation("face_material");
+	if (materialTexLocation >= 0) {
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_BUFFER, this->tboMaterialsTex);
+		glTexBuffer(GL_TEXTURE_BUFFER, GL_R8UI, this->tboMaterialsID);
+		glUniform1i(materialTexLocation, 0);
+	}
+
 	glDrawElements(GL_TRIANGLES, (3 * this->mesh->nbFaces), GL_UNSIGNED_INT, 0);
 
 	if (vertexLocation >= 0)
@@ -152,6 +160,14 @@ void Scene::Init() {
 	this->camera->SetMinNear(0.1f);
 	this->camera->SetNearFarOffsets(-this->camera->GetSceneRadius() * 100.f,
 			this->camera->GetSceneRadius() * 100.f);
+
+	glGenBuffers(1, &this->tboMaterialsID);
+	glBindBuffer(GL_TEXTURE_BUFFER, this->tboMaterialsID);
+	glBufferData(GL_TEXTURE_BUFFER, ((this->mesh->nbFaces) * sizeof(char)),
+			this->mesh->facesMaterials, GL_STATIC_DRAW);
+	glGenTextures(1, &this->tboMaterialsTex);
+
+	glBindBuffer(GL_TEXTURE_BUFFER, 0);
 }
 
 void Scene::Clean() {
