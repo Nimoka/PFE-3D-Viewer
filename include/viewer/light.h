@@ -47,6 +47,8 @@ public:
 	Eigen::Vector3f GetPosition();
 
 	void SetPosition(const Eigen::Vector3f& position);
+	void SetRandomPosition(float radius); // on a surface of a sphere with radius x 
+
 
 private:
 	Eigen::Vector3f position;

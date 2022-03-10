@@ -1,4 +1,6 @@
 #include "light.h"
+#include <time.h>
+#include <cmath>
 
 Light::Light(const Eigen::Vector3f& intensity) {
 	this->intensity = intensity;
@@ -58,4 +60,15 @@ Eigen::Vector3f PointLight::GetPosition() {
 
 void PointLight::SetPosition(const Eigen::Vector3f& position) {
 	this->position = position;
+}
+
+void PointLight::SetRandomPosition(float radius) {
+	srand(time(0));
+	float rand1 = rand();
+	float rand2 = rand();
+	float latitude    = acos(2 * rand1 - 1) - EIGEN_PI/2;
+	float longitude   = 2 * EIGEN_PI * rand2;
+	this->position[0] = radius * cos(latitude) * cos(longitude);
+	this->position[1] = radius * cos(latitude) * sin(longitude);
+	this->position[2] = radius * sin(latitude);
 }
