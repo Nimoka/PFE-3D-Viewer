@@ -24,10 +24,10 @@ ForwardRenderer::~ForwardRenderer() {
 	if (this->shaders != nullptr)
 		delete this->shaders;
 
-	if (this->pointLightsPosition != nullptr)
-		delete this->pointLightsPosition;
-	if (this->pointLightsIntensity != nullptr)
-		delete this->pointLightsIntensity;
+	if (this->directionalLightsDirection != nullptr)
+		delete this->directionalLightsDirection;
+	if (this->directionalLightsIntensity != nullptr)
+		delete this->directionalLightsIntensity;
 	if (this->pointLightsPosition != nullptr)
 		delete this->pointLightsPosition;
 	if (this->pointLightsIntensity != nullptr)
