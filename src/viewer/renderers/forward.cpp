@@ -23,6 +23,15 @@ ForwardRenderer::ForwardRenderer(Renderer* renderer)
 ForwardRenderer::~ForwardRenderer() {
 	if (this->shaders != nullptr)
 		delete this->shaders;
+
+	if (this->pointLightsPosition != nullptr)
+		delete this->pointLightsPosition;
+	if (this->pointLightsIntensity != nullptr)
+		delete this->pointLightsIntensity;
+	if (this->pointLightsPosition != nullptr)
+		delete this->pointLightsPosition;
+	if (this->pointLightsIntensity != nullptr)
+		delete this->pointLightsIntensity;
 }
 
 void ForwardRenderer::Init() {
@@ -30,7 +39,8 @@ void ForwardRenderer::Init() {
 		this->scene->SetRenderer(this);
 
 	this->shaders = new ShadersReader(this->context);
-	this->UpdateDirectionalLightList();
+	this->UpdateDirectionalLightList(false);
+	this->UpdatePointLightList(false);
 	this->shaders->LoadFiles(
 			DATA_DIR "shaders/forward.vert",
 			DATA_DIR "shaders/forward.frag",
@@ -72,12 +82,14 @@ void ForwardRenderer::Render(ImVec2 size) {
 		glUniformMatrix4fv(this->shaders->GetUniformLocation("view_matrix"), 1,
 			false, this->scene->GetCamera()->ComputeViewMatrix().data());
 	}
-
 	glUniform3fv(this->shaders->GetUniformLocation("lights_dir_direction"),
 			this->nbDirectionalLights, this->directionalLightsDirection);
 	glUniform3fv(this->shaders->GetUniformLocation("lights_dir_intensity"),
 			this->nbDirectionalLights, this->directionalLightsIntensity);
-
+	glUniform3fv(this->shaders->GetUniformLocation("lights_pt_position"),
+			this->nbPointLights, this->pointLightsPosition);
+	glUniform3fv(this->shaders->GetUniformLocation("lights_pt_intensity"),
+			this->nbPointLights, this->pointLightsIntensity);
 	glUniform3fv(this->shaders->GetUniformLocation("ambient_color"), 1,
 			this->scene->GetAmbientColor().data());
 
@@ -88,10 +100,9 @@ void ForwardRenderer::Render(ImVec2 size) {
 	this->DeactivateContext();
 }
 
-void ForwardRenderer::UpdateDirectionalLightList() {
+void ForwardRenderer::UpdateDirectionalLightList(bool reload) {
 	if (this->scene == nullptr)
 		return;
-
 	if (this->directionalLightsDirection != nullptr)
 		delete this->directionalLightsDirection;
 	if (this->directionalLightsDirection != nullptr)
@@ -119,12 +130,50 @@ void ForwardRenderer::UpdateDirectionalLightList() {
 	if (this->shaders != nullptr) {
 		this->shaders->SetPreProcessorMacro(SPPM_NB_DIR_LIGHTS,
 				std::to_string(this->nbDirectionalLights));
-		this->shaders->Load();
+		if (reload)
+			this->shaders->Load();
+	}
+}
+
+void ForwardRenderer::UpdatePointLightList(bool reload) {
+	if (this->scene == nullptr)
+		return;
+	if (this->pointLightsPosition != nullptr)
+		delete this->pointLightsPosition;
+	if (this->pointLightsIntensity != nullptr)
+		delete this->pointLightsIntensity;
+
+	std::vector<PointLight*>* lights = this->scene->GetPointLights();
+	this->nbPointLights = lights->size();
+	this->pointLightsPosition =
+			(float*) malloc(sizeof(float) * 3 * nbPointLights);
+	this->pointLightsIntensity =
+			(float*) malloc(sizeof(float) * 3 * nbPointLights);
+
+	PointLight* light;
+	for (unsigned int i = 0; i < this->nbPointLights; i++){
+		light = lights->at(i);
+		this->pointLightsPosition[3 * i] = light->GetPosition()[0];
+		this->pointLightsPosition[3 * i + 1] = light->GetPosition()[1];
+		this->pointLightsPosition[3 * i + 2] = light->GetPosition()[2];
+		this->pointLightsIntensity[3 * i] = light->GetIntensity()[0];
+		this->pointLightsIntensity[3 * i + 1]  = light->GetIntensity()[1];
+		this->pointLightsIntensity[3 * i + 2]  = light->GetIntensity()[2];
+	}
+
+	if (this->shaders != nullptr){
+		this->shaders->SetPreProcessorMacro(SPPM_NB_PT_LIGHTS,
+				std::to_string(this->nbPointLights));
+		if (reload)
+			this->shaders->Load();
 	}
 }
 
 void ForwardRenderer::SetScene(Scene* scene) {
 	this->scene = scene;
-	if (this->scene != nullptr)
+	if (this->scene != nullptr) {
 		this->scene->SetRenderer(this);
+		this->UpdateDirectionalLightList(false);
+		this->UpdatePointLightList();
+	}
 }

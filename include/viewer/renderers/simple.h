@@ -15,7 +15,8 @@ public:
 
 	void Render(ImVec2 size);
 
-	void UpdateDirectionalLightList();
+	void UpdateDirectionalLightList(bool reload = true);
+	void UpdatePointLightList(bool reload = true);
 };
 
 #endif // RENDERERS_SIMPLE_H

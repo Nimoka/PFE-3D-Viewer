@@ -73,4 +73,5 @@ void SimpleRenderer::Render(ImVec2 size) {
 	this->DeactivateContext();
 }
 
-void SimpleRenderer::UpdateDirectionalLightList() {}
+void SimpleRenderer::UpdateDirectionalLightList(bool reload) {}
+void SimpleRenderer::UpdatePointLightList(bool reload) {}

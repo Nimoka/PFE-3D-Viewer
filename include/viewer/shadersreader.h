@@ -7,6 +7,7 @@
 
 // Shaders pre-processor macros’ names
 #define SPPM_NB_DIR_LIGHTS	"NB_DIR_LIGHTS"
+#define SPPM_NB_PT_LIGHTS	"NB_PT_LIGHTS"
 
 std::string GetShaderLog(GLuint shader);
 

@@ -39,16 +39,16 @@ private:
 class PointLight: public Light
 {
 public:
-	PointLight(const Eigen::Vector3f& intensity,
+	PointLight(const Eigen::Vector3f &intensity,
 			const Eigen::Vector3f& position);
 	PointLight(PointLight* light);
+	PointLight(const Eigen::Vector3f &intensity);
 	~PointLight();
 
 	Eigen::Vector3f GetPosition();
 
 	void SetPosition(const Eigen::Vector3f& position);
-	void SetRandomPosition(float radius); // on a surface of a sphere with radius x 
-
+	void SetRandomPosition(float radius);
 
 private:
 	Eigen::Vector3f position;

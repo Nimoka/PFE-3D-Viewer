@@ -47,6 +47,11 @@ PointLight::PointLight(const Eigen::Vector3f& intensity,
 	this->SetPosition(position);
 }
 
+PointLight::PointLight(const Eigen::Vector3f &intensity)
+		: Light(intensity) {
+	this->SetRandomPosition(50);
+}
+
 PointLight::PointLight(PointLight* light)
 		: Light((Light*) light) {
 	this->position = light->GetPosition();

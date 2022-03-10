@@ -31,7 +31,7 @@ ShadersReader::ShadersReader(void* context,
 	this->fragmentShaderPath = fragmentShaderPath;
 
 	this->preprocessorMacros[SPPM_NB_DIR_LIGHTS] = "0";
-
+	this->preprocessorMacros[SPPM_NB_PT_LIGHTS] = "0";
 	this->Load();
 }
 
@@ -72,7 +72,6 @@ bool ShadersReader::Load() {
 		}
 		return false;
 	}
-
 	// Create program
 	GLuint tmpProgramID = glCreateProgram();
 	GLuint tmpVertexShaderID, tmpFragmentShaderID;
@@ -88,7 +87,6 @@ bool ShadersReader::Load() {
 
 		// Compile
 		glCompileShader(tmpVertexShaderID);
-
 		// Check compilation status
 		int compiled;
 		glGetShaderiv(tmpVertexShaderID, GL_COMPILE_STATUS, &compiled);
@@ -104,10 +102,8 @@ bool ShadersReader::Load() {
 			// Delete new shader and program
 			glDeleteShader(tmpVertexShaderID);
 			glDeleteProgram(tmpProgramID);
-
 			return false;
 		}
-
 		// Attach the shader to the program
 		glAttachShader(tmpProgramID, tmpVertexShaderID);
 	}
@@ -140,10 +136,8 @@ bool ShadersReader::Load() {
 			glDeleteShader(tmpVertexShaderID);
 			glDeleteShader(tmpFragmentShaderID);
 			glDeleteProgram(tmpProgramID);
-
 			return false;
 		}
-
 		// Attach the shader to the program
 		glAttachShader(tmpProgramID, tmpFragmentShaderID);
 	}
@@ -191,8 +185,8 @@ bool ShadersReader::LoadFiles(const std::string& vertexShaderPath,
 }
 
 void ShadersReader::Activate() const {
-	assert(this->areLoaded);
-	glUseProgram(this->programID);
+	if (this->areLoaded)
+		glUseProgram(this->programID);
 }
 
 void ShadersReader::Deactivate() const {
@@ -205,13 +199,15 @@ void ShadersReader::SetPreProcessorMacro(const std::string& name,
 }
 
 int ShadersReader::GetUniformLocation(const std::string& name) const {
-	assert(this->areLoaded);
-	return glGetUniformLocation(this->programID, name.c_str());
+	if (this->areLoaded)
+		return glGetUniformLocation(this->programID, name.c_str());
+	return -1;
 }
 
 int ShadersReader::GetAttribLocation(const std::string& name) const {
-	assert(this->areLoaded);
-	return glGetAttribLocation(this->programID, name.c_str());
+	if (this->areLoaded)
+		return glGetAttribLocation(this->programID, name.c_str());
+	return -1;
 }
 
 bool ShadersReader::ExportShaders(const std::string& vertexShaderPath,
