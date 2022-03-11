@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include <backends/imgui_impl_glfw.h>
-
+#include <time.h>
 #include "context.h"
 
 #define ENABLE_HIGH_DPI
@@ -84,6 +84,7 @@ void ProcessMouseScroll(GLFWwindow* window, double x, double y) {
 }
 
 int main(int argc, char** argv) {
+	srand(time(0));
 	if (!InitializeGLFW())
 		return ERROR_GLFW_INIT;
 
