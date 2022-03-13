@@ -148,6 +148,10 @@ void Scene::SetMesh(Mesh* mesh) {
 	this->Init();
 }
 
+void Scene::SetMeshTransformationMatrix(Eigen::Matrix4f transformationMatrix) {
+	this->meshTransformationMatrix = transformationMatrix;
+}
+
 void Scene::SetRenderer(void* renderer) {
 	this->renderer = renderer;
 }

@@ -34,6 +34,7 @@ public:
 
 	void SetCamera(Camera* camera);
 	void SetMesh(Mesh* mesh);
+	void SetMeshTransformationMatrix(Eigen::Matrix4f transformationMatrix);
 	void SetRenderer(void* renderer);
 
 	bool navigate3D;
