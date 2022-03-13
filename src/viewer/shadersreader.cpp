@@ -185,8 +185,11 @@ bool ShadersReader::LoadFiles(const std::string& vertexShaderPath,
 }
 
 void ShadersReader::Activate() const {
-	if (this->areLoaded)
-		glUseProgram(this->programID);
+	// Kill the program if it went here without shaders compiled
+	// to avoid possible problems with OpenGL (renderering on wrong shaders).
+	// The ‘aren’t loaded’ scenario must be handled before.
+	assert(this->areLoaded);
+	glUseProgram(this->programID);
 }
 
 void ShadersReader::Deactivate() const {
@@ -199,15 +202,19 @@ void ShadersReader::SetPreProcessorMacro(const std::string& name,
 }
 
 int ShadersReader::GetUniformLocation(const std::string& name) const {
-	if (this->areLoaded)
-		return glGetUniformLocation(this->programID, name.c_str());
-	return -1;
+	// Kill the program if it went here without shaders compiled
+	// to avoid possible problems with OpenGL (renderering on wrong shaders).
+	// The ‘aren’t loaded’ scenario must be handled before.
+	assert(this->areLoaded);
+	return glGetUniformLocation(this->programID, name.c_str());
 }
 
 int ShadersReader::GetAttribLocation(const std::string& name) const {
-	if (this->areLoaded)
-		return glGetAttribLocation(this->programID, name.c_str());
-	return -1;
+	// Kill the program if it went here without shaders compiled
+	// to avoid possible problems with OpenGL (renderering on wrong shaders).
+	// The ‘aren’t loaded’ scenario must be handled before.
+	assert(this->areLoaded);
+	return glGetAttribLocation(this->programID, name.c_str());
 }
 
 bool ShadersReader::ExportShaders(const std::string& vertexShaderPath,
