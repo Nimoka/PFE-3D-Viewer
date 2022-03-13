@@ -266,10 +266,12 @@ std::string ShadersReader::GetFileContent(const std::string& path) {
 	// Search for first line after #version
 	std::size_t insertPoint = content.find("#version");
 	insertPoint = content.find('\n', insertPoint);
-	if (insertPoint != std::string::npos)
+	if (insertPoint != std::string::npos) {
 		insertPoint++;
-	else
+	} else {
 		content += '\n';
+		insertPoint = 0;
+	}
 
 	// Add preprocessor macros (#define)
 	for (const std::pair<const std::string, std::string>& item:
