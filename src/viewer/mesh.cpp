@@ -548,27 +548,4 @@ void Mesh::ComputeRanges() {
 				Eigen::Vector3f(minPosX, minPosY, minPosZ),
 				Eigen::Vector3f(maxPosX, maxPosY, maxPosZ));
 	}
-
-	/* Compute materials range */
-	{
-		if (this->haveMaterials) {
-			// Search material range
-			unsigned char minMatID = this->facesMaterials[0];
-			unsigned char maxMatID = this->facesMaterials[0];
-			for (unsigned int i = 1; i < this->nbFaces; i++) {
-				if (minMatID > this->facesMaterials[i])
-					minMatID = this->facesMaterials[i];
-				if (maxMatID < this->facesMaterials[i])
-					maxMatID = this->facesMaterials[i];
-			}
-
-			// Save the result
-			this->materialsRange = Eigen::AlignedBox1i(minMatID, maxMatID);
-		} else {
-			// If there are no default materials, it should be the same for all
-			this->materialsRange = Eigen::AlignedBox1i(
-					this->facesMaterials[0],
-					this->facesMaterials[0]);
-		}
-	}
 }
