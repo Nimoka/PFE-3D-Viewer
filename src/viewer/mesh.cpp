@@ -333,7 +333,7 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 	this->nbFacesPerMaterial =
 			(unsigned int*) malloc(sizeof(int) * this->nbMaterials);
 	if (this->haveMaterials) {
-		for (unsigned int i = 0; i < this->nbMaterials; i++)
+		for (unsigned char i = 0; i < this->nbMaterials; i++)
 			nbFacesPerMaterial[i] = 0;
 	} else {
 		nbFacesPerMaterial[0] = this->nbFaces;
@@ -414,32 +414,26 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 		}
 	}
 
+	if (indicesAreOrderedByMaterials) {
+		unsigned char minMaterial = this->materialsRange.min()[0];
+		for (unsigned int i = 0; i < this->nbFaces; i++)
+			this->nbFacesPerMaterial[data->facesMaterials[i] - minMaterial]++;
+	}
+
 	// Copy faces’ materials (IDs)
 	this->facesMaterials =
 			(unsigned char*) malloc(sizeof(char) * this->nbFaces);
 	if (this->haveMaterials) {
-		if (indicesAreOrderedByMaterials) {
-			// If indices are already ordered by materials
-			// or there are no materials
-			for (unsigned int i = 0; i < this->nbFaces; i++) {
+		unsigned int next = 0;
+		unsigned char currentMaterial = this->materialsRange.min()[0];
+		for (unsigned char m = 0; m < this->nbMaterials; m++) {
+			for (unsigned int i = 0; i < this->nbFacesPerMaterial[m]; i++) {
 				// Copy data
-				this->facesMaterials[i] = data->facesMaterials[i];
+				this->facesMaterials[next++] = currentMaterial;
 
 				processingCurrent++;
 			}
-		} else {
-			// If indices need to be reordered
-			unsigned int next = 0;
-			unsigned char currentMaterial = this->materialsRange.min()[0];
-			for (unsigned char m = 0; m < this->nbMaterials; m++) {
-				for (unsigned int i = 0; i < this->nbFacesPerMaterial[m]; i++) {
-					// Copy data
-					this->facesMaterials[next++] = currentMaterial;
-
-					processingCurrent++;
-				}
-				currentMaterial++;
-			}
+			currentMaterial++;
 		}
 	} else {
 		for (unsigned int i = 0; i < this->nbFaces; i++) {
