@@ -155,6 +155,8 @@ void MeshContentModule::Render() {
 			if (this->mesh->nbFaces > MAX_CONTENT)
 				ImGui::Text("(truncated to first %u faces)", MAX_CONTENT);
 
+			ImGui::Separator();
+
 			ImGui::Text("Normals:");
 			ImGui::Text("  Vertices' normals:");
 			if (ImGui::BeginTable("Vertices' normals", 4, this->tableFlags)) {
@@ -187,6 +189,30 @@ void MeshContentModule::Render() {
 			ImGui::EndTable();
 			if (this->mesh->nbVertices > MAX_CONTENT)
 				ImGui::Text("(truncated to first %u faces)", MAX_CONTENT);
+
+			ImGui::Separator();
+
+			if (this->mesh->HaveMaterials()) {
+				ImGui::Text("Materials:");
+				if (ImGui::BeginTable("Number of faces per material", 2,
+						this->tableFlags)) {
+					ImGui::TableNextColumn();
+					ImGui::TableHeader("mat");
+					ImGui::TableNextColumn();
+					ImGui::TableHeader("nb faces");
+
+					unsigned char currentMaterial =
+							this->mesh->GetMaterialsRange().min()[0];
+					for (unsigned char i = 0; i < this->mesh->nbMaterials; i++) {
+						ImGui::TableNextRow();
+						ImGui::TableNextColumn();
+						ImGui::Text("%u", currentMaterial++);
+						ImGui::TableNextColumn();
+						ImGui::Text("%u", this->mesh->nbFacesPerMaterial[i]);
+					}
+				}
+				ImGui::EndTable();
+			}
 		}
 		ImGui::End();
 	}
