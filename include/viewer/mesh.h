@@ -63,6 +63,8 @@ public:
 
 	unsigned int nbVertices = 0;
 	unsigned int nbFaces = 0;
+	unsigned char nbMaterials = 0;
+	unsigned int* nbFacesPerMaterial = nullptr;
 
 private:
 	void Init(MeshData* data);

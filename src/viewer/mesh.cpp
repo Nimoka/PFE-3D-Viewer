@@ -121,6 +121,8 @@ Mesh::~Mesh() {
 		delete this->facesVertices;
 	if (this->facesMaterials != nullptr)
 		delete this->facesMaterials;
+	if (this->nbFacesPerMaterial != nullptr)
+		delete this->nbFacesPerMaterial;
 }
 
 void Mesh::ChangeDefaultColor(Eigen::Vector3f color) {
@@ -307,25 +309,108 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 
 	/* Faces data */
 
+	// Search the range of materials and check if its already ordered
+	bool indicesAreOrderedByMaterials = true;
+	if (this->haveMaterials) {
+		unsigned char minMatID = data->facesMaterials[0];
+		unsigned char maxMatID = data->facesMaterials[0];
+		for (unsigned int i = 1; i < data->nbFaces; i++) {
+			if (minMatID > data->facesMaterials[i])
+				minMatID = data->facesMaterials[i];
+			if (maxMatID < data->facesMaterials[i])
+				maxMatID = data->facesMaterials[i];
+			if (data->facesMaterials[i] < data->facesMaterials[i - 1])
+				indicesAreOrderedByMaterials = false;
+		}
+		this->nbMaterials = maxMatID - minMatID + 1;
+		this->materialsRange = Eigen::AlignedBox1i(minMatID, maxMatID);
+	} else {
+		this->nbMaterials = 1;
+		this->materialsRange = Eigen::AlignedBox1i(0, 0);
+	}
+
+	// Count the number of materials
+	this->nbFacesPerMaterial =
+			(unsigned int*) malloc(sizeof(int) * this->nbMaterials);
+	if (this->haveMaterials) {
+		for (unsigned int i = 0; i < this->nbMaterials; i++)
+			nbFacesPerMaterial[i] = 0;
+	} else {
+		nbFacesPerMaterial[0] = this->nbFaces;
+	}
+
 	// Copy faces’ vertices (indice)
 	unsigned int nbElements = 3 * this->nbFaces;
 	this->facesVertices = (unsigned int*) malloc(sizeof(int) * nbElements);
 	if (unusedPoints.size()) {
-		for (unsigned int i = 0; i < nbElements; i++) {
-			// Copy data
-			this->facesVertices[i] =
-					indiceCorrespondance[data->facesVertices[i]];
+		if (indicesAreOrderedByMaterials) {
+			// If indices are already ordered by materials
+			// or there are no materials
+			for (unsigned int i = 0; i < nbElements; i++) {
+				// Copy data
+				this->facesVertices[i] =
+						indiceCorrespondance[data->facesVertices[i]];
 
-			processingCurrent++;
+				processingCurrent++;
+			}
+		} else {
+			// If indices need to be reordered
+			unsigned int next = 0;
+			unsigned char currentMaterial = this->materialsRange.min()[0];
+			for (unsigned char m = 0; m < this->nbMaterials; m++) {
+				for (unsigned int i = 0; i < this->nbFaces; i++) {
+					if (data->facesMaterials[i] == currentMaterial) {
+						// Copy data
+						this->facesVertices[next++] =
+								indiceCorrespondance[
+										data->facesVertices[3 * i]];
+						this->facesVertices[next++] =
+								indiceCorrespondance[
+										data->facesVertices[(3 * i) + 1]];
+						this->facesVertices[next++] =
+								indiceCorrespondance[
+										data->facesVertices[(3 * i) + 2]];
+						this->nbFacesPerMaterial[m]++;
+
+						processingCurrent++;
+					}
+				}
+				currentMaterial++;
+			}
 		}
 		// Deallocate indice’s correspondance array
 		delete indiceCorrespondance;
 	} else {
-		for (unsigned int i = 0; i < nbElements; i++) {
-			// Copy data
-			this->facesVertices[i] = data->facesVertices[i];
+		if (indicesAreOrderedByMaterials) {
+			// If indices are already ordered by materials
+			// or there are no materials
+			for (unsigned int i = 0; i < nbElements; i++) {
+				// Copy data
+				this->facesVertices[i] = data->facesVertices[i];
 
-			processingCurrent++;
+				processingCurrent++;
+			}
+		} else {
+			// If indices need to be reordered
+			unsigned int next = 0;
+			unsigned char currentMaterial = this->materialsRange.min()[0];
+			for (unsigned char m = 0; m < this->nbMaterials; m++) {
+				for (unsigned int i = 0; i < this->nbFaces; i++) {
+					if (data->facesMaterials[i] == currentMaterial) {
+						// Copy data
+						this->facesVertices[next++] =
+								data->facesVertices[3 * i];
+						this->facesVertices[next++] =
+								data->facesVertices[(3 * i) + 1];
+						this->facesVertices[next++] =
+								data->facesVertices[(3 * i) + 2];
+						this->nbFacesPerMaterial[m]++;
+
+						processingCurrent++;
+					}
+				}
+				currentMaterial++;
+			}
 		}
 	}
 
@@ -333,11 +418,28 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 	this->facesMaterials =
 			(unsigned char*) malloc(sizeof(char) * this->nbFaces);
 	if (this->haveMaterials) {
-		for (unsigned int i = 0; i < this->nbFaces; i++) {
-			// Copy data
-			this->facesMaterials[i] = data->facesMaterials[i];
+		if (indicesAreOrderedByMaterials) {
+			// If indices are already ordered by materials
+			// or there are no materials
+			for (unsigned int i = 0; i < this->nbFaces; i++) {
+				// Copy data
+				this->facesMaterials[i] = data->facesMaterials[i];
 
-			processingCurrent++;
+				processingCurrent++;
+			}
+		} else {
+			// If indices need to be reordered
+			unsigned int next = 0;
+			unsigned char currentMaterial = this->materialsRange.min()[0];
+			for (unsigned char m = 0; m < this->nbMaterials; m++) {
+				for (unsigned int i = 0; i < this->nbFacesPerMaterial[m]; i++) {
+					// Copy data
+					this->facesMaterials[next++] = currentMaterial;
+
+					processingCurrent++;
+				}
+				currentMaterial++;
+			}
 		}
 	} else {
 		for (unsigned int i = 0; i < this->nbFaces; i++) {
@@ -346,9 +448,6 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 
 			processingCurrent++;
 		}
-		
-		// Set materials range
-		this->materialsRange = Eigen::AlignedBox1i(0, 0);
 	}
 
 	if (this->context != nullptr)
