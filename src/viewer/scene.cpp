@@ -130,8 +130,7 @@ const Eigen::Matrix4f& Scene::GetMeshTransformationMatrix() {
 }
 
 Eigen::Matrix3f Scene::GetNormalMatrix() {
-	Eigen::Matrix4f normalMatrix = this->camera->ComputeViewMatrix()
-			* this->meshTransformationMatrix;
+	Eigen::Matrix4f normalMatrix = this->meshTransformationMatrix;
 	return normalMatrix.block<3, 3>(0, 0).inverse().transpose();
 }
 
