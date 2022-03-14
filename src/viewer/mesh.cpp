@@ -125,6 +125,68 @@ Mesh::~Mesh() {
 		delete this->nbFacesPerMaterial;
 }
 
+bool Mesh::ExportMesh(std::string path) {
+	std::ofstream file(path.c_str(), std::ios::out);
+	if (!file)
+		return false;
+
+	// Write header
+	file << "ply" << std::endl
+			<< "format ascii 1.0" << std::endl
+			<< "element vertex " << this->nbVertices << std::endl
+			<< "property float x" << std::endl
+			<< "property float y" << std::endl
+			<< "property float z" << std::endl;
+	if (this->haveColors) {
+		file << "property float red" << std::endl
+				<< "property float green" << std::endl
+				<< "property float blue" << std::endl;
+	}
+	file << "element face " << this->nbFaces << std::endl
+			<< "property list uchar uint vertex_index" << std::endl;
+	if (this->haveMaterials) {
+		file << "property int id" << std::endl;
+	}
+	file << "end_header" << std::endl;
+
+	// Write vertices data
+	if (haveColors) {
+		for (unsigned int i = 0; i < this->nbVertices; i++) {
+			file << this->verticesData[i].position.x() << " "
+					<< this->verticesData[i].position.y() << " "
+					<< this->verticesData[i].position.z() << " "
+					<< this->verticesData[i].color.x() << " "
+					<< this->verticesData[i].color.y() << " "
+					<< this->verticesData[i].color.z() << std::endl;
+		}
+	} else {
+		for (unsigned int i = 0; i < this->nbVertices; i++) {
+			file << this->verticesData[i].position.x() << " "
+					<< this->verticesData[i].position.y() << " "
+					<< this->verticesData[i].position.z() << std::endl;
+		}
+	}
+
+	// Write faces data
+	if (haveMaterials) {
+		for (unsigned int i = 0; i < this->nbFaces; i++) {
+			file << "3 " << this->facesVertices[(3 * i)] << " "
+					<< this->facesVertices[(3 * i) + 1] << " "
+					<< this->facesVertices[(3 * i) + 2] << " "
+					<< ((unsigned int) this->facesMaterials[i]) << std::endl;
+		}
+	} else {
+		for (unsigned int i = 0; i < this->nbFaces; i++) {
+			file << "3 " << this->facesVertices[(3 * i)] << " "
+					<< this->facesVertices[(3 * i) + 1] << " "
+					<< this->facesVertices[(3 * i) + 2] << std::endl;
+		}
+	}
+
+	file.close();
+	return true;
+}
+
 void Mesh::ChangeDefaultColor(Eigen::Vector3f color) {
 	// Check if there were colors in the loaded mesh
 	// (If so, don’t alterate them.)

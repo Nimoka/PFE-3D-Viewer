@@ -46,6 +46,8 @@ public:
 	Mesh(Mesh* mesh);
 	~Mesh();
 
+	bool ExportMesh(std::string filepath);
+
 	void ChangeDefaultColor(Eigen::Vector3f color);
 	void ChangeDefaultMaterial(unsigned char material);
 
