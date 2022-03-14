@@ -476,7 +476,7 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 		}
 	}
 
-	if (indicesAreOrderedByMaterials) {
+	if (this->haveMaterials && indicesAreOrderedByMaterials) {
 		unsigned char minMaterial = this->materialsRange.min()[0];
 		for (unsigned int i = 0; i < this->nbFaces; i++)
 			this->nbFacesPerMaterial[data->facesMaterials[i] - minMaterial]++;
