@@ -17,5 +17,5 @@ void main() {
 	vert_position = view_matrix * model_matrix * vec4(vtx_position, 1.);
 	gl_Position = projection_matrix * vert_position;
 	vert_color = vtx_color;
-	vert_normal = normalize(vtx_normal * normal_matrix);
+	vert_normal = normal_matrix * vtx_normal;
 }
