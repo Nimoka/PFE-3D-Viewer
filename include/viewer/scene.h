@@ -23,6 +23,7 @@ public:
 
 	void AddDirectionalLight(DirectionalLight* light);
 	void AddPointLight(PointLight *light);
+	void AddRandomPointLight(PointLight *light);
 
 	const Eigen::Vector3f& GetAmbientColor();
 	Camera* GetCamera();

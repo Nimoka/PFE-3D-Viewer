@@ -8,7 +8,10 @@ Scene::Scene()
 			new DirectionalLight(
 					Eigen::Vector3f(.2, .2, .2),
 					Eigen::Vector3f(1., 1., 0.)));
-	this->AddPointLight(new PointLight(Eigen::Vector3f(.1,.1,.1)));
+	this->AddPointLight(
+			new PointLight(
+					Eigen::Vector3f(1.,1.,1.),
+					Eigen::Vector3f(16.,9.,8.)));
 }
 
 Scene::Scene(Mesh* mesh) {
@@ -104,6 +107,27 @@ void Scene::AddPointLight(PointLight *light){
 	if (this->renderer != nullptr)
 		((Renderer *)this->renderer)->UpdatePointLightList();
  }
+
+
+void Scene::AddRandomPointLight(PointLight *light) {
+	if (light == nullptr)
+		return;
+
+	Eigen::Vector3f position;
+
+	float rand1       = (float)rand() / RAND_MAX;
+	float rand2       = (float)rand() / RAND_MAX;
+	float latitude    = acos(2 * rand1 - 1) - EIGEN_PI / 2;
+	float longitude   = 2 * EIGEN_PI * rand2;
+	position[0] = 20 * cos(latitude) * cos(longitude);
+	position[1] = 20 * cos(latitude) * sin(longitude);
+	position[2] = 20 * sin(latitude);
+	light->SetPosition(position);
+	this->pointLights.push_back(light);
+	if (this->renderer != nullptr)
+		((Renderer *)this->renderer)->UpdatePointLightList();
+}
+
 
 const Eigen::Vector3f& Scene::GetAmbientColor() {
 	return this->ambientColor;
