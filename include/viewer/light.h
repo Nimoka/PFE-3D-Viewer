@@ -42,16 +42,16 @@ public:
 	PointLight(const Eigen::Vector3f &intensity,
 			const Eigen::Vector3f& position);
 	PointLight(PointLight* light);
-	PointLight(const Eigen::Vector3f &intensity);
 	~PointLight();
 
 	Eigen::Vector3f GetPosition();
 
 	void SetPosition(const Eigen::Vector3f& position);
-	void SetRandomPosition(float radius);
+	void SetIntensity(const Eigen::Vector3f &intensity);
 
 private:
 	Eigen::Vector3f position;
+	Eigen::Vector3f intensity;
 };
 
 #endif // LIGHT_H
