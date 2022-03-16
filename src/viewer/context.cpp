@@ -40,9 +40,12 @@ Context::~Context() {
 
 void Context::Launch() {
 	int windowWidth, windowHeight;
+	this->lastFrame =  static_cast<float>(glfwGetTime());
 	while (!glfwWindowShouldClose(window) && !this->readyToDie) {
 		/* Poll latest events */
-
+		float currentFrame = static_cast<float>(glfwGetTime());
+		this->deltaTime = currentFrame-lastFrame;
+		lastFrame = currentFrame;
 		glfwPollEvents();
 
 		/* Start new ImGui frame */
@@ -558,6 +561,10 @@ void Context::SetDarkMode(bool darkMode) {
 
 bool Context::GetDarkMode() {
 	return this->darkMode;
+}
+
+float Context::GetDeltaTime(){
+	return this->deltaTime;
 }
 
 CLILoader Context::GetCLI() {

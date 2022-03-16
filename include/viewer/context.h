@@ -97,6 +97,8 @@ public:
 	void SetDarkMode(bool darkMode);
 	bool GetDarkMode();
 
+	float GetDeltaTime();
+
 	CLILoader GetCLI();
 	TOMLLoader GetTOML();
 
@@ -137,6 +139,8 @@ private:
 	int nextModuleID = 0;
 	int windowWidth = DEFAULT_WINDOW_WIDTH;
 	int windowHeight = DEFAULT_WINDOW_HEIGHT;
+	float deltaTime = 0.0;
+	float lastFrame = 0.0;
 
 	CLILoader cli;
 	TOMLLoader toml;
