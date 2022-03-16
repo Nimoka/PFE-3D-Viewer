@@ -45,7 +45,7 @@ void Context::Launch() {
 		/* Poll latest events */
 		float currentFrame = static_cast<float>(glfwGetTime());
 		this->deltaTime = currentFrame-lastFrame;
-		lastFrame = currentFrame;
+		this->lastFrame = currentFrame;
 		glfwPollEvents();
 
 		/* Start new ImGui frame */
