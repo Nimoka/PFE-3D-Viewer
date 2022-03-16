@@ -254,7 +254,7 @@ void Scene::InitPerMaterialVbos() {
 
 	// For each material
 	unsigned int nbElements;
-	for (unsigned int i = 0; i < this->nbVboFaces; i++) {
+	for (unsigned char i = 0; i < this->nbVboFaces; i++) {
 		// Copy the list of its faces’ vertices in its new VBO
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vboFacesID[i]);
 		nbElements = 3 * this->mesh->nbFacesPerMaterial[i];

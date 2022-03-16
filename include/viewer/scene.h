@@ -64,7 +64,7 @@ private:
 	GLuint tboMaterialsID;
 	GLuint tboMaterialsTex;
 
-	unsigned int nbVboFaces = 0;
+	unsigned char nbVboFaces = 0;
 };
 
 #endif // SCENE_H
