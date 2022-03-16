@@ -7,17 +7,24 @@
 class ShadersContentModule: public GUIModule
 {
 public:
-	ShadersContentModule(void* context, ShadersReader* shader);
+	ShadersContentModule(void* context,
+			unsigned char nbShaders, ShadersReader** shader);
 	ShadersContentModule(ShadersContentModule* module);
 	~ShadersContentModule();
 
 	void Init();
 	void Render();
 
-	ShadersReader* GetShaders();
-	void SetShaders(ShadersReader* shaders);
+	unsigned char GetNbShaders();
+	ShadersReader** GetShaders();
+
+	void SetShaders(unsigned char nbShaders, ShadersReader** shaders);
+
 private:
-	ShadersReader* shaders;
+	void CleanShaders();
+
+	unsigned char nbShaders = 0;
+	ShadersReader** shaders = nullptr;
 };
 
 #endif // MODULES_SHADERSCONTENT_H

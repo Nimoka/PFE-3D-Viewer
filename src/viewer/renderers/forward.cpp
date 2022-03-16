@@ -21,8 +21,7 @@ ForwardRenderer::ForwardRenderer(Renderer* renderer)
 }
 
 ForwardRenderer::~ForwardRenderer() {
-	if (this->shaders != nullptr)
-		delete this->shaders;
+	this->CleanShaders();
 
 	if (this->directionalLightsDirection != nullptr)
 		delete this->directionalLightsDirection;
@@ -37,14 +36,7 @@ ForwardRenderer::~ForwardRenderer() {
 void ForwardRenderer::Init() {
 	if (this->scene != nullptr)
 		this->scene->SetRenderer(this);
-
-	this->shaders = new ShadersReader(this->context);
-	this->UpdateDirectionalLightList(false);
-	this->UpdatePointLightList(false);
-	this->shaders->LoadFiles(
-			DATA_DIR "shaders/forward.vert",
-			DATA_DIR "shaders/forward.frag",
-			false);
+	this->SetFullPassRender();
 }
 
 void ForwardRenderer::Render(ImVec2 size) {
@@ -66,36 +58,37 @@ void ForwardRenderer::Render(ImVec2 size) {
 			this->clearColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	this->shaders->Activate();
+	this->shaders[0]->Activate();
 
-	glUniformMatrix4fv(this->shaders->GetUniformLocation("projection_matrix"),
-			1, false,
+	glUniformMatrix4fv(
+			this->shaders[0]->GetUniformLocation("projection_matrix"), 1, false,
 			this->scene->GetCamera()->ComputeProjectionMatrix().data());
-	glUniformMatrix4fv(this->shaders->GetUniformLocation("model_matrix"), 1,
+	glUniformMatrix4fv(this->shaders[0]->GetUniformLocation("model_matrix"), 1,
 			false, this->scene->GetMeshTransformationMatrix().data());
-	glUniformMatrix3fv(this->shaders->GetUniformLocation("normal_matrix"), 1,
+	glUniformMatrix3fv(this->shaders[0]->GetUniformLocation("normal_matrix"), 1,
 			false, this->scene->GetNormalMatrix().data());
 	if (this->scene->navigate3D){
-		glUniformMatrix4fv(this->shaders->GetUniformLocation("view_matrix"),1,
-			false, this->scene->GetCamera()->Compute3DViewMatrix().data());
-	}else{
-		glUniformMatrix4fv(this->shaders->GetUniformLocation("view_matrix"), 1,
-			false, this->scene->GetCamera()->ComputeViewMatrix().data());
+		glUniformMatrix4fv(this->shaders[0]->GetUniformLocation("view_matrix"),
+				1, false,
+				this->scene->GetCamera()->Compute3DViewMatrix().data());
+	} else {
+		glUniformMatrix4fv(this->shaders[0]->GetUniformLocation("view_matrix"),
+				1, false, this->scene->GetCamera()->ComputeViewMatrix().data());
 	}
-	glUniform3fv(this->shaders->GetUniformLocation("lights_dir_direction"),
+	glUniform3fv(this->shaders[0]->GetUniformLocation("lights_dir_direction"),
 			this->nbDirectionalLights, this->directionalLightsDirection);
-	glUniform3fv(this->shaders->GetUniformLocation("lights_dir_intensity"),
+	glUniform3fv(this->shaders[0]->GetUniformLocation("lights_dir_intensity"),
 			this->nbDirectionalLights, this->directionalLightsIntensity);
-	glUniform3fv(this->shaders->GetUniformLocation("lights_pt_position"),
+	glUniform3fv(this->shaders[0]->GetUniformLocation("lights_pt_position"),
 			this->nbPointLights, this->pointLightsPosition);
-	glUniform3fv(this->shaders->GetUniformLocation("lights_pt_intensity"),
+	glUniform3fv(this->shaders[0]->GetUniformLocation("lights_pt_intensity"),
 			this->nbPointLights, this->pointLightsIntensity);
-	glUniform3fv(this->shaders->GetUniformLocation("ambient_color"), 1,
+	glUniform3fv(this->shaders[0]->GetUniformLocation("ambient_color"), 1,
 			this->scene->GetAmbientColor().data());
 
-	this->scene->RenderMesh(this->shaders);
+	this->scene->RenderMesh(this->shaders[0]);
 
-	this->shaders->Deactivate();
+	this->shaders[0]->Deactivate();
 
 	this->DeactivateContext();
 }
@@ -128,10 +121,14 @@ void ForwardRenderer::UpdateDirectionalLightList(bool reload) {
 	}
 
 	if (this->shaders != nullptr) {
-		this->shaders->SetPreProcessorMacro(SPPM_NB_DIR_LIGHTS,
-				std::to_string(this->nbDirectionalLights));
+		for (unsigned int i = 0; i < this->nbShaders; i++) {
+			if (this->shaders[i] != nullptr) {
+				this->shaders[i]->SetPreProcessorMacro(SPPM_NB_DIR_LIGHTS,
+						std::to_string(this->nbDirectionalLights));
+			}
+		}
 		if (reload)
-			this->shaders->Load();
+			this->ReloadShaders();
 	}
 }
 
@@ -161,11 +158,58 @@ void ForwardRenderer::UpdatePointLightList(bool reload) {
 		this->pointLightsIntensity[3 * i + 2]  = light->GetIntensity()[2];
 	}
 
-	if (this->shaders != nullptr){
-		this->shaders->SetPreProcessorMacro(SPPM_NB_PT_LIGHTS,
-				std::to_string(this->nbPointLights));
+	if (this->shaders != nullptr) {
+		for (unsigned int i = 0; i < this->nbShaders; i++) {
+			if (this->shaders[i] != nullptr) {
+				this->shaders[i]->SetPreProcessorMacro(SPPM_NB_PT_LIGHTS,
+						std::to_string(this->nbPointLights));
+			}
+		}
 		if (reload)
-			this->shaders->Load();
+			this->ReloadShaders();
+	}
+}
+
+void ForwardRenderer::SetFullPassRender() {
+	if (this->scene == nullptr)
+		return;
+
+	this->CleanShaders();
+
+	this->shaders = (ShadersReader**) malloc(sizeof(void*));
+	this->nbShaders = 1;
+
+	this->shaders[0] = new ShadersReader(this->context);
+	this->UpdateDirectionalLightList(false);
+	this->UpdatePointLightList(false);
+	this->shaders[0]->LoadFiles(
+			DATA_DIR "shaders/forward.vert",
+			DATA_DIR "shaders/forward.frag",
+			false);
+}
+
+void ForwardRenderer::SetPerMaterialRender() {
+	if (this->scene == nullptr)
+		return;
+	if (this->scene->GetMesh())
+		return;
+
+	this->CleanShaders();
+
+	this->nbShaders = this->scene->GetMesh()->nbMaterials;
+	this->shaders = (ShadersReader**) malloc(sizeof(void*) * this->nbShaders);
+
+	for (unsigned char i = 0; i < this->nbShaders; i++)
+		this->shaders[i] = new ShadersReader(this->context);
+
+	this->UpdateDirectionalLightList(false);
+	this->UpdatePointLightList(false);
+
+	for (unsigned char i = 0; i < this->nbShaders; i++) {
+		this->shaders[i]->LoadFiles(
+				DATA_DIR "shaders/forward.vert",
+				DATA_DIR "shaders/forward.frag",
+				false);
 	}
 }
 

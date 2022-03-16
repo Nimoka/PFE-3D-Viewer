@@ -22,11 +22,15 @@ public:
 	virtual void UpdatePointLightList(bool reload = true) = 0;
 	void ReloadShaders();
 
+	virtual void SetFullPassRender() = 0;
+	virtual void SetPerMaterialRender() = 0;
+
 	void* GetContext();
 	const Eigen::Vector4f& GetClearColor();
 	const GLuint& GetRenderTexture() const;
 	Scene* GetScene();
-	ShadersReader* GetShaders();
+	unsigned char GetNbShaders();
+	ShadersReader** GetShaders();
 
 	void SetClearColor(Eigen::Vector4f color);
 	void SetScene(Scene* scene);
@@ -35,12 +39,15 @@ protected:
 	void ActivateContext();
 	const void DeactivateContext();
 
+	void CleanShaders();
+
 	void* context = nullptr;
 
 	Eigen::Vector4f clearColor = Eigen::Vector4f(0., 0., 0., 1.);
 	Scene* scene = nullptr;
 
-	ShadersReader* shaders = nullptr;
+	unsigned char nbShaders = 0;
+	ShadersReader** shaders = nullptr;
 
 private:
 	void Init();

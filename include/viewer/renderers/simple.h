@@ -17,6 +17,9 @@ public:
 
 	void UpdateDirectionalLightList(bool reload = true);
 	void UpdatePointLightList(bool reload = true);
+
+	void SetFullPassRender();
+	void SetPerMaterialRender();
 };
 
 #endif // RENDERERS_SIMPLE_H

@@ -18,18 +18,13 @@ SimpleRenderer::SimpleRenderer(Renderer* renderer)
 }
 
 SimpleRenderer::~SimpleRenderer() {
-	if (this->shaders != nullptr)
-		delete this->shaders;
+	this->CleanShaders();
 }
 
 void SimpleRenderer::Init() {
 	if (this->scene != nullptr)
 		this->scene->SetRenderer(nullptr);
-
-	this->shaders = new ShadersReader(this->context,
-			DATA_DIR "shaders/simple.vert",
-			DATA_DIR "shaders/simple.frag",
-			false);
+	this->SetFullPassRender();
 }
 
 void SimpleRenderer::Render(ImVec2 size) {
@@ -49,29 +44,61 @@ void SimpleRenderer::Render(ImVec2 size) {
 			this->clearColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	this->shaders->Activate();
+	this->shaders[0]->Activate();
 
-	glUniformMatrix4fv(this->shaders->GetUniformLocation("projection_matrix"),
-			1, false,
+	glUniformMatrix4fv(
+			this->shaders[0]->GetUniformLocation("projection_matrix"), 1, false,
 			this->scene->GetCamera()->ComputeProjectionMatrix().data());
-	glUniformMatrix4fv(this->shaders->GetUniformLocation("model_matrix"), 1,
+	glUniformMatrix4fv(this->shaders[0]->GetUniformLocation("model_matrix"), 1,
 			false, this->scene->GetMeshTransformationMatrix().data());
-	glUniformMatrix3fv(this->shaders->GetUniformLocation("normal_matrix"), 1,
+	glUniformMatrix3fv(this->shaders[0]->GetUniformLocation("normal_matrix"), 1,
 			false, this->scene->GetNormalMatrix().data());
 	if (this->scene->navigate3D) {
-		glUniformMatrix4fv(this->shaders->GetUniformLocation("view_matrix"), 1,
-			false, this->scene->GetCamera()->Compute3DViewMatrix().data());
-	}else{
-		glUniformMatrix4fv(	this->shaders->GetUniformLocation("view_matrix"),1,
-			false,this->scene->GetCamera()->ComputeViewMatrix().data());
+		glUniformMatrix4fv(this->shaders[0]->GetUniformLocation("view_matrix"),
+				1, false,
+				this->scene->GetCamera()->Compute3DViewMatrix().data());
+	} else {
+		glUniformMatrix4fv(this->shaders[0]->GetUniformLocation("view_matrix"),
+				1, false, this->scene->GetCamera()->ComputeViewMatrix().data());
 	}
 
-	this->scene->RenderMesh(this->shaders);
+	this->scene->RenderMesh(this->shaders[0]);
 
-	this->shaders->Deactivate();
+	this->shaders[0]->Deactivate();
 
 	this->DeactivateContext();
 }
 
 void SimpleRenderer::UpdateDirectionalLightList(bool reload) {}
 void SimpleRenderer::UpdatePointLightList(bool reload) {}
+
+void SimpleRenderer::SetFullPassRender() {
+	this->CleanShaders();
+
+	this->shaders = (ShadersReader**) malloc(sizeof(void*));
+	this->nbShaders = 1;
+
+	this->shaders[0] = new ShadersReader(this->context,
+			DATA_DIR "shaders/simple.vert",
+			DATA_DIR "shaders/simple.frag",
+			false);
+}
+
+void SimpleRenderer::SetPerMaterialRender() {
+	if (this->scene == nullptr)
+		return;
+	if (this->scene->GetMesh())
+		return;
+
+	this->CleanShaders();
+
+	this->nbShaders = this->scene->GetMesh()->nbMaterials;
+	this->shaders = (ShadersReader**) malloc(sizeof(void*) * this->nbShaders);
+
+	for (unsigned char i = 0; i < this->nbShaders; i++) {
+		this->shaders[i] = new ShadersReader(this->context,
+			DATA_DIR "shaders/simple.vert",
+			DATA_DIR "shaders/simple.frag",
+			false);
+	}
+}

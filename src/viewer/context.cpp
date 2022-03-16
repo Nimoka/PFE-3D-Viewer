@@ -243,10 +243,11 @@ void Context::SwitchRenderer() {
 	if (renderer == nullptr)
 		return;
 
+	renderer = new T(renderer);
 	this->viewer->SetRenderer(new T(renderer));
 	if (this->shadersContent != nullptr) {
 		this->shadersContent->SetShaders(
-				this->viewer->GetRenderer()->GetShaders());
+				renderer->GetNbShaders(), renderer->GetShaders());
 	}
 }
 
@@ -275,8 +276,10 @@ void Context::ToggleMeshContentModule() {
 
 void Context::ToggleShadersContentModule() {
 	if (this->shadersContent == nullptr) {
+		Renderer* renderer = this->viewer->GetRenderer();
 		this->shadersContent = new ShadersContentModule(this,
-				this->viewer->GetRenderer()->GetShaders());
+				renderer->GetNbShaders(),
+				renderer->GetShaders());
 		this->AddModule(this->shadersContent);
 	} else {
 		this->shadersContent->Kill();

@@ -21,8 +21,12 @@ Renderer::Renderer(Renderer* renderer)
 }
 
 void Renderer::ReloadShaders() {
-	if (this->shaders != nullptr)
-		this->shaders->Load();
+	if (this->shaders != nullptr) {
+		for (unsigned char i = 0; i < this->nbShaders; i++) {
+			if (this->shaders[i] != nullptr)
+				this->shaders[i]->Load();
+		}
+	}
 }
 
 Renderer::~Renderer() {
@@ -45,7 +49,11 @@ Scene* Renderer::GetScene() {
 	return this->scene;
 }
 
-ShadersReader* Renderer::GetShaders() {
+unsigned char Renderer::GetNbShaders() {
+	return this->nbShaders;
+}
+
+ShadersReader** Renderer::GetShaders() {
 	return this->shaders;
 }
 
@@ -67,6 +75,18 @@ void Renderer::ActivateContext() {
 
 const void Renderer::DeactivateContext() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::CleanShaders() {
+	if (this->shaders != nullptr) {
+		for (unsigned char i = 0; i < this->nbShaders; i++) {
+			if (this->shaders[i] != nullptr)
+				delete this->shaders[i];
+		}
+	}
+	delete this->shaders;
+	this->shaders = nullptr;
+	this->nbShaders = 0;
 }
 
 void Renderer::Init() {

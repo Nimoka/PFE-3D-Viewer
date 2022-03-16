@@ -1,17 +1,18 @@
 #include "modules/shaderscontent.h"
 
-ShadersContentModule::ShadersContentModule(void* context, ShadersReader* shaders)
-		: GUIModule(context)
-		, shaders(shaders) {
+ShadersContentModule::ShadersContentModule(void* context,
+		unsigned char nbShaders, ShadersReader** shaders)
+		: GUIModule(context) {
 	this->title = "Shaders content";
+	this->SetShaders(nbShaders, shaders);
 
 	this->Init();
 }
 
 ShadersContentModule::ShadersContentModule(ShadersContentModule* module)
-		: GUIModule(module->GetContext())
-		, shaders(module->GetShaders()) {
+		: GUIModule(module->GetContext()) {
 	this->title = module->GetTitle();
+	this->SetShaders(module->GetNbShaders(), module->GetShaders());
 
 	this->Init();
 }
@@ -22,37 +23,67 @@ void ShadersContentModule::Init() {}
 
 void ShadersContentModule::Render() {
 	if (this->shaders != nullptr) {
-		if (ImGui::Begin(std::string(this->title + "###"
-				+ std::to_string(this->id)).c_str())) {
-			ImGui::Text("Informations:");
-			ImGui::TextWrapped("  Vertex shader: %s",
-					this->shaders->GetVertexShaderPath().c_str());
-			ImGui::TextWrapped("  Fragment shader: %s",
-					this->shaders->GetFragmentShaderPath().c_str());
-			ImGui::Text("  Are dynamic: %s",
-					(this->shaders->AreDynamic() ? "yes" : "no"));
-			ImGui::Separator();
-			if (this->shaders->AreLoaded()) {
-				if (ImGui::CollapsingHeader("Vertex shader source code")) {
-					ImGui::TextUnformatted(
-							this->shaders->GetVertexShaderSource().c_str());
+		ShadersReader* currentShaders;
+		for (unsigned char i = 0; i < this->nbShaders; i++) {
+			currentShaders = this->shaders[i];
+
+			if (currentShaders == nullptr)
+				continue;
+
+			if (ImGui::Begin(std::string(this->title
+					+ " #" + std::to_string((unsigned int) i)
+					+ "###" + std::to_string(this->id)).c_str())) {
+				ImGui::Text("Informations:");
+				ImGui::TextWrapped("  Vertex shader: %s",
+						currentShaders->GetVertexShaderPath().c_str());
+				ImGui::TextWrapped("  Fragment shader: %s",
+						currentShaders->GetFragmentShaderPath().c_str());
+				ImGui::Text("  Are dynamic: %s",
+						(currentShaders->AreDynamic() ? "yes" : "no"));
+				if (this->nbShaders > 1)
+					ImGui::Text("  Used for material: %u", ((unsigned int) i));
+				ImGui::Separator();
+				if (currentShaders->AreLoaded()) {
+					if (ImGui::CollapsingHeader("Vertex shader source code")) {
+						ImGui::TextUnformatted(
+								currentShaders->
+										GetVertexShaderSource().c_str());
+					}
+					if (ImGui::CollapsingHeader(
+							"Fragment shader source code")) {
+						ImGui::TextUnformatted(
+								currentShaders->
+										GetFragmentShaderSource().c_str());
+					}
+				} else {
+					ImGui::Text("Not loaded.");
 				}
-				if (ImGui::CollapsingHeader("Fragment shader source code")) {
-					ImGui::TextUnformatted(
-							this->shaders->GetFragmentShaderSource().c_str());
-				}
-			} else {
-				ImGui::Text("Not loaded.");
 			}
+			ImGui::End();
 		}
-		ImGui::End();
 	}
 }
 
-ShadersReader* ShadersContentModule::GetShaders() {
+unsigned char ShadersContentModule::GetNbShaders() {
+	return this->nbShaders;
+}
+
+ShadersReader** ShadersContentModule::GetShaders() {
 	return this->shaders;
 }
 
-void ShadersContentModule::SetShaders(ShadersReader* shaders) {
-	this->shaders = shaders;
+void ShadersContentModule::SetShaders(
+		unsigned char nbShaders, ShadersReader** shaders) {
+	this->CleanShaders();
+
+	this->nbShaders = nbShaders;
+	this->shaders = (ShadersReader**) malloc(sizeof(void*) * nbShaders);
+	for (unsigned int i = 0; i < nbShaders; i++)
+		this->shaders[i] = shaders[i];
+}
+
+void ShadersContentModule::CleanShaders() {
+	if (this->shaders != nullptr)
+		delete this->shaders;
+	this->nbShaders = 0;
 }
