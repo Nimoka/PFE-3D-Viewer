@@ -14,6 +14,7 @@ public:
 
 private:
 	void ShowFPSWindow();
+	void* context;
 };
 
 #endif // MODULES_IMGUIFPS_H
