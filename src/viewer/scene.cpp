@@ -17,6 +17,7 @@ Scene::Scene()
 Scene::Scene(Mesh* mesh) {
 	this->mesh = mesh;
 	this->Init();
+	this->InitAllFaceVbo();
 }
 
 Scene::~Scene() {
@@ -29,13 +30,16 @@ Scene::~Scene() {
 	this->Clean();
 }
 
-bool Scene::RenderMesh(ShadersReader* shaders) {
+bool Scene::RenderMesh(ShadersReader* shaders, unsigned int material) {
 	if (this->mesh == nullptr)
 		return false;
 
+	if (this->nbVboFaces <= material)
+		return false;
+
 	glBindVertexArray(this->vaoID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vboID[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, this->vboID[1]);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vboFacesID[material]);
+	glBindBuffer(GL_ARRAY_BUFFER, this->vboVerticesID);
 
 	int vertexLocation = shaders->GetAttribLocation("vtx_position");
 	if (vertexLocation >= 0) {
@@ -169,6 +173,7 @@ void Scene::SetMesh(Mesh* mesh) {
 		this->Clean();
 	this->mesh = mesh;
 	this->Init();
+	this->InitAllFaceVbo();
 }
 
 void Scene::SetMeshTransformationMatrix(Eigen::Matrix4f transformationMatrix) {
@@ -181,16 +186,11 @@ void Scene::SetRenderer(void* renderer) {
 
 void Scene::Init() {
 	glGenVertexArrays(1, &this->vaoID);
-	glGenBuffers(2, this->vboID);
+	glGenBuffers(1, &this->vboVerticesID);
 
 	glBindVertexArray(this->vaoID);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vboID[0]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			(sizeof(int) * 3 * this->mesh->nbFaces),
-			this->mesh->facesVertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER, this->vboID[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, this->vboVerticesID);
 	glBufferData(GL_ARRAY_BUFFER,
 			(sizeof(struct Vertex) * this->mesh->nbVertices),
 			this->mesh->verticesData[0].position.data(), GL_STATIC_DRAW);
@@ -215,12 +215,71 @@ void Scene::Init() {
 	glBindBuffer(GL_TEXTURE_BUFFER, 0);
 }
 
+void Scene::InitAllFaceVbo() {
+	this->nbVboFaces = 1;
+
+	// Allocate the list of VBO IDs (only 1 element)
+	this->vboFacesID = (GLuint*) malloc(sizeof(GLuint));
+
+	// Bind to existing VAO
+	glBindVertexArray(this->vaoID);
+
+	// Generate a single buffer for the VBO
+	glGenBuffers(1, this->vboFacesID);
+
+	// Copy the entire list of faces’ vertices in the new VBO
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vboFacesID[0]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+			(sizeof(int) * 3 * this->mesh->nbFaces),
+			this->mesh->facesVertices, GL_STATIC_DRAW);
+
+	// Return to the default VAO
+	glBindVertexArray(0);
+}
+
+void Scene::InitPerMaterialVbos() {
+	this->nbVboFaces = this->mesh->nbMaterials;
+
+	// Allocate the list of VBO IDs (one per material)
+	this->vboFacesID = (GLuint*) malloc(sizeof(GLuint) * this->nbVboFaces);
+
+	// Bind to existing VAO
+	glBindVertexArray(this->vaoID);
+
+	// Generate a buffer per VBO, a VBO per material
+	glGenBuffers(this->nbVboFaces, this->vboFacesID);
+
+	// Use a dynamic pointer to navigate in faces’ vertices
+	unsigned int* pointer = this->mesh->facesVertices;
+
+	// For each material
+	unsigned int nbElements;
+	for (unsigned int i = 0; i < this->nbVboFaces; i++) {
+		// Copy the list of its faces’ vertices in its new VBO
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vboFacesID[i]);
+		nbElements = 3 * this->mesh->nbFacesPerMaterial[i];
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, (sizeof(int) * nbElements),
+				pointer, GL_STATIC_DRAW);
+
+		// Update the pointer
+		pointer += nbElements;
+	}
+
+	// Return to the default VAO
+	glBindVertexArray(0);
+}
+
 void Scene::Clean() {
-	glDeleteBuffers(2, this->vboID);
+	glDeleteBuffers(1, &this->vboVerticesID);
 	glDeleteVertexArrays(1, &this->vaoID);
 
 	if (this->camera != nullptr) {
 		delete this->camera;
 		this->camera = nullptr;
 	}
+}
+
+void Scene::CleanFacesVbos() {
+	if (this->nbVboFaces)
+		glDeleteBuffers(this->nbVboFaces, this->vboFacesID);
 }

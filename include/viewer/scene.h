@@ -18,7 +18,7 @@ public:
 	Scene(Mesh* mesh);
 	~Scene();
 
-	bool RenderMesh(ShadersReader* shaders);
+	bool RenderMesh(ShadersReader* shaders, unsigned int material = 0);
 	void UpdateCameraViewport(ImVec2 size);
 
 	void AddDirectionalLight(DirectionalLight* light);
@@ -42,7 +42,10 @@ public:
 
 private:
 	void Init();
+	void InitAllFaceVbo();
+	void InitPerMaterialVbos();
 	void Clean();
+	void CleanFacesVbos();
 
 	void* renderer = nullptr;
 
@@ -56,9 +59,12 @@ private:
 	Eigen::Matrix4f meshTransformationMatrix = Eigen::Matrix4f::Identity();
 
 	GLuint vaoID;
-	GLuint vboID[2];
+	GLuint* vboFacesID;
+	GLuint vboVerticesID;
 	GLuint tboMaterialsID;
 	GLuint tboMaterialsTex;
+
+	unsigned int nbVboFaces = 0;
 };
 
 #endif // SCENE_H
