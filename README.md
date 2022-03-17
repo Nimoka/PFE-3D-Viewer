@@ -11,12 +11,15 @@ It contains three programs:
 
 ## Table of contents
 
-- [Dependencies](#dependencies)
-- [Usage](#usage)
-	- [Install dependencies](#install-dependencies)
-	- [Compilation](#compilation)
-	- [Tests](#tests)
-- [Troubleshooting](#troubleshooting)
+- [PFE 3D Viewer](#pfe-3d-viewer)
+	- [Table of contents](#table-of-contents)
+	- [Dependencies](#dependencies)
+	- [Usage](#usage)
+		- [Install dependencies](#install-dependencies)
+		- [Compilation](#compilation)
+		- [Tests](#tests)
+	- [Troubleshooting](#troubleshooting)
+		- [Clang-format](#clang-format)
 
 ---
 
@@ -60,3 +63,9 @@ This is a list of dependencies used in this project that you can install by your
 	- The GLFW version available on your computer may not be compatible with the one specified in the code for your OS: **specifying a previous version of GLFW to use** may do the trick. You can easily change it in the file `src/viewer/main.cpp` in `InitializeGLFW()`, then re-compile and relaunch the program.
 - **I opened a large mesh on my ~~outdated~~ computer with no graphics card or an Intel Graphics, but the mesh doesn’t show anything.**
 	- Your computer may be too old or underpowered to show the mesh. **Buy a new one.**
+
+
+### Clang-format
+
+- **Launch the clang-format on .cpp, .hpp, .c, .h files**
+  - find . -regex '.*\.\(cpp\|hpp\|c\|h\)' -exec clang-format -style=file -i {} \ ;
