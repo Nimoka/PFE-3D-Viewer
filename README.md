@@ -68,4 +68,5 @@ This is a list of dependencies used in this project that you can install by your
 ### Clang-format
 
 - **Launch the clang-format on .cpp, .hpp, .c, .h files**
-  - find . -regex '.*\.\(cpp\|hpp\|c\|h\)' -exec clang-format -style=file -i {} \ ;
+  - set the path of .clang-format in vscode : go to Extension, install clang-format by xaver, at Manage-> extension Setting -> Clang-format:Style -> input the full path of .clang-format.
+  - find . -regex '.*\.\(cpp\|hpp\|c\|h\)' -exec clang-format -style=file -i {} \ ; .  
