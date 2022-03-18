@@ -39,15 +39,12 @@ Context::~Context() {
 }
 
 void Context::Launch() {
-	int windowWidth, windowHeight;
-	this->lastFrame =  static_cast<float>(glfwGetTime());
-	while (!glfwWindowShouldClose(window) && !this->readyToDie) {
-		/* Poll latest events */
-		float currentFrame = static_cast<float>(glfwGetTime());
-		this->deltaTime = currentFrame-lastFrame;
-		this->lastFrame = currentFrame;
-		glfwPollEvents();
 
+	//glfwSwapInterval(0);
+	int windowWidth, windowHeight;	
+	while (!glfwWindowShouldClose(window) && !this->readyToDie) {
+		/* Poll latest events */		
+		glfwPollEvents();
 		/* Start new ImGui frame */
 
 		ImGui_ImplOpenGL3_NewFrame();
@@ -562,10 +559,6 @@ void Context::SetDarkMode(bool darkMode) {
 
 bool Context::GetDarkMode() {
 	return this->darkMode;
-}
-
-float Context::GetDeltaTime(){
-	return this->deltaTime;
 }
 
 CLILoader Context::GetCLI() {
