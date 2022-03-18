@@ -97,8 +97,6 @@ public:
 	void SetDarkMode(bool darkMode);
 	bool GetDarkMode();
 
-	float GetDeltaTime();
-
 	CLILoader GetCLI();
 	TOMLLoader GetTOML();
 
