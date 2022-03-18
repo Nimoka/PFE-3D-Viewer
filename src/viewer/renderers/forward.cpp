@@ -5,13 +5,12 @@
 #include "light.h"
 #include "shadersreader.h"
 
-ForwardRenderer::ForwardRenderer(void* context)
-		: Renderer(context) {
-	this->Init();
-}
+ForwardRenderer::ForwardRenderer(void* context, bool renderingPerMaterial)
+		: Renderer(context, renderingPerMaterial) {}
 
-ForwardRenderer::ForwardRenderer(void* context, Scene* scene)
-		: Renderer(context, scene) {
+ForwardRenderer::ForwardRenderer(void* context, Scene* scene,
+		bool renderingPerMaterial)
+		: Renderer(context, scene, renderingPerMaterial) {
 	this->Init();
 }
 

@@ -6,8 +6,9 @@
 class SimpleRenderer: public Renderer
 {
 public:
-	SimpleRenderer(void* context);
-	SimpleRenderer(void* context, Scene* scene);
+	SimpleRenderer(void* context, bool renderingPerMaterial = false);
+	SimpleRenderer(void* context, Scene* scene,
+			bool renderingPerMaterial = false);
 	SimpleRenderer(Renderer* renderer);
 	~SimpleRenderer();
 

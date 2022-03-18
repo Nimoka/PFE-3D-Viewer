@@ -2,13 +2,12 @@
 
 #include <iostream>
 
-SimpleRenderer::SimpleRenderer(void* context)
-		: Renderer(context) {
-	this->Init();
-}
+SimpleRenderer::SimpleRenderer(void* context, bool renderingPerMaterial)
+		: Renderer(context, renderingPerMaterial) {}
 
-SimpleRenderer::SimpleRenderer(void* context, Scene* scene)
-		: Renderer(context, scene) {
+SimpleRenderer::SimpleRenderer(void* context, Scene* scene,
+		bool renderingPerMaterial)
+		: Renderer(context, scene, renderingPerMaterial) {
 	this->Init();
 }
 

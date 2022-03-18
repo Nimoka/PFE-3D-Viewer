@@ -2,21 +2,24 @@
 
 #include <iostream>
 
-Renderer::Renderer(void* context)
-		: context(context) {
+Renderer::Renderer(void* context, bool renderingPerMaterial)
+		: context(context)
+		, renderingPerMaterial(renderingPerMaterial) {
 	this->Init();
 }
 
-Renderer::Renderer(void* context, Scene* scene)
+Renderer::Renderer(void* context, Scene* scene, bool renderingPerMaterial)
 		: context(context)
-		, scene(scene) {
+		, scene(scene)
+		, renderingPerMaterial(renderingPerMaterial) {
 	this->Init();
 }
 
 Renderer::Renderer(Renderer* renderer)
 		: context(renderer->GetContext())
 		, scene(renderer->GetScene())
-		, clearColor(renderer->GetClearColor()) {
+		, clearColor(renderer->GetClearColor())
+		, renderingPerMaterial(renderer->IsRenderingPerMaterial()) {
 	this->Init();
 }
 
@@ -57,8 +60,18 @@ ShadersReader** Renderer::GetShaders() {
 	return this->shaders;
 }
 
+bool Renderer::IsRenderingPerMaterial() {
+	return this->renderingPerMaterial;
+}
+
 void Renderer::SetClearColor(Eigen::Vector4f color) {
 	this->clearColor = color;
+}
+
+void Renderer::SetRenderingPerMaterial(bool value) {
+	if (this->renderingPerMaterial == value)
+		return;
+	this->renderingPerMaterial = value;
 }
 
 void Renderer::SetScene(Scene* scene) {

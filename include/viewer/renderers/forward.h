@@ -6,8 +6,9 @@
 class ForwardRenderer: public Renderer
 {
 public:
-	ForwardRenderer(void* context);
-	ForwardRenderer(void* context, Scene* scene);
+	ForwardRenderer(void* context, bool renderingPerMaterial = false);
+	ForwardRenderer(void* context, Scene* scene,
+			bool renderingPerMaterial = false);
 	ForwardRenderer(Renderer* renderer);
 	~ForwardRenderer();
 

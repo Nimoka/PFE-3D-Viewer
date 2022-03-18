@@ -11,8 +11,8 @@
 class Renderer
 {
 public:
-	Renderer(void* context);
-	Renderer(void* context, Scene* scene);
+	Renderer(void* context, bool renderingPerMaterial);
+	Renderer(void* context, Scene* scene, bool renderingPerMaterial);
 	Renderer(Renderer* renderer);
 	virtual ~Renderer();
 
@@ -31,8 +31,10 @@ public:
 	Scene* GetScene();
 	unsigned char GetNbShaders();
 	ShadersReader** GetShaders();
+	bool IsRenderingPerMaterial();
 
 	void SetClearColor(Eigen::Vector4f color);
+	void SetRenderingPerMaterial(bool value);
 	void SetScene(Scene* scene);
 
 protected:
@@ -45,6 +47,8 @@ protected:
 
 	Eigen::Vector4f clearColor = Eigen::Vector4f(0., 0., 0., 1.);
 	Scene* scene = nullptr;
+
+	bool renderingPerMaterial = false;
 
 	unsigned char nbShaders = 0;
 	ShadersReader** shaders = nullptr;
