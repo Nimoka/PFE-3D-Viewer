@@ -87,7 +87,8 @@ void SimpleRenderer::SetFullPassRender() {
 void SimpleRenderer::SetPerMaterialRender() {
 	if (this->scene == nullptr)
 		return;
-	if (this->scene->GetMesh())
+	Mesh* mesh = this->scene->GetMesh();
+	if (mesh == nullptr)
 		return;
 
 	this->CleanShaders();
