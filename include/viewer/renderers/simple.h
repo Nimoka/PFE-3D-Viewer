@@ -12,8 +12,6 @@ public:
 	SimpleRenderer(Renderer* renderer);
 	~SimpleRenderer();
 
-	void Init();
-
 	void Render(ImVec2 size);
 
 	void UpdateDirectionalLightList(bool reload = true);

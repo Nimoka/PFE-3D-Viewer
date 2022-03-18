@@ -8,22 +8,16 @@ SimpleRenderer::SimpleRenderer(void* context, bool renderingPerMaterial)
 SimpleRenderer::SimpleRenderer(void* context, Scene* scene,
 		bool renderingPerMaterial)
 		: Renderer(context, scene, renderingPerMaterial) {
-	this->Init();
+	this->InitScene();
 }
 
 SimpleRenderer::SimpleRenderer(Renderer* renderer)
 		: Renderer(renderer) {
-	this->Init();
+	this->InitScene();
 }
 
 SimpleRenderer::~SimpleRenderer() {
 	this->CleanShaders();
-}
-
-void SimpleRenderer::Init() {
-	if (this->scene != nullptr)
-		this->scene->SetRenderer(nullptr);
-	this->SetFullPassRender();
 }
 
 void SimpleRenderer::Render(ImVec2 size) {

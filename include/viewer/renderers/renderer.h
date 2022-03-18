@@ -41,6 +41,8 @@ protected:
 	void ActivateContext();
 	const void DeactivateContext();
 
+	void InitScene();
+
 	void CleanShaders();
 
 	void* context = nullptr;

@@ -11,12 +11,12 @@ ForwardRenderer::ForwardRenderer(void* context, bool renderingPerMaterial)
 ForwardRenderer::ForwardRenderer(void* context, Scene* scene,
 		bool renderingPerMaterial)
 		: Renderer(context, scene, renderingPerMaterial) {
-	this->Init();
+	this->InitScene();
 }
 
 ForwardRenderer::ForwardRenderer(Renderer* renderer)
 		: Renderer(renderer) {
-	this->Init();
+	this->InitScene();
 }
 
 ForwardRenderer::~ForwardRenderer() {
@@ -30,12 +30,6 @@ ForwardRenderer::~ForwardRenderer() {
 		delete this->pointLightsPosition;
 	if (this->pointLightsIntensity != nullptr)
 		delete this->pointLightsIntensity;
-}
-
-void ForwardRenderer::Init() {
-	if (this->scene != nullptr)
-		this->scene->SetRenderer(this);
-	this->SetFullPassRender();
 }
 
 void ForwardRenderer::Render(ImVec2 size) {
@@ -215,8 +209,8 @@ void ForwardRenderer::SetPerMaterialRender() {
 
 void ForwardRenderer::SetScene(Scene* scene) {
 	this->scene = scene;
+	this->InitScene();
 	if (this->scene != nullptr) {
-		this->scene->SetRenderer(this);
 		this->UpdateDirectionalLightList(false);
 		this->UpdatePointLightList();
 	}

@@ -76,8 +76,7 @@ void Renderer::SetRenderingPerMaterial(bool value) {
 
 void Renderer::SetScene(Scene* scene) {
 	this->scene = scene;
-	if (this->scene != nullptr)
-		this->scene->SetRenderer(nullptr);
+	this->InitScene();
 }
 
 void Renderer::ActivateContext() {
@@ -88,6 +87,14 @@ void Renderer::ActivateContext() {
 
 const void Renderer::DeactivateContext() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::InitScene() {
+	if (this->scene != nullptr) {
+		this->scene->SetRenderer(this);
+		this->InitShaders();
+		this->scene->UpdateVbos();
+	}
 }
 
 void Renderer::CleanShaders() {

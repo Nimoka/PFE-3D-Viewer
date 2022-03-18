@@ -12,8 +12,6 @@ public:
 	ForwardRenderer(Renderer* renderer);
 	~ForwardRenderer();
 
-	void Init();
-
 	void Render(ImVec2 size);
 
 	void UpdateDirectionalLightList(bool reload = true);
