@@ -242,7 +242,6 @@ void Context::Quit() {
 
 template <class T>
 void Context::SwitchRenderer() {
-	std::cout << "Switch Renderer ============================" << std::endl;
 	Renderer* renderer = this->viewer->GetRenderer();
 	if (renderer == nullptr)
 		return;
