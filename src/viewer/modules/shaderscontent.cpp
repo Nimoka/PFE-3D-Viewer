@@ -32,7 +32,8 @@ void ShadersContentModule::Render() {
 
 			if (ImGui::Begin(std::string(this->title
 					+ " #" + std::to_string((unsigned int) i)
-					+ "###" + std::to_string(this->id)).c_str())) {
+					+ "###" + std::to_string(this->id)
+					+ "-" + std::to_string((unsigned int) i)).c_str())) {
 				ImGui::Text("Informations:");
 				ImGui::TextWrapped("  Vertex shader: %s",
 						currentShaders->GetVertexShaderPath().c_str());
