@@ -607,6 +607,26 @@ void Context::RenderMenuBar() {
 					// 		dynamic_cast<ClusturedRenderer*>(renderer))) {
 					// 	this->SwitchRenderer<ClusturedRenderer>();
 					}
+					ImGui::Separator();
+					bool renderingPerMaterial =
+							renderer->IsRenderingPerMaterial();
+					if (ImGui::MenuItem("One-pass shading", "",
+							(!renderingPerMaterial))) {
+						renderer->SetRenderingPerMaterial(false);
+						if (this->shadersContent != nullptr) {
+							this->shadersContent->SetShaders(
+									renderer->GetNbShaders(),
+									renderer->GetShaders());
+						}
+					} else if (ImGui::MenuItem("Per-material shading", "",
+							renderingPerMaterial)) {
+						renderer->SetRenderingPerMaterial(true);
+						if (this->shadersContent != nullptr) {
+							this->shadersContent->SetShaders(
+									renderer->GetNbShaders(),
+									renderer->GetShaders());
+						}
+					}
 					ImGui::EndMenu();
 				}
 				if (ImGui::BeginMenu("Facet culling")) {
