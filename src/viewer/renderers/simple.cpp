@@ -65,7 +65,7 @@ void SimpleRenderer::Render(ImVec2 size) {
 void SimpleRenderer::UpdateDirectionalLightList(bool reload) {}
 void SimpleRenderer::UpdatePointLightList(bool reload) {}
 
-void SimpleRenderer::SetFullPassRender() {
+void SimpleRenderer::InitFullPassShaders() {
 	this->CleanShaders();
 
 	this->shaders = (ShadersReader**) malloc(sizeof(void*));
@@ -77,7 +77,7 @@ void SimpleRenderer::SetFullPassRender() {
 			false);
 }
 
-void SimpleRenderer::SetPerMaterialRender() {
+void SimpleRenderer::InitPerMaterialShaders() {
 	if (this->scene == nullptr)
 		return;
 	Mesh* mesh = this->scene->GetMesh();

@@ -163,7 +163,7 @@ void ForwardRenderer::UpdatePointLightList(bool reload) {
 	}
 }
 
-void ForwardRenderer::SetFullPassRender() {
+void ForwardRenderer::InitFullPassShaders() {
 	if (this->scene == nullptr)
 		return;
 
@@ -181,7 +181,7 @@ void ForwardRenderer::SetFullPassRender() {
 			false);
 }
 
-void ForwardRenderer::SetPerMaterialRender() {
+void ForwardRenderer::InitPerMaterialShaders() {
 	if (this->scene == nullptr)
 		return;
 	Mesh* mesh = this->scene->GetMesh();
@@ -212,6 +212,6 @@ void ForwardRenderer::SetScene(Scene* scene) {
 	this->InitScene();
 	if (this->scene != nullptr) {
 		this->UpdateDirectionalLightList(false);
-		this->UpdatePointLightList();
+		this->UpdatePointLightList(false);
 	}
 }

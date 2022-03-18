@@ -20,6 +20,7 @@ public:
 
 	bool RenderMesh(ShadersReader* shaders, unsigned int material = 0);
 	void UpdateCameraViewport(ImVec2 size);
+	void UpdateVbos();
 
 	void AddDirectionalLight(DirectionalLight* light);
 	void AddPointLight(PointLight *light);
@@ -42,6 +43,7 @@ public:
 
 private:
 	void Init();
+	void InitVbos(bool force = false);
 	void InitAllFaceVbo();
 	void InitPerMaterialVbos();
 	void Clean();

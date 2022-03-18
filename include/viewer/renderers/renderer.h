@@ -20,10 +20,9 @@ public:
 
 	virtual void UpdateDirectionalLightList(bool reload = true) = 0;
 	virtual void UpdatePointLightList(bool reload = true) = 0;
-	void ReloadShaders();
 
-	virtual void SetFullPassRender() = 0;
-	virtual void SetPerMaterialRender() = 0;
+	void InitShaders();
+	void ReloadShaders();
 
 	void* GetContext();
 	const Eigen::Vector4f& GetClearColor();
@@ -42,6 +41,8 @@ protected:
 	const void DeactivateContext();
 
 	void InitScene();
+	virtual void InitFullPassShaders();
+	virtual void InitPerMaterialShaders();
 
 	void CleanShaders();
 

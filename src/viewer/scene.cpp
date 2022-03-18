@@ -17,7 +17,7 @@ Scene::Scene()
 Scene::Scene(Mesh* mesh) {
 	this->mesh = mesh;
 	this->Init();
-	this->InitAllFaceVbo();
+	this->InitVbos(true);
 }
 
 Scene::~Scene() {
@@ -90,6 +90,10 @@ void Scene::UpdateCameraViewport(ImVec2 size) {
 				Eigen::Vector2f(0., 0.),
 				Eigen::Vector2f(size.x, size.y)));
 	}
+}
+
+void Scene::UpdateVbos() {
+	this->InitVbos();
 }
 
 void Scene::AddDirectionalLight(DirectionalLight* light) {
@@ -173,7 +177,7 @@ void Scene::SetMesh(Mesh* mesh) {
 		this->Clean();
 	this->mesh = mesh;
 	this->Init();
-	this->InitAllFaceVbo();
+	this->InitVbos(true);
 }
 
 void Scene::SetMeshTransformationMatrix(Eigen::Matrix4f transformationMatrix) {
@@ -182,6 +186,7 @@ void Scene::SetMeshTransformationMatrix(Eigen::Matrix4f transformationMatrix) {
 
 void Scene::SetRenderer(void* renderer) {
 	this->renderer = renderer;
+	this->InitVbos();
 }
 
 void Scene::Init() {
@@ -213,6 +218,24 @@ void Scene::Init() {
 	glGenTextures(1, &this->tboMaterialsTex);
 
 	glBindBuffer(GL_TEXTURE_BUFFER, 0);
+}
+
+void Scene::InitVbos(bool force) {
+	if (this->mesh == nullptr)
+		return;
+	if (this->renderer == nullptr)
+		return;
+
+	bool renderingPerMaterial =
+			((Renderer*) this->renderer)->IsRenderingPerMaterial();
+	int expectedNbVbos = (renderingPerMaterial ? this->mesh->nbMaterials : 1);
+	if ((this->nbVboFaces == expectedNbVbos) && (!force))
+		return;
+
+	if (expectedNbVbos == 1)
+		this->InitAllFaceVbo();
+	else
+		this->InitPerMaterialVbos();
 }
 
 void Scene::InitAllFaceVbo() {

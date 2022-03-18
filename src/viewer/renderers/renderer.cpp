@@ -23,6 +23,15 @@ Renderer::Renderer(Renderer* renderer)
 	this->Init();
 }
 
+void Renderer::InitShaders() {
+	if (this->renderingPerMaterial)
+		this->InitPerMaterialShaders();
+	else
+		this->InitFullPassShaders();
+	if (this->scene != nullptr)
+		this->scene->UpdateVbos();
+}
+
 void Renderer::ReloadShaders() {
 	if (this->shaders != nullptr) {
 		for (unsigned char i = 0; i < this->nbShaders; i++) {
@@ -72,6 +81,7 @@ void Renderer::SetRenderingPerMaterial(bool value) {
 	if (this->renderingPerMaterial == value)
 		return;
 	this->renderingPerMaterial = value;
+	this->InitShaders();
 }
 
 void Renderer::SetScene(Scene* scene) {
@@ -96,6 +106,9 @@ void Renderer::InitScene() {
 		this->scene->UpdateVbos();
 	}
 }
+
+void Renderer::InitFullPassShaders() {}
+void Renderer::InitPerMaterialShaders() {}
 
 void Renderer::CleanShaders() {
 	if (this->shaders != nullptr) {

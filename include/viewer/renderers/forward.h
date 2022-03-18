@@ -17,10 +17,11 @@ public:
 	void UpdateDirectionalLightList(bool reload = true);
 	void UpdatePointLightList(bool reload = true);
 
-	void SetFullPassRender();
-	void SetPerMaterialRender();
-
 	void SetScene(Scene* scene);
+
+protected:
+	void InitFullPassShaders();
+	void InitPerMaterialShaders();
 
 private:
 	// Directional lights data
