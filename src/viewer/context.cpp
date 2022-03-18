@@ -242,12 +242,13 @@ void Context::Quit() {
 
 template <class T>
 void Context::SwitchRenderer() {
+	std::cout << "Switch Renderer ============================" << std::endl;
 	Renderer* renderer = this->viewer->GetRenderer();
 	if (renderer == nullptr)
 		return;
 
 	renderer = new T(renderer);
-	this->viewer->SetRenderer(new T(renderer));
+	this->viewer->SetRenderer(renderer);
 	if (this->shadersContent != nullptr) {
 		this->shadersContent->SetShaders(
 				renderer->GetNbShaders(), renderer->GetShaders());
