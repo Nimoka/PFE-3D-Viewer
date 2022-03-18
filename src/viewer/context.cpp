@@ -474,12 +474,13 @@ void Context::AddModule(GUIModule* module) {
 }
 
 void Context::SetMesh(Mesh* mesh) {
-	if (this->scene != nullptr) {
-		this->scene->SetMesh(mesh);
-	} else {
-		this->scene = new Scene(mesh);
+	if (this->scene == nullptr) {
+		this->scene = new Scene();
+		if (this->viewer == nullptr)
+			this->viewer = new ViewerModule(this);
 		this->viewer->GetRenderer()->SetScene(this->scene);
 	}
+	this->scene->SetMesh(mesh);
 }
 
 void Context::SetWindowTitle(std::string title) {
