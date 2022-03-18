@@ -14,8 +14,7 @@ ImGuiFPSModule::~ImGuiFPSModule() {}
 void ImGuiFPSModule::ShowFPSWindow(){
 	Context* context =  static_cast<Context*> (this->context);
 	ImGui::Begin("FPS");
-	ImGui::Text("Application average %.3f (FPS)",
-			 1.0/ context->GetDeltaTime());
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::End();
 }
 
