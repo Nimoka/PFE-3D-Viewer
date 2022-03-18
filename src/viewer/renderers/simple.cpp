@@ -37,27 +37,31 @@ void SimpleRenderer::Render(ImVec2 size) {
 			this->clearColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	this->shaders[0]->Activate();
+	for (unsigned char i = 0; i < this->nbShaders; i++) {
+		if (this->shaders[i] == nullptr)
+			continue;
+		this->shaders[i]->Activate();
 
-	glUniformMatrix4fv(
-			this->shaders[0]->GetUniformLocation("projection_matrix"), 1, false,
-			this->scene->GetCamera()->ComputeProjectionMatrix().data());
-	glUniformMatrix4fv(this->shaders[0]->GetUniformLocation("model_matrix"), 1,
-			false, this->scene->GetMeshTransformationMatrix().data());
-	glUniformMatrix3fv(this->shaders[0]->GetUniformLocation("normal_matrix"), 1,
-			false, this->scene->GetNormalMatrix().data());
-	if (this->scene->navigate3D) {
-		glUniformMatrix4fv(this->shaders[0]->GetUniformLocation("view_matrix"),
-				1, false,
-				this->scene->GetCamera()->Compute3DViewMatrix().data());
-	} else {
-		glUniformMatrix4fv(this->shaders[0]->GetUniformLocation("view_matrix"),
-				1, false, this->scene->GetCamera()->ComputeViewMatrix().data());
+		glUniformMatrix4fv(
+				this->shaders[i]->GetUniformLocation("projection_matrix"), 1, false,
+				this->scene->GetCamera()->ComputeProjectionMatrix().data());
+		glUniformMatrix4fv(this->shaders[i]->GetUniformLocation("model_matrix"), 1,
+				false, this->scene->GetMeshTransformationMatrix().data());
+		glUniformMatrix3fv(this->shaders[i]->GetUniformLocation("normal_matrix"), 1,
+				false, this->scene->GetNormalMatrix().data());
+		if (this->scene->navigate3D) {
+			glUniformMatrix4fv(this->shaders[i]->GetUniformLocation("view_matrix"),
+					1, false,
+					this->scene->GetCamera()->Compute3DViewMatrix().data());
+		} else {
+			glUniformMatrix4fv(this->shaders[i]->GetUniformLocation("view_matrix"),
+					1, false, this->scene->GetCamera()->ComputeViewMatrix().data());
+		}
+
+		this->scene->RenderMesh(this->shaders[i], i);
+
+		this->shaders[i]->Deactivate();
 	}
-
-	this->scene->RenderMesh(this->shaders[0]);
-
-	this->shaders[0]->Deactivate();
 
 	this->DeactivateContext();
 }
