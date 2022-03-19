@@ -181,8 +181,7 @@ void ForwardRenderer::InitFullPassShaders() {
 	this->UpdatePointLightList(false);
 	this->shaders[0]->LoadFiles(
 			DATA_DIR "shaders/forward.vert",
-			DATA_DIR "shaders/forward.frag",
-			false);
+			DATA_DIR "shaders/forward.frag");
 }
 
 void ForwardRenderer::InitPerMaterialShaders() {
@@ -206,8 +205,7 @@ void ForwardRenderer::InitPerMaterialShaders() {
 	for (unsigned char i = 0; i < this->nbShaders; i++) {
 		this->shaders[i]->LoadFiles(
 				DATA_DIR "shaders/forward.vert",
-				DATA_DIR "shaders/forward.frag",
-				false);
+				DATA_DIR "shaders/forward.frag");
 	}
 }
 

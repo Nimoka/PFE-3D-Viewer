@@ -17,14 +17,12 @@ public:
 	ShadersReader(void* context);
 	ShadersReader(void* context,
 			const std::string& vertexShaderPath,
-			const std::string& fragmentShaderPath,
-			bool isDynamic = false);
+			const std::string& fragmentShaderPath);
 	~ShadersReader();
 
 	bool Load();
 	bool LoadFiles(const std::string& vertexShaderPath,
-			const std::string& fragmentShaderPath,
-			bool isDynamic = false);
+			const std::string& fragmentShaderPath);
 
 	void Activate() const;
 	void Deactivate() const;
@@ -38,7 +36,6 @@ public:
 	bool ExportShaders(const std::string& vertexShaderPath,
 			const std::string& fragmentShaderPath);
 
-	bool AreDynamic();
 	bool AreLoaded();
 
 	const std::string& GetVertexShaderPath();
@@ -54,7 +51,6 @@ private:
 
 	std::string vertexShaderPath;
 	std::string fragmentShaderPath;
-	bool dynamicShaders = false;
 
 	std::string vertexShaderSource;
 	std::string fragmentShaderSource;

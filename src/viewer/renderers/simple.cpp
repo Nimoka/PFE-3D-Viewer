@@ -77,8 +77,7 @@ void SimpleRenderer::InitFullPassShaders() {
 
 	this->shaders[0] = new ShadersReader(this->context,
 			DATA_DIR "shaders/simple.vert",
-			DATA_DIR "shaders/simple.frag",
-			false);
+			DATA_DIR "shaders/simple.frag");
 }
 
 void SimpleRenderer::InitPerMaterialShaders() {
@@ -96,7 +95,6 @@ void SimpleRenderer::InitPerMaterialShaders() {
 	for (unsigned char i = 0; i < this->nbShaders; i++) {
 		this->shaders[i] = new ShadersReader(this->context,
 			DATA_DIR "shaders/simple.vert",
-			DATA_DIR "shaders/simple.frag",
-			false);
+			DATA_DIR "shaders/simple.frag");
 	}
 }

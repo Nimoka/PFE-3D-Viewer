@@ -39,8 +39,6 @@ void ShadersContentModule::Render() {
 						currentShaders->GetVertexShaderPath().c_str());
 				ImGui::TextWrapped("  Fragment shader: %s",
 						currentShaders->GetFragmentShaderPath().c_str());
-				ImGui::Text("  Are dynamic: %s",
-						(currentShaders->AreDynamic() ? "yes" : "no"));
 				if (this->nbShaders > 1)
 					ImGui::Text("  Used for material: %u", ((unsigned int) i));
 				ImGui::Separator();

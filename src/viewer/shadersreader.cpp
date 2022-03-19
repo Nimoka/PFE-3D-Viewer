@@ -23,10 +23,8 @@ ShadersReader::ShadersReader(void* context)
 
 ShadersReader::ShadersReader(void* context,
 		const std::string& vertexShaderPath,
-		const std::string& fragmentShaderPath,
-		bool areDynamic)
-		: context(context)
-		, dynamicShaders(areDynamic) {
+		const std::string& fragmentShaderPath)
+		: context(context) {
 	this->vertexShaderPath = vertexShaderPath;
 	this->fragmentShaderPath = fragmentShaderPath;
 
@@ -175,11 +173,9 @@ bool ShadersReader::Load() {
 }
 
 bool ShadersReader::LoadFiles(const std::string& vertexShaderPath,
-		const std::string& fragmentShaderPath,
-		bool areDynamic) {
+		const std::string& fragmentShaderPath) {
 	this->vertexShaderPath = vertexShaderPath;
 	this->fragmentShaderPath = fragmentShaderPath;
-	this->dynamicShaders = areDynamic;
 
 	return this->Load();
 }
@@ -221,10 +217,6 @@ bool ShadersReader::ExportShaders(const std::string& vertexShaderPath,
 		const std::string& fragmentShaderPath) {
 	return (SaveTextFile(vertexShaderPath, this->vertexShaderSource)
 			&& SaveTextFile(fragmentShaderPath, this->fragmentShaderSource));
-}
-
-bool ShadersReader::AreDynamic() {
-	return this->dynamicShaders;
 }
 
 bool ShadersReader::AreLoaded() {
