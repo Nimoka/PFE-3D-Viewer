@@ -32,6 +32,22 @@ ShadersReader::ShadersReader(void* context,
 	this->Load();
 }
 
+ShadersReader::ShadersReader(void* context,
+		const std::string& vertexShaderPath,
+		const std::string& fragmentShaderPath,
+		std::string* materialsPaths,
+		unsigned char nbMaterials,
+		unsigned char firstMaterial)
+		: context(context)
+		, firstMaterial(firstMaterial) {
+	this->vertexShaderPath = vertexShaderPath;
+	this->fragmentShaderPath = fragmentShaderPath;
+	this->CopyMaterialsPaths(materialsPaths, nbMaterials);
+
+	this->SetDefaultMacrosValues();
+	this->Load();
+}
+
 ShadersReader::~ShadersReader() {
 	this->Clean();
 }
@@ -179,6 +195,15 @@ bool ShadersReader::LoadFiles(const std::string& vertexShaderPath,
 	return this->Load();
 }
 
+bool ShadersReader::LoadFiles(const std::string& vertexShaderPath,
+		const std::string& fragmentShaderPath,
+		std::string* materialsPath,
+		unsigned char nbMaterials, unsigned char firstMaterial) {
+	this->firstMaterial = firstMaterial;
+	this->CopyMaterialsPaths(materialsPath, nbMaterials);
+	return this->LoadFiles(vertexShaderPath, fragmentShaderPath);
+}
+
 void ShadersReader::Activate() const {
 	// Kill the program if it went here without shaders compiled
 	// to avoid possible problems with OpenGL (renderering on wrong shaders).
@@ -230,6 +255,18 @@ const std::string& ShadersReader::GetFragmentShaderPath() {
 	return this->fragmentShaderPath;
 }
 
+std::string* ShadersReader::GetMaterialsPaths() {
+	return this->materialsPaths;
+}
+
+unsigned char ShadersReader::GetFirstMaterial() {
+	return this->firstMaterial;
+}
+
+unsigned char ShadersReader::GetNbMaterials() {
+	return this->nbMaterials;
+}
+
 const std::string& ShadersReader::GetVertexShaderSource() {
 	return this->vertexShaderSource;
 }
@@ -250,6 +287,35 @@ void ShadersReader::Clean() {
 	glDeleteShader(this->fragmentShaderID);
 	glDeleteProgram(this->programID);
 	this->areLoaded = false;
+}
+
+void ShadersReader::CleanMaterialsPaths() {
+	if (this->materialsPaths == nullptr)
+		return;
+
+	delete this->materialsPaths;
+	this->materialsPaths = nullptr;
+}
+
+void ShadersReader::CopyMaterialsPaths(std::string* list, unsigned char size) {
+	// Clean the existing list
+	this->CleanMaterialsPaths();
+
+	// Check if the original list is nullptr
+	if (list == nullptr)
+		return;
+
+	// Re-allocate the pointer
+	this->materialsPaths = (std::string*) malloc(sizeof(std::string) * size);
+
+	// For each element of the original list
+	for (unsigned char i = 0; i < size; i++) {
+		// Copy it in the new list
+		this->materialsPaths[i] = list[i];
+	}
+
+	// Save the size of the new list
+	this->nbMaterials = size;
 }
 
 std::string ShadersReader::GetFileContent(const std::string& path) {

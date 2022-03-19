@@ -21,11 +21,22 @@ public:
 	ShadersReader(void* context,
 			const std::string& vertexShaderPath,
 			const std::string& fragmentShaderPath);
+	ShadersReader(void* context,
+			const std::string& vertexShaderPath,
+			const std::string& fragmentShaderPath,
+			std::string* materialsPaths,
+			unsigned char nbMaterials = 1,
+			unsigned char firstMaterial = 0);
 	~ShadersReader();
 
 	bool Load();
 	bool LoadFiles(const std::string& vertexShaderPath,
 			const std::string& fragmentShaderPath);
+	bool LoadFiles(const std::string& vertexShaderPath,
+			const std::string& fragmentShaderPath,
+			std::string* materialsPaths,
+			unsigned char nbMaterials = 1,
+			unsigned char firstMaterial = 0);
 
 	void Activate() const;
 	void Deactivate() const;
@@ -43,21 +54,27 @@ public:
 
 	const std::string& GetVertexShaderPath();
 	const std::string& GetFragmentShaderPath();
-	// std::string* GetMaterialsPaths();
-	// unsigned char GetFirstMaterial();
-	// unsigned char GetNbMaterials();
+	std::string* GetMaterialsPaths();
+	unsigned char GetFirstMaterial();
+	unsigned char GetNbMaterials();
 	const std::string& GetVertexShaderSource();
 	const std::string& GetFragmentShaderSource();
 
 private:
 	void SetDefaultMacrosValues();
 	void Clean();
+	void CleanMaterialsPaths();
+	void CopyMaterialsPaths(std::string* list, unsigned char size);
 	std::string GetFileContent(const std::string& path);
 
 	void* context = nullptr;
 
 	std::string vertexShaderPath;
 	std::string fragmentShaderPath;
+
+	std::string* materialsPaths = nullptr;
+	unsigned char firstMaterial = 0;
+	unsigned char nbMaterials = 0;
 
 	std::string vertexShaderSource;
 	std::string fragmentShaderSource;
