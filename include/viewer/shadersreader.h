@@ -43,10 +43,14 @@ public:
 
 	const std::string& GetVertexShaderPath();
 	const std::string& GetFragmentShaderPath();
+	// std::string* GetMaterialsPaths();
+	// unsigned char GetFirstMaterial();
+	// unsigned char GetNbMaterials();
 	const std::string& GetVertexShaderSource();
 	const std::string& GetFragmentShaderSource();
 
 private:
+	void SetDefaultMacrosValues();
 	void Clean();
 	std::string GetFileContent(const std::string& path);
 

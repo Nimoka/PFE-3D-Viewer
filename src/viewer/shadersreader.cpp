@@ -28,8 +28,7 @@ ShadersReader::ShadersReader(void* context,
 	this->vertexShaderPath = vertexShaderPath;
 	this->fragmentShaderPath = fragmentShaderPath;
 
-	this->preprocessorMacros[SPPM_NB_DIR_LIGHTS] = "0";
-	this->preprocessorMacros[SPPM_NB_PT_LIGHTS] = "0";
+	this->SetDefaultMacrosValues();
 	this->Load();
 }
 
@@ -237,6 +236,11 @@ const std::string& ShadersReader::GetVertexShaderSource() {
 
 const std::string& ShadersReader::GetFragmentShaderSource() {
 	return this->fragmentShaderSource;
+}
+
+void ShadersReader::SetDefaultMacrosValues() {
+	this->preprocessorMacros[SPPM_NB_DIR_LIGHTS] = "0";
+	this->preprocessorMacros[SPPM_NB_PT_LIGHTS] = "0";
 }
 
 void ShadersReader::Clean() {
