@@ -9,6 +9,9 @@
 #define SPPM_NB_DIR_LIGHTS	"NB_DIR_LIGHTS"
 #define SPPM_NB_PT_LIGHTS	"NB_PT_LIGHTS"
 
+// Shaders tags
+#define ST_DEFINE_MACROS	"define_macros"
+
 std::string GetShaderLog(GLuint shader);
 
 class ShadersReader

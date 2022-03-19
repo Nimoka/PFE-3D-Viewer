@@ -251,25 +251,44 @@ void ShadersReader::Clean() {
 std::string ShadersReader::GetFileContent(const std::string& path) {
 	std::string content = LoadTextFile(path);
 
-	// If nothing to add, don’t change anything
-	if (this->preprocessorMacros.size() == 0)
-		return content;
+	// Search if there are tags in the source code
+	// (To avoid tags in comment, only search after a new line,
+	// the first one should always be ‘#version’)
+	std::size_t insertPoint = content.find("\n@");
+	std::size_t endTag, spaceTag;
+	std::string tag, argument, newContent;
+	while (insertPoint != std::string::npos) {
+		insertPoint += 2;
 
-	// Search for first line after #version
-	std::size_t insertPoint = content.find("#version");
-	insertPoint = content.find('\n', insertPoint);
-	if (insertPoint != std::string::npos) {
-		insertPoint++;
-	} else {
-		content += '\n';
-		insertPoint = 0;
-	}
+		// Search for the end of the tag (either a new line or a space)
+		endTag = content.find('\n', insertPoint);
+		spaceTag = content.find(' ', insertPoint);
+		if (spaceTag < endTag) {
+			tag = content.substr(insertPoint, (spaceTag - insertPoint));
+			argument = content.substr(spaceTag + 1, (endTag - spaceTag - 1));
+		} else {
+			tag = content.substr(insertPoint, (endTag - insertPoint));
+			argument = "";
+		}
 
-	// Add preprocessor macros (#define)
-	for (const std::pair<const std::string, std::string>& item:
-			this->preprocessorMacros) {
-		content.insert(insertPoint,
-				"#define " + item.first + ' ' + item.second + '\n');
+		newContent = "";
+
+		// Check the tag and prepare the new content
+		if (!tag.compare(ST_DEFINE_MACROS)) {
+			// Add preprocessor macros (#define)
+			for (const std::pair<const std::string, std::string>& item:
+					this->preprocessorMacros) {
+				newContent += "#define " + item.first + '\t' + item.second
+						+ '\n';
+			}
+		}
+
+		// Replace the tag by the new content in the source code
+		content.replace(insertPoint - 1,
+				(endTag - insertPoint + 2), newContent);
+
+		// Search the next possible tag
+		insertPoint = content.find("\n@", endTag);
 	}
 
 	return content;

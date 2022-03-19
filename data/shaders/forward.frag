@@ -1,5 +1,7 @@
 #version 410 core
 
+@define_macros
+
 uniform vec3 lights_dir_direction[NB_DIR_LIGHTS];
 uniform vec3 lights_dir_intensity[NB_DIR_LIGHTS];
 
