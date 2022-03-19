@@ -42,8 +42,6 @@ void ForwardRenderer::Render(ImVec2 size) {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_PROGRAM_POINT_SIZE);
 
-	glBlendFunc(GL_ONE, GL_ONE);
-
 	glViewport(0, 0, size.x, size.y);
 	this->scene->UpdateCameraViewport(size);
 
