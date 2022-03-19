@@ -338,7 +338,7 @@ void Context::ProcessKeyboardInput(int key, int scancode, int action,
 	}
 
 	/* Camera movements */
-	{
+	if (action != GLFW_RELEASE) {
 		float movementSpeed = .1;
 
 		if (mods == GLFW_MOD_SHIFT)
