@@ -388,19 +388,16 @@ std::string ShadersReader::GetFileContent(const std::string& path) {
 					newContent += this->PrepareMaterialCall(argument,
 							materialsCalls[0]);
 				} else {
-					newContent += "switch (material) {\n";
 					for (unsigned char i = 0; i < this->nbMaterials; i++) {
-						newContent += "  case "
+						newContent += "if (material == "
 								+ std::to_string((unsigned int)
 										(i + this->firstMaterial))
-								+ ": " + this->PrepareMaterialCall(argument,
+								+ ") { " + this->PrepareMaterialCall(argument,
 										materialsCalls[i])
-								+ " break;\n";
+								+ " }\nelse ";
 					}
-					newContent += "  default: "
-							+ this->PrepareMaterialCall(argument,
-									"vec3(0, 0, 0)");
-					newContent += "\n}\n";
+					newContent += "{ " + this->PrepareMaterialCall(argument,
+									"vec3(0, 0, 0)") + " }\n";
 				}
 			}
 		}
