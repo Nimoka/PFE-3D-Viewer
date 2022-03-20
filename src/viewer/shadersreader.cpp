@@ -1,6 +1,7 @@
 #include "shadersreader.h"
 
 #include <string>
+#include <vector>
 
 #include "context.h"
 #include "modules/message.h"
@@ -321,6 +322,8 @@ void ShadersReader::CopyMaterialsPaths(std::string* list, unsigned char size) {
 std::string ShadersReader::GetFileContent(const std::string& path) {
 	std::string content = LoadTextFile(path);
 
+	std::vector<std::string> materialsCalls;
+
 	// Search if there are tags in the source code
 	// (To avoid tags in comment, only search after a new line,
 	// the first one should always be ‘#version’)
@@ -351,6 +354,55 @@ std::string ShadersReader::GetFileContent(const std::string& path) {
 				newContent += "#define " + item.first + '\t' + item.second
 						+ '\n';
 			}
+		} else if (!tag.compare(ST_DEFINE_MATERIALS)) {
+			// Add materials functions definitions
+			std::string materialContent, materialCall;
+			std::size_t beginCall, endCall;
+			for (unsigned char i = 0; i < this->nbMaterials; i++) {
+				materialContent = LoadTextFile(this->materialsPaths[i]);
+				if (materialContent.size()) {
+					newContent += materialContent;
+
+					// Cut the first line to prepare its call
+					beginCall = materialContent.find(' ') + 1;
+					endCall = materialContent.find('(', beginCall);
+
+					// Add the calls to the list
+					materialCall = materialContent.substr(beginCall,
+							(endCall - beginCall)) + "()";
+					materialsCalls.push_back(materialCall);
+				} else {
+					// Add a basic call to avoid compilation error
+					materialsCalls.push_back("vec3(0, 0, 0)");
+				}
+			}
+		} else if (!tag.compare(ST_CALL_MATERIALS)) {
+			// Add calls to materials functions added
+			// (We consider the definitions are already done)
+
+			// Check the number of calls prepared
+			if ((this->nbMaterials == materialsCalls.size())
+					&& (this->nbMaterials)) {
+				std::size_t nextCall;
+				if (this->nbMaterials == 1) {
+					newContent += this->PrepareMaterialCall(argument,
+							materialsCalls[0]);
+				} else {
+					newContent += "switch (material) {\n";
+					for (unsigned char i = 0; i < this->nbMaterials; i++) {
+						newContent += "  case "
+								+ std::to_string((unsigned int)
+										(i + this->firstMaterial))
+								+ ": " + this->PrepareMaterialCall(argument,
+										materialsCalls[i])
+								+ " break;\n";
+					}
+					newContent += "  default: "
+							+ this->PrepareMaterialCall(argument,
+									"vec3(0, 0, 0)");
+					newContent += "\n}\n";
+				}
+			}
 		}
 
 		// Replace the tag by the new content in the source code
@@ -362,4 +414,15 @@ std::string ShadersReader::GetFileContent(const std::string& path) {
 	}
 
 	return content;
+}
+
+std::string ShadersReader::PrepareMaterialCall(const std::string& text,
+		const std::string& materialCall) {
+	std::string newText = text;
+	std::size_t nextCall = newText.find(STCM_TAG);
+	while (nextCall != std::string::npos) {
+		newText.replace(nextCall, 4, materialCall);
+		nextCall = newText.find(STCM_TAG, (nextCall + materialCall.size()));
+	}
+	return newText;
 }

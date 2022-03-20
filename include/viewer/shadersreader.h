@@ -11,6 +11,9 @@
 
 // Shaders tags
 #define ST_DEFINE_MACROS	"define_macros"
+#define ST_DEFINE_MATERIALS	"define_materials"
+#define ST_CALL_MATERIALS	"call_materials"
+#define STCM_TAG			"@mat"
 
 std::string GetShaderLog(GLuint shader);
 
@@ -66,6 +69,9 @@ private:
 	void CleanMaterialsPaths();
 	void CopyMaterialsPaths(std::string* list, unsigned char size);
 	std::string GetFileContent(const std::string& path);
+
+	std::string PrepareMaterialCall(const std::string& text,
+			const std::string& materialCall);
 
 	void* context = nullptr;
 
