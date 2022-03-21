@@ -70,7 +70,7 @@ private:
 	void CopyMaterialsPaths(std::string* list, unsigned char size);
 	std::string GetFileContent(const std::string& path);
 
-	std::string PrepareMaterialCall(const std::string& text,
+	std::string PrepareMaterialCallArgument(const std::string& text,
 			const std::string& materialCall);
 
 	void* context = nullptr;

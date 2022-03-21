@@ -385,19 +385,19 @@ std::string ShadersReader::GetFileContent(const std::string& path) {
 					&& (this->nbMaterials)) {
 				std::size_t nextCall;
 				if (this->nbMaterials == 1) {
-					newContent += this->PrepareMaterialCall(argument,
-							materialsCalls[0]);
+					newContent += this->PrepareMaterialCallArgument(
+							argument, materialsCalls[0]);
 				} else {
 					for (unsigned char i = 0; i < this->nbMaterials; i++) {
 						newContent += "if (material == "
 								+ std::to_string((unsigned int)
 										(i + this->firstMaterial))
-								+ ") { " + this->PrepareMaterialCall(argument,
-										materialsCalls[i])
+								+ ") { " + this->PrepareMaterialCallArgument(
+										argument, materialsCalls[i])
 								+ " }\nelse ";
 					}
-					newContent += "{ " + this->PrepareMaterialCall(argument,
-									"vec3(0, 0, 0)") + " }\n";
+					newContent += "{ " + this->PrepareMaterialCallArgument(
+							argument, "vec3(0, 0, 0)") + " }\n";
 				}
 			}
 		}
@@ -413,7 +413,7 @@ std::string ShadersReader::GetFileContent(const std::string& path) {
 	return content;
 }
 
-std::string ShadersReader::PrepareMaterialCall(const std::string& text,
+std::string ShadersReader::PrepareMaterialCallArgument(const std::string& text,
 		const std::string& materialCall) {
 	std::string newText = text;
 	std::size_t nextCall = newText.find(STCM_TAG);
