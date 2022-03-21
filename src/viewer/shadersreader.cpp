@@ -361,20 +361,22 @@ std::string ShadersReader::GetFileContent(const std::string& path) {
 			for (unsigned char i = 0; i < this->nbMaterials; i++) {
 				materialContent = LoadTextFile(this->materialsPaths[i]);
 				if (materialContent.size()) {
+					// Add the material content to the shader
 					newContent += materialContent;
 
-					// Cut the first line to prepare its call
-					beginCall = materialContent.find(' ') + 1;
-					endCall = materialContent.find('(', beginCall);
+					// Create a function call from the material content
+					materialCall =
+							GetFunctionCallFromDeclaration(materialContent);
 
-					// Add the calls to the list
-					materialCall = materialContent.substr(beginCall,
-							(endCall - beginCall)) + "()";
-					materialsCalls.push_back(materialCall);
-				} else {
-					// Add a basic call to avoid compilation error
-					materialsCalls.push_back("vec3(0, 0, 0)");
+					// If the call was created, add it
+					if (materialCall.size()) {
+						materialsCalls.push_back(materialCall);
+						continue;
+					}
 				}
+				// Add a basic call to avoid compilation error if the file was
+				// empty or the function declaration was not found
+				materialsCalls.push_back("vec3(0, 0, 0)");
 			}
 		} else if (!tag.compare(ST_CALL_MATERIALS)) {
 			// Add calls to materials functions added
