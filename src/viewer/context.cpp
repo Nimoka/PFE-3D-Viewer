@@ -39,12 +39,28 @@ Context::~Context() {
 }
 
 void Context::Launch() {
-
-	//glfwSwapInterval(0);
+	if(this->benchmarkMode){
+		glfwSwapInterval(0);
+	}
+	this->lastFrame = static_cast<float>(glfwGetTime());
+	this->beginTime = static_cast<float>(glfwGetTime());
 	int windowWidth, windowHeight;	
 	while (!glfwWindowShouldClose(window) && !this->readyToDie) {
-		/* Poll latest events */		
+		this->frameCount ++;
+		/* Poll latest events */
 		glfwPollEvents();
+
+		/*Print the FPS for benchmarking*/
+		float currentFrame =  static_cast<float>(glfwGetTime());		
+		this->deltaTime = currentFrame -lastFrame;		
+		if(this->benchmarkMode && currentFrame-this->lastFrame >1){
+			std::cout<<this->frameCount<<std::endl;
+			this->frameCount =0;
+			lastFrame = currentFrame;
+			if(currentFrame-beginTime >=this->maxTime){
+				this->readyToDie = true;
+			}
+		}
 		/* Start new ImGui frame */
 
 		ImGui_ImplOpenGL3_NewFrame();
