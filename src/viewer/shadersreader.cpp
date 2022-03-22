@@ -173,10 +173,17 @@ bool ShadersReader::LoadFiles(const std::string& vertexShaderPath,
 
 bool ShadersReader::LoadFiles(const std::string& vertexShaderPath,
 		const std::string& fragmentShaderPath,
-		std::string* materialsPath,
-		unsigned char nbMaterials, unsigned char firstMaterial) {
-	this->firstMaterial = firstMaterial;
-	this->CopyMaterialsPaths(materialsPath, nbMaterials);
+		MaterialList* materialsPaths) {
+	this->materialsPaths = materialsPaths;
+	this->specificMaterialPath = nullptr;
+	return this->LoadFiles(vertexShaderPath, fragmentShaderPath);
+}
+
+bool ShadersReader::LoadFiles(const std::string& vertexShaderPath,
+		const std::string& fragmentShaderPath,
+		std::string* specificMaterialPath) {
+	this->specificMaterialPath = specificMaterialPath;
+	this->materialsPaths = nullptr;
 	return this->LoadFiles(vertexShaderPath, fragmentShaderPath);
 }
 
@@ -231,18 +238,6 @@ const std::string& ShadersReader::GetFragmentShaderPath() {
 	return this->fragmentShaderPath;
 }
 
-std::string* ShadersReader::GetMaterialsPaths() {
-	return this->materialsPaths;
-}
-
-unsigned char ShadersReader::GetFirstMaterial() {
-	return this->firstMaterial;
-}
-
-unsigned char ShadersReader::GetNbMaterials() {
-	return this->nbMaterials;
-}
-
 const std::string& ShadersReader::GetVertexShaderSource() {
 	return this->vertexShaderSource;
 }
@@ -265,39 +260,20 @@ void ShadersReader::Clean() {
 	this->areLoaded = false;
 }
 
-void ShadersReader::CleanMaterialsPaths() {
-	if (this->materialsPaths == nullptr)
-		return;
-
-	delete this->materialsPaths;
-	this->materialsPaths = nullptr;
-}
-
-void ShadersReader::CopyMaterialsPaths(std::string* list, unsigned char size) {
-	// Clean the existing list
-	this->CleanMaterialsPaths();
-
-	// Check if the original list is nullptr
-	if (list == nullptr)
-		return;
-
-	// Re-allocate the pointer
-	this->materialsPaths = (std::string*) malloc(sizeof(std::string) * size);
-
-	// For each element of the original list
-	for (unsigned char i = 0; i < size; i++) {
-		// Copy it in the new list
-		this->materialsPaths[i] = list[i];
-	}
-
-	// Save the size of the new list
-	this->nbMaterials = size;
-}
-
 std::string ShadersReader::GetFileContent(const std::string& path) {
 	std::string content = LoadTextFile(path);
 
+	// Prepare materials
 	std::vector<std::string> materialsCalls;
+	unsigned char nbMaterials = 0;
+	std::string* materialsPath = nullptr;
+	if (this->materialsPaths != nullptr) {
+		nbMaterials = this->materialsPaths->GetNbMaterials();
+		materialsPath = this->materialsPaths->GetMaterialsPaths();
+	} else if (this->specificMaterialPath != nullptr) {
+		nbMaterials = 1;
+		materialsPath = this->specificMaterialPath;
+	}
 
 	// Search if there are tags in the source code
 	// (To avoid tags in comment, only search after a new line,
@@ -333,8 +309,9 @@ std::string ShadersReader::GetFileContent(const std::string& path) {
 			// Add materials functions definitions
 			std::string materialContent, materialCall;
 			std::size_t beginCall, endCall;
-			for (unsigned char i = 0; i < this->nbMaterials; i++) {
-				materialContent = LoadTextFile(this->materialsPaths[i]);
+
+			for (unsigned char i = 0; i < nbMaterials; i++) {
+				materialContent = LoadTextFile(materialsPath[i]);
 				if (materialContent.size()) {
 					// Add the material content to the shader
 					newContent += materialContent;
@@ -358,17 +335,18 @@ std::string ShadersReader::GetFileContent(const std::string& path) {
 			// (We consider the definitions are already done)
 
 			// Check the number of calls prepared
-			if ((this->nbMaterials == materialsCalls.size())
-					&& (this->nbMaterials)) {
+			if ((nbMaterials == materialsCalls.size())
+					&& (nbMaterials)) {
 				std::size_t nextCall;
-				if (this->nbMaterials == 1) {
+				if (nbMaterials == 1) {
 					newContent += this->PrepareMaterialCallArgument(
 							argument, materialsCalls[0]);
 				} else {
-					for (unsigned char i = 0; i < this->nbMaterials; i++) {
+					for (unsigned char i = 0; i < nbMaterials; i++) {
 						newContent += "if (material == "
 								+ std::to_string((unsigned int)
-										(i + this->firstMaterial))
+										(i + this->materialsPaths
+												->GetFirstMaterial()))
 								+ ") { " + this->PrepareMaterialCallArgument(
 										argument, materialsCalls[i])
 								+ " }\nelse ";

@@ -5,6 +5,8 @@
 
 #include <unordered_map>
 
+#include "material.h"
+
 // Shaders pre-processor macros’ names
 #define SPPM_NB_DIR_LIGHTS	"NB_DIR_LIGHTS"
 #define SPPM_NB_PT_LIGHTS	"NB_PT_LIGHTS"
@@ -28,9 +30,10 @@ public:
 			const std::string& fragmentShaderPath);
 	bool LoadFiles(const std::string& vertexShaderPath,
 			const std::string& fragmentShaderPath,
-			std::string* materialsPaths,
-			unsigned char nbMaterials = 1,
-			unsigned char firstMaterial = 0);
+			MaterialList* materialsPaths);
+	bool LoadFiles(const std::string& vertexShaderPath,
+			const std::string& fragmentShaderPath,
+			std::string* specificMaterialPath);
 
 	void Activate() const;
 	void Deactivate() const;
@@ -48,17 +51,14 @@ public:
 
 	const std::string& GetVertexShaderPath();
 	const std::string& GetFragmentShaderPath();
-	std::string* GetMaterialsPaths();
-	unsigned char GetFirstMaterial();
-	unsigned char GetNbMaterials();
+	MaterialList* GetMaterialPaths();
+	std::string* GetSpecificMaterialPath();
 	const std::string& GetVertexShaderSource();
 	const std::string& GetFragmentShaderSource();
 
 private:
 	void SetDefaultMacrosValues();
 	void Clean();
-	void CleanMaterialsPaths();
-	void CopyMaterialsPaths(std::string* list, unsigned char size);
 	std::string GetFileContent(const std::string& path);
 
 	std::string PrepareMaterialCallArgument(const std::string& text,
@@ -69,9 +69,8 @@ private:
 	std::string vertexShaderPath;
 	std::string fragmentShaderPath;
 
-	std::string* materialsPaths = nullptr;
-	unsigned char firstMaterial = 0;
-	unsigned char nbMaterials = 0;
+	MaterialList* materialsPaths = nullptr;
+	std::string* specificMaterialPath = nullptr;
 
 	std::string vertexShaderSource;
 	std::string fragmentShaderSource;
