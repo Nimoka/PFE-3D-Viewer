@@ -1,0 +1,3 @@
+vec3 material_5() {
+	return vec3(1, 1, 0);
+}
