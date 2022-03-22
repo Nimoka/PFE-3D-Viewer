@@ -13,7 +13,8 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	int windowHeight = DEFAULT_WINDOW_HEIGHT;
 	std::string inputFile, configFile;
 	bool benchmarkMode = false, noBenchmarkMode = false, debugMode = false,
-			noDebugMode = false, darkMode = false, lightMode = false;
+			noDebugMode = false, darkMode = false, lightMode = false,
+			forwardShadingMode=false, noForwardShadingMode=false;
 
 	/* Set CLI options */
 
@@ -26,6 +27,16 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	app.add_option("--height", windowHeight, "Window’s height (pixels)")
 			->check(CLI::PositiveNumber);
 	app.add_option("-t, --title", windowTitle, "Window title");
+
+
+	CLI::Option *forwardShading = app.add_flag("--fs, --forwardShading",
+			forwardShadingMode,
+			"Run the program in forwardshading mode");
+	CLI::Option *noForwardShading = app.add_flag("--nfs, --no-forwardshading",
+			noForwardShadingMode,
+			"disable the forwardShading mode");
+	forwardShading->excludes(noForwardShading);
+	noForwardShading->excludes(forwardShading);
 
 	CLI::Option *benchmark = app.add_flag("-b, --benchmark",
 			benchmarkMode,
@@ -82,6 +93,11 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	// Window’s title
 	if (!windowTitle.empty())
 		context->SetForcedWindowTitle(windowTitle);
+
+	// ForwardShading mode
+	if(forwardShadingMode || noForwardShadingMode){
+		context->SetForwardShadingMode(forwardShadingMode);
+	}
 
 	// Benchmark mode
 	if (benchmarkMode || noBenchmarkMode)
