@@ -19,7 +19,7 @@ MeshData::~MeshData() {
 		delete this->facesMaterials;
 }
 
-float MeshData::GetMaxColorIntesity() {
+float MeshData::GetMaxColorIntensity() {
 	// Check if there are colors in the loaded mesh
 	// (It is more likely to be used for color normalization,
 	// so to don’t alterate colors in the division, return 1.)
@@ -286,7 +286,7 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 		std::vector<unsigned int>::iterator nextUnusedPoint =
 				unusedPoints.begin();
 		if (haveColors) {
-			float maxIntensity = data->GetMaxColorIntesity();
+			float maxIntensity = data->GetMaxColorIntensity();
 			if (maxIntensity > 131072.)
 				maxIntensity = 131072.;
 			Eigen::Vector3f color;
@@ -337,7 +337,7 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 	} else {
 		// If there is no unused point, don’t spend time on checking
 		if (haveColors) {
-			float maxIntensity = data->GetMaxColorIntesity();
+			float maxIntensity = data->GetMaxColorIntensity();
 			if (maxIntensity > 131072.)
 				maxIntensity = 131072.;
 			Eigen::Vector3f color;

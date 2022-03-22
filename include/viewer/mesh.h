@@ -21,7 +21,7 @@ struct MeshData
 	~MeshData();
 
 	std::vector<unsigned int> GetListUnusedVertices();
-	float GetMaxColorIntesity();
+	float GetMaxColorIntensity();
 };
 
 struct Vertex
