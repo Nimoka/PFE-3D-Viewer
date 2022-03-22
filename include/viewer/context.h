@@ -54,6 +54,7 @@ public:
 	void MoveCamera(float polarAngle, float azimutalAngle);
 	void ZoomCamera(float intensity);
 	void ReloadShaders();
+	void ResetDefaultMaterialsPaths();
 	void ToggleDarkMode();
 	void ToggleDebugMode();
 	void Quit();
@@ -126,6 +127,7 @@ private:
 	ViewerModule* viewer = nullptr;
 	PLYReader* reader = nullptr;
 	Scene* scene = nullptr;
+	MaterialList* materialsPaths = nullptr;
 
 	std::vector<GUIModule*> modules;
 

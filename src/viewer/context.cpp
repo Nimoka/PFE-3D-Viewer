@@ -3,6 +3,7 @@
 #include <Eigen/Geometry>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <string>
 
 #include "camera.h"
 #include "filewithextension.h"
@@ -29,6 +30,8 @@ Context::~Context() {
 		delete this->viewer;
 	if (this->scene != nullptr)
 		delete this->scene;
+	if (this->materialsPaths != nullptr)
+		delete this->materialsPaths;
 
 	/* Cleanup ImGui */
 
@@ -126,7 +129,9 @@ int Context::Init() {
 
 	/* Create modules */
 
+	this->ResetDefaultMaterialsPaths();
 	this->scene = new Scene();
+	this->scene->SetMaterialsPaths(this->materialsPaths);
 	this->viewer = new ViewerModule(this);
 	this->viewer->GetRenderer()->SetScene(this->scene);
 
@@ -223,6 +228,22 @@ void Context::ReloadShaders() {
 		if (renderer != nullptr)
 			renderer->ReloadShaders();
 	}
+}
+
+void Context::ResetDefaultMaterialsPaths() {
+	if (this->materialsPaths == nullptr)
+		this->materialsPaths = new MaterialList(DEFAULT_DEF_MATERIAL);
+
+	std::string* paths = new std::string[DEFAULT_NB_MATERIALS];
+
+	for (unsigned char i = 0; i < DEFAULT_NB_MATERIALS; i++) {
+		paths[i] = DATA_DIR "materials/mat"
+				+ std::to_string((unsigned int) i) + ".mat";
+	}
+
+	this->materialsPaths->SetMaterialsPaths(paths, DEFAULT_NB_MATERIALS);
+
+	// delete [] paths;
 }
 
 void Context::ToggleDarkMode() {

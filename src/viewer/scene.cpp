@@ -149,8 +149,12 @@ std::vector<DirectionalLight*>* Scene::GetDirectionalLights() {
 	return &this->directionalLights;
 }
 
-std::vector<PointLight*>* Scene::GetPointLights(){
-  return &this->pointLights;
+std::vector<PointLight*>* Scene::GetPointLights() {
+	return &this->pointLights;
+}
+
+MaterialList* Scene::GetMaterialsPaths() {
+	return this->materialsPaths;
 }
 
 Mesh* Scene::GetMesh() {
@@ -170,6 +174,12 @@ void Scene::SetCamera(Camera* camera) {
 	if (this->camera != nullptr)
 		delete this->camera;
 	this->camera = camera;
+}
+
+void Scene::SetMaterialsPaths(MaterialList* materialsPaths) {
+	this->materialsPaths = materialsPaths;
+	if (this->renderer != nullptr)
+		((Renderer*) this->renderer)->InitShaders(false);
 }
 
 void Scene::SetMesh(Mesh* mesh) {

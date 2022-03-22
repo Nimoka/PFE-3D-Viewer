@@ -8,6 +8,7 @@
 
 #include "camera.h"
 #include "light.h"
+#include "material.h"
 #include "mesh.h"
 #include "shadersreader.h"
 
@@ -29,12 +30,14 @@ public:
 	const Eigen::Vector3f& GetAmbientColor();
 	Camera* GetCamera();
 	std::vector<DirectionalLight*>* GetDirectionalLights();
-	std::vector<PointLight*>*GetPointLights();
+	std::vector<PointLight*>* GetPointLights();
+	MaterialList* GetMaterialsPaths();
 	Mesh* GetMesh();
 	const Eigen::Matrix4f& GetMeshTransformationMatrix();
 	Eigen::Matrix3f GetNormalMatrix();
 
 	void SetCamera(Camera* camera);
+	void SetMaterialsPaths(MaterialList* materialsPaths);
 	void SetMesh(Mesh* mesh);
 	void SetMeshTransformationMatrix(Eigen::Matrix4f transformationMatrix);
 	void SetRenderer(void* renderer);
@@ -53,6 +56,8 @@ private:
 
 	Camera* camera = nullptr;
 	Mesh* mesh = nullptr;
+
+	MaterialList* materialsPaths = nullptr;
 
 	Eigen::Vector3f ambientColor = Eigen::Vector3f(.1, .1, .1);
 	std::vector<DirectionalLight*> directionalLights;
