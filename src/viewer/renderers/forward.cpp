@@ -3,6 +3,7 @@
 #include <string>
 
 #include "light.h"
+#include "material.h"
 #include "shadersreader.h"
 
 ForwardRenderer::ForwardRenderer(void* context, bool renderingPerMaterial)
@@ -177,9 +178,18 @@ void ForwardRenderer::InitFullPassShaders() {
 	this->shaders[0] = new ShadersReader(this->context);
 	this->UpdateDirectionalLightList(false);
 	this->UpdatePointLightList(false);
-	this->shaders[0]->LoadFiles(
-			DATA_DIR "shaders/forward.vert",
-			DATA_DIR "shaders/forward.frag");
+
+	MaterialList* materialsPaths = this->scene->GetMaterialsPaths();
+	if (materialsPaths == nullptr) {
+		this->shaders[0]->LoadFiles(
+				DATA_DIR "shaders/forward.vert",
+				DATA_DIR "shaders/forward.frag");
+	} else {
+		this->shaders[0]->LoadFiles(
+				DATA_DIR "shaders/forward.vert",
+				DATA_DIR "shaders/forward.frag",
+				materialsPaths);
+	}
 }
 
 void ForwardRenderer::InitPerMaterialShaders() {
@@ -200,10 +210,22 @@ void ForwardRenderer::InitPerMaterialShaders() {
 	this->UpdateDirectionalLightList(false);
 	this->UpdatePointLightList(false);
 
-	for (unsigned char i = 0; i < this->nbShaders; i++) {
-		this->shaders[i]->LoadFiles(
-				DATA_DIR "shaders/forward.vert",
-				DATA_DIR "shaders/forward.frag");
+	MaterialList* materialsPaths = this->scene->GetMaterialsPaths();
+	if (materialsPaths == nullptr) {
+		for (unsigned char i = 0; i < this->nbShaders; i++) {
+			this->shaders[i]->LoadFiles(
+					DATA_DIR "shaders/forward.vert",
+					DATA_DIR "shaders/forward.frag");
+		}
+	} else {
+		unsigned char firstMaterial = (unsigned char)
+				this->scene->GetMesh()->GetMaterialsRange().min()[0];
+		for (unsigned char i = 0; i < this->nbShaders; i++) {
+			this->shaders[i]->LoadFiles(
+					DATA_DIR "shaders/forward.vert",
+					DATA_DIR "shaders/forward.frag",
+					materialsPaths->GetMaterialPath(firstMaterial + i));
+		}
 	}
 }
 
