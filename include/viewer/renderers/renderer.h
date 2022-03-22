@@ -21,7 +21,7 @@ public:
 	virtual void UpdateDirectionalLightList(bool reload = true) = 0;
 	virtual void UpdatePointLightList(bool reload = true) = 0;
 
-	void InitShaders();
+	void InitShaders(bool updateVbos = true);
 	void ReloadShaders();
 
 	void* GetContext();

@@ -23,12 +23,12 @@ Renderer::Renderer(Renderer* renderer)
 	this->Init();
 }
 
-void Renderer::InitShaders() {
+void Renderer::InitShaders(bool updateVbos) {
 	if (this->renderingPerMaterial)
 		this->InitPerMaterialShaders();
 	else
 		this->InitFullPassShaders();
-	if (this->scene != nullptr)
+	if ((this->scene != nullptr) && updateVbos)
 		this->scene->UpdateVbos();
 }
 
