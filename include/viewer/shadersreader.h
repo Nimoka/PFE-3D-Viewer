@@ -21,15 +21,6 @@ class ShadersReader
 {
 public:
 	ShadersReader(void* context);
-	ShadersReader(void* context,
-			const std::string& vertexShaderPath,
-			const std::string& fragmentShaderPath);
-	ShadersReader(void* context,
-			const std::string& vertexShaderPath,
-			const std::string& fragmentShaderPath,
-			std::string* materialsPaths,
-			unsigned char nbMaterials = 1,
-			unsigned char firstMaterial = 0);
 	~ShadersReader();
 
 	bool Load();

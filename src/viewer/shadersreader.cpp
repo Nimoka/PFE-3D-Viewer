@@ -20,33 +20,8 @@ std::string GetShaderLog(GLuint shader) {
 }
 
 ShadersReader::ShadersReader(void* context)
-		: context(context) {}
-
-ShadersReader::ShadersReader(void* context,
-		const std::string& vertexShaderPath,
-		const std::string& fragmentShaderPath)
 		: context(context) {
-	this->vertexShaderPath = vertexShaderPath;
-	this->fragmentShaderPath = fragmentShaderPath;
-
 	this->SetDefaultMacrosValues();
-	this->Load();
-}
-
-ShadersReader::ShadersReader(void* context,
-		const std::string& vertexShaderPath,
-		const std::string& fragmentShaderPath,
-		std::string* materialsPaths,
-		unsigned char nbMaterials,
-		unsigned char firstMaterial)
-		: context(context)
-		, firstMaterial(firstMaterial) {
-	this->vertexShaderPath = vertexShaderPath;
-	this->fragmentShaderPath = fragmentShaderPath;
-	this->CopyMaterialsPaths(materialsPaths, nbMaterials);
-
-	this->SetDefaultMacrosValues();
-	this->Load();
 }
 
 ShadersReader::~ShadersReader() {

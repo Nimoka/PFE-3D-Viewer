@@ -75,7 +75,8 @@ void SimpleRenderer::InitFullPassShaders() {
 	this->shaders = (ShadersReader**) malloc(sizeof(void*));
 	this->nbShaders = 1;
 
-	this->shaders[0] = new ShadersReader(this->context,
+	this->shaders[0] = new ShadersReader(this->context);
+	this->shaders[0]->LoadFiles(
 			DATA_DIR "shaders/simple.vert",
 			DATA_DIR "shaders/simple.frag");
 }
@@ -93,7 +94,8 @@ void SimpleRenderer::InitPerMaterialShaders() {
 	this->shaders = (ShadersReader**) malloc(sizeof(void*) * this->nbShaders);
 
 	for (unsigned char i = 0; i < this->nbShaders; i++) {
-		this->shaders[i] = new ShadersReader(this->context,
+		this->shaders[i] = new ShadersReader(this->context);
+		this->shaders[i]->LoadFiles(
 			DATA_DIR "shaders/simple.vert",
 			DATA_DIR "shaders/simple.frag");
 	}
