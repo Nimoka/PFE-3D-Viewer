@@ -95,6 +95,8 @@ public:
 	void SetInputFile(std::string file);
 	std::string GetInputFile();
 
+	void SetForwardShadingMode(bool forwardShading);
+	bool GetForwardShadingMode();
 	void SetBenchmarkMode(bool benchmark);
 	bool GetBenchmarkMode();
 	void SetDebugMode(bool debug);
@@ -119,6 +121,7 @@ private:
 	std::string glslVersion;
 
 	bool benchmarkMode = false;
+	bool forwardShadingMode = false;
 	bool debugMode = false;
 	bool darkMode = false;
 	bool mouseLeftPressed = false;
@@ -146,7 +149,7 @@ private:
 	float deltaTime = 0.0;
 	float lastFrame = 0.0;
 	float beginTime = 0.0;
-	float maxTime = 10.0;
+	float maxTime = 5.0;
 	int frameCount = 0;
 
 	CLILoader cli;

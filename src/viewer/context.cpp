@@ -563,6 +563,14 @@ std::string Context::GetInputFile() {
 	return this->inputFile;
 }
 
+void Context::SetForwardShadingMode(bool forwardShading){
+	this->forwardShadingMode =  forwardShading;
+}
+
+bool Context::GetForwardShadingMode(){
+	return this->forwardShadingMode;
+}
+
 void Context::SetBenchmarkMode(bool benchmark) {
 	this->benchmarkMode = benchmark;
 }
