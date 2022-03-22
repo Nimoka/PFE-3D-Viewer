@@ -9,6 +9,7 @@
 #include <ImGuiFileBrowser.h>
 
 #include "cliloader.h"
+#include "material.h"
 #include "tomlloader.h"
 #include "modules/imguidemo.h"
 #include "modules/imguiFPS.h"
@@ -21,6 +22,9 @@
 #define DEFAULT_WINDOW_TITLE	"3D Viewer"
 #define DEFAULT_WINDOW_WIDTH	1280
 #define DEFAULT_WINDOW_HEIGHT	800
+
+#define DEFAULT_DEF_MATERIAL	DATA_DIR "materials/mat_null.mat"
+#define DEFAULT_NB_MATERIALS	7
 
 #define ERROR_WINDOW_CREATION	2
 #define ERROR_IMGUI_INIT		3

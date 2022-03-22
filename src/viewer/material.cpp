@@ -1,10 +1,10 @@
 #include <material.h>
 
-MaterialList::MaterialList(std::string defaultPath) {
+MaterialList::MaterialList(const std::string& defaultPath) {
 	this->defaultPath = defaultPath;
 }
 
-MaterialList::MaterialList(std::string defaultPath,
+MaterialList::MaterialList(const std::string& defaultPath,
 		std::string* materialsPaths, unsigned char nbMaterials,
 		unsigned char firstMaterial)
 		: nbMaterials(nbMaterials)
@@ -52,7 +52,7 @@ unsigned char MaterialList::GetFirstMaterial() {
 	return this->firstMaterial;
 }
 
-void MaterialList::SetDefaultPath(std::string path) {
+void MaterialList::SetDefaultPath(const std::string& path) {
 	this->defaultPath = path;
 }
 
