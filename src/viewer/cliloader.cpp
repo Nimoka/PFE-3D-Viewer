@@ -29,7 +29,7 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	app.add_option("-t, --title", windowTitle, "Window title");
 
 
-	CLI::Option *forwardShading = app.add_flag("--fs, --forwardShading",
+	CLI::Option *forwardShading = app.add_flag("--fs",
 			forwardShadingMode,
 			"Run the program in forwardshading mode");
 	CLI::Option *noForwardShading = app.add_flag("--nfs, --no-forwardshading",

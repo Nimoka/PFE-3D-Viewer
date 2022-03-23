@@ -54,8 +54,8 @@ void Context::Launch() {
 		glfwPollEvents();
 
 		/*Print the FPS for benchmarking*/
-		float currentFrame =  static_cast<float>(glfwGetTime());		
-		this->deltaTime = currentFrame -lastFrame;		
+		float currentFrame =  static_cast<float>(glfwGetTime());
+		this->deltaTime = currentFrame -lastFrame;
 		if(this->benchmarkMode && currentFrame-this->lastFrame >1){
 			std::cout<<this->frameCount<<std::endl;
 			this->frameCount =0;
@@ -619,6 +619,9 @@ GLFWwindow* Context::GetWindow() {
 }
 
 void Context::RenderMenuBar() {
+	if(this->benchmarkMode && this->forwardShadingMode){
+		this->SwitchRenderer<ForwardRenderer>();
+	}
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
 			if (ImGui::MenuItem("Open mesh...", "Ctrl+O"))
