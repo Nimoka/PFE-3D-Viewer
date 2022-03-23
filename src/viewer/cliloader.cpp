@@ -16,7 +16,8 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	std::string inputFile, configFile;
 	bool benchmarkMode = false, noBenchmarkMode = false, debugMode = false,
 			noDebugMode = false, darkMode = false, lightMode = false,
-			forwardShadingMode=false, noForwardShadingMode=false;
+			forwardShadingMode=false, noForwardShadingMode=false,
+			deferredShadingMode=false, nodeferredShadingMode=false;
 
 	/* Set CLI options */
 
@@ -40,6 +41,15 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 			"disable the forwardShading mode");
 	forwardShading->excludes(noForwardShading);
 	noForwardShading->excludes(forwardShading);
+
+	CLI::Option *deferredShading = app.add_flag("--ds",
+			deferredShadingMode,
+			"Run the program in deferredshading mode");
+	CLI::Option *nodeferredShading = app.add_flag("--nds, --no-deferredshading",
+			nodeferredShadingMode,
+			"disable the deferredShading mode");
+	deferredShading->excludes(nodeferredShading);
+	nodeferredShading->excludes(deferredShading);
 
 	CLI::Option *benchmark = app.add_flag("-b, --benchmark",
 			benchmarkMode,
@@ -104,6 +114,11 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	// ForwardShading mode
 	if(forwardShadingMode || noForwardShadingMode){
 		context->SetForwardShadingMode(forwardShadingMode);
+	}
+
+	// deferredShading mode
+	if(deferredShadingMode || nodeferredShadingMode){
+		context->SetDeferredShadingMode(deferredShadingMode);
 	}
 
 	// Benchmark mode

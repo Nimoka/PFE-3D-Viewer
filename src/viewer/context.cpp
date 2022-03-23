@@ -588,6 +588,14 @@ bool Context::GetForwardShadingMode(){
 	return this->forwardShadingMode;
 }
 
+void Context::SetDeferredShadingMode(bool deferredShading){
+	this->deferredShadingMode =  deferredShading;
+}
+
+bool Context::GetDeferredShadingMode(){
+	return this->deferredShadingMode;
+}
+
 void Context::SetBenchmarkMode(bool benchmark) {
 	this->benchmarkMode = benchmark;
 }
@@ -638,6 +646,9 @@ GLFWwindow* Context::GetWindow() {
 void Context::RenderMenuBar() {
 	if(this->benchmarkMode && this->forwardShadingMode){
 		this->SwitchRenderer<ForwardRenderer>();
+	}
+	if(this->benchmarkMode && this->deferredShadingMode){
+		//this->SwitchRenderer<DeferredRenderer>();  //activate after implementation
 	}
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
