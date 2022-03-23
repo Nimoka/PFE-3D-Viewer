@@ -25,6 +25,7 @@
 
 #define DEFAULT_DEF_MATERIAL	DATA_DIR "materials/mat_null.mat"
 #define DEFAULT_NB_MATERIALS	7
+#define DEFAULT_NB_POINT_LIGHT	1
 
 #define ERROR_WINDOW_CREATION	2
 #define ERROR_IMGUI_INIT		3
@@ -90,6 +91,9 @@ public:
 	int GetWindowWidth();
 	int GetWindowHeight();
 
+	void SetPointLightNumber(int nbPointLight);
+	int GetPointLightNumber();
+
 	void SetConfigFile(std::string file);
 	std::string GetConfigFile();
 	void SetInputFile(std::string file);
@@ -146,10 +150,11 @@ private:
 	int nextModuleID = 0;
 	int windowWidth = DEFAULT_WINDOW_WIDTH;
 	int windowHeight = DEFAULT_WINDOW_HEIGHT;
+	int nbPointLight = DEFAULT_NB_POINT_LIGHT;
 	float deltaTime = 0.0;
 	float lastFrame = 0.0;
 	float beginTime = 0.0;
-	float maxTime = 5.0;
+	float maxTime = 10.0;
 	int frameCount = 0;
 
 	CLILoader cli;

@@ -179,6 +179,15 @@ int Context::LoadOptions(int argc, char** argv) {
 	if (res)
 		return res;
 
+	//Update number of point light
+	if(this->benchmarkMode && nbPointLight>DEFAULT_NB_POINT_LIGHT){
+		for(int i =1; i<this->nbPointLight;i++){
+			this->scene->AddRandomPointLight(
+				new PointLight(Eigen::Vector3f(1.0f, 1.0f, 1.0f),
+				Eigen::Vector3f(1.0f,1.0f,1.0f)));
+		}
+	}
+
 	// PLY file to load
 	if (inputFile.empty())
 		this->CreateOpenPLYFileSelectionDialog();
@@ -546,6 +555,14 @@ int Context::GetWindowWidth() {
 
 int Context::GetWindowHeight() {
 	return this->windowHeight;
+}
+
+void Context::SetPointLightNumber(int nbPointLight){
+	this->nbPointLight = nbPointLight;
+}
+
+int Context::GetPointLightNumber(){
+	return this->nbPointLight;
 }
 
 void Context::SetConfigFile(std::string file) {

@@ -11,6 +11,8 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	std::string windowTitle;
 	int windowWidth = DEFAULT_WINDOW_WIDTH;
 	int windowHeight = DEFAULT_WINDOW_HEIGHT;
+	int pLight = DEFAULT_NB_POINT_LIGHT;
+
 	std::string inputFile, configFile;
 	bool benchmarkMode = false, noBenchmarkMode = false, debugMode = false,
 			noDebugMode = false, darkMode = false, lightMode = false,
@@ -27,7 +29,8 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	app.add_option("--height", windowHeight, "Window’s height (pixels)")
 			->check(CLI::PositiveNumber);
 	app.add_option("-t, --title", windowTitle, "Window title");
-
+	app.add_option("--pl",pLight,"Configure the number of point light in the scene")
+			->check(CLI::PositiveNumber);
 
 	CLI::Option *forwardShading = app.add_flag("--fs",
 			forwardShadingMode,
@@ -93,6 +96,10 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	// Window’s title
 	if (!windowTitle.empty())
 		context->SetForcedWindowTitle(windowTitle);
+
+	// Set point light number
+	if(pLight>1)
+		context->SetPointLightNumber(pLight);
 
 	// ForwardShading mode
 	if(forwardShadingMode || noForwardShadingMode){
