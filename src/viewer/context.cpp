@@ -268,7 +268,7 @@ void Context::ResetDefaultMaterialsPaths() {
 
 	this->materialsPaths->SetMaterialsPaths(paths, DEFAULT_NB_MATERIALS);
 
-	// delete [] paths;
+	delete [] paths;
 }
 
 void Context::SetSimpleShading() {
