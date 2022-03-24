@@ -19,7 +19,8 @@ It contains three programs:
 		- [Compilation](#compilation)
 		- [Tests](#tests)
 	- [Troubleshooting](#troubleshooting)
-		- [Clang-format](#clang-format)
+	- [Clang-format](#clang-format)
+	- [Benchmarking](#benchmarking)
 
 ---
 
@@ -65,8 +66,20 @@ This is a list of dependencies used in this project that you can install by your
 	- Your computer may be too old or underpowered to show the mesh. **Buy a new one.**
 
 
-### Clang-format
+## Clang-format
 
 - **Launch the clang-format on .cpp, .hpp, .c, .h files**
   - set the path of .clang-format in vscode : go to Extension, install clang-format by xaver, at Manage-> extension Setting -> Clang-format:Style -> input the full path of .clang-format.
   - find . -regex '.*\.\(cpp\|hpp\|c\|h\)' -exec clang-format -style=file -i {} \ ; .  
+
+
+## Benchmarking
+
+**Benchmarking on all the .ply files under ./data/model/ with fixed light number and fixed shading mode**
+
+- **Launch the benchmarking in simple mode**
+  - python3  benchmarking.py
+- **Lanch the benchmarking in forward shading mode with 200 point lights**
+  - python3 benchmarking.py --fs --pl 200
+- **Lanch the benchmarking in deferred shading mode with 50 point lights**
+  - python3 benchmarking.py --ds --pl 50

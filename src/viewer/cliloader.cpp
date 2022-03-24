@@ -11,9 +11,13 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	std::string windowTitle;
 	int windowWidth = DEFAULT_WINDOW_WIDTH;
 	int windowHeight = DEFAULT_WINDOW_HEIGHT;
+	int pLight = DEFAULT_NB_POINT_LIGHT;
+
 	std::string inputFile, configFile;
 	bool benchmarkMode = false, noBenchmarkMode = false, debugMode = false,
-			noDebugMode = false, darkMode = false, lightMode = false;
+			noDebugMode = false, darkMode = false, lightMode = false,
+			simpleShadingMode = false, forwardShadingMode = false,
+			deferredShadingMode = false;
 
 	/* Set CLI options */
 
@@ -26,6 +30,24 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	app.add_option("--height", windowHeight, "Window’s height (pixels)")
 			->check(CLI::PositiveNumber);
 	app.add_option("-t, --title", windowTitle, "Window title");
+	app.add_option("--pl",pLight,"Configure the number of point light in the scene")
+			->check(CLI::PositiveNumber);
+
+	CLI::Option *simpleShading = app.add_flag("--ss, --simple",
+			simpleShadingMode,
+			"Run the program with simple shading");
+	CLI::Option *forwardShading = app.add_flag("--fs, --forward",
+			forwardShadingMode,
+			"Run the program with forward shading");
+	// CLI::Option *deferredShading = app.add_flag("--ds, --deferred",
+	// 		deferredShadingMode,
+	// 		"Run the program with deferred shading");
+	simpleShading->excludes(forwardShading);
+	// simpleShading->excludes(deferredShading);
+	forwardShading->excludes(simpleShading);
+	// forwardShading->excludes(deferredShading);
+	// deferredShading->excludes(simpleShading);
+	// deferredShading->excludes(forwardShading);
 
 	CLI::Option *benchmark = app.add_flag("-b, --benchmark",
 			benchmarkMode,
@@ -82,6 +104,22 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	// Window’s title
 	if (!windowTitle.empty())
 		context->SetForcedWindowTitle(windowTitle);
+
+	// Set point light number
+	if(pLight>1)
+		context->SetPointLightNumber(pLight);
+
+	// Set simple shading
+	if (simpleShadingMode)
+		context->SetSimpleShading();
+
+	// Set forward shading
+	if (forwardShadingMode)
+		context->SetForwardShading();
+
+	// Set deferred shading
+	// if (deferredShadingMode)
+	// 	context->SetDeferredShading();
 
 	// Benchmark mode
 	if (benchmarkMode || noBenchmarkMode)

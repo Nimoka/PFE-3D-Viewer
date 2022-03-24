@@ -54,8 +54,8 @@ void Context::Launch() {
 		glfwPollEvents();
 
 		/*Print the FPS for benchmarking*/
-		float currentFrame =  static_cast<float>(glfwGetTime());		
-		this->deltaTime = currentFrame -lastFrame;		
+		float currentFrame =  static_cast<float>(glfwGetTime());
+		this->deltaTime = currentFrame -lastFrame;
 		if(this->benchmarkMode && currentFrame-this->lastFrame >1){
 			std::cout<<this->frameCount<<std::endl;
 			this->frameCount =0;
@@ -179,6 +179,15 @@ int Context::LoadOptions(int argc, char** argv) {
 	if (res)
 		return res;
 
+	//Update number of point light
+	if(this->benchmarkMode && nbPointLight>DEFAULT_NB_POINT_LIGHT){
+		for(int i =1; i<this->nbPointLight;i++){
+			this->scene->AddRandomPointLight(
+				new PointLight(Eigen::Vector3f(1.0f, 1.0f, 1.0f),
+				Eigen::Vector3f(1.0f,1.0f,1.0f)));
+		}
+	}
+
 	// PLY file to load
 	if (inputFile.empty())
 		this->CreateOpenPLYFileSelectionDialog();
@@ -262,6 +271,18 @@ void Context::ResetDefaultMaterialsPaths() {
 	// delete [] paths;
 }
 
+void Context::SetSimpleShading() {
+	this->SwitchRenderer<SimpleRenderer>();
+}
+
+void Context::SetForwardShading() {
+	this->SwitchRenderer<ForwardRenderer>();
+}
+
+// void Context::SetDeferredShading() {
+// 	this->SwitchRenderer<DeferredRenderer>();
+// }
+
 void Context::ToggleDarkMode() {
 	this->SetDarkMode(!this->darkMode);
 }
@@ -278,9 +299,9 @@ template <class T>
 void Context::SwitchRenderer() {
 	Renderer* renderer = this->viewer->GetRenderer();
 	if (renderer == nullptr)
-		return;
-
-	renderer = new T(renderer);
+		renderer = new T(this, false);
+	else
+		renderer = new T(renderer);
 	this->viewer->SetRenderer(renderer);
 	if (this->shadersContent != nullptr) {
 		this->shadersContent->SetShaders(
@@ -548,6 +569,14 @@ int Context::GetWindowHeight() {
 	return this->windowHeight;
 }
 
+void Context::SetPointLightNumber(int nbPointLight){
+	this->nbPointLight = nbPointLight;
+}
+
+int Context::GetPointLightNumber(){
+	return this->nbPointLight;
+}
+
 void Context::SetConfigFile(std::string file) {
 	this->configFile = file;
 }
@@ -561,14 +590,6 @@ void Context::SetInputFile(std::string file) {
 }
 std::string Context::GetInputFile() {
 	return this->inputFile;
-}
-
-void Context::SetForwardShadingMode(bool forwardShading){
-	this->forwardShadingMode =  forwardShading;
-}
-
-bool Context::GetForwardShadingMode(){
-	return this->forwardShadingMode;
 }
 
 void Context::SetBenchmarkMode(bool benchmark) {
@@ -634,10 +655,10 @@ void Context::RenderMenuBar() {
 				if (ImGui::BeginMenu("Render method")) {
 					if (ImGui::MenuItem("Simple shading (no lights)", "",
 							dynamic_cast<SimpleRenderer*>(renderer))) {
-						this->SwitchRenderer<SimpleRenderer>();
+						this->SetSimpleShading();
 					} else if (ImGui::MenuItem("Forward shading", "",
 							dynamic_cast<ForwardRenderer*>(renderer))) {
-						this->SwitchRenderer<ForwardRenderer>();
+						this->SetForwardShading();
 					// } else if (ImGui::MenuItem("Deferred shading", "",
 					// 		dynamic_cast<DeferredRenderer*>(renderer))) {
 					// 	this->SwitchRenderer<DeferredRenderer>();
