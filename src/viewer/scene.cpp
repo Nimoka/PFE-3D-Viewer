@@ -292,6 +292,7 @@ void Scene::InitPerMaterialVbos() {
 	unsigned int nbElements;
 	for (unsigned char i = 0; i < this->nbVboFaces; i++) {
 		if (this->mesh->nbFacesPerMaterial[i] == 0) {
+			glDeleteBuffers(1, (this->vboFacesID + i));
 			this->vboFacesID[i] = 0;
 			continue;
 		}
