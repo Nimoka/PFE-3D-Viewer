@@ -19,7 +19,7 @@ public:
 	Scene(Mesh* mesh);
 	~Scene();
 
-	bool RenderMesh(ShadersReader* shaders, unsigned int material = 0);
+	bool RenderMesh(ShadersReader* shaders, unsigned char material = 0);
 	void UpdateCameraViewport(ImVec2 size);
 	void UpdateVbos();
 

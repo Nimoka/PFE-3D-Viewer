@@ -30,7 +30,7 @@ Scene::~Scene() {
 	this->Clean();
 }
 
-bool Scene::RenderMesh(ShadersReader* shaders, unsigned int material) {
+bool Scene::RenderMesh(ShadersReader* shaders, unsigned char material) {
 	if (this->mesh == nullptr)
 		return false;
 
