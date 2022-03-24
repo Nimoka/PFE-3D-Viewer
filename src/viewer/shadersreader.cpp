@@ -342,6 +342,8 @@ std::string ShadersReader::GetFileContent(const std::string& path) {
 					newContent += this->PrepareMaterialCallArgument(
 							argument, materialsCalls[0]);
 				} else {
+					newContent += "uint material = uint(texelFetch("
+							"face_material, gl_PrimitiveID).r);\n";
 					for (unsigned char i = 0; i < nbMaterials; i++) {
 						newContent += "if (material == "
 								+ std::to_string((unsigned int)
