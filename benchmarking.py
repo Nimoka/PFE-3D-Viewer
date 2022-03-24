@@ -7,6 +7,7 @@ import os
 import signal
 import sys
 import psutil
+import csv
 
 names=[]
 FPS =[]
@@ -44,16 +45,28 @@ for file in glob.glob("./data/models/*.ply"):
 
 
 if(len(sys.argv)==2):
+
+    f = open('mltFps.csv','w',encoding = 'UTF8',newline = '')
+    writer = csv.writer(f)
+    writer.writerow(pointLights)
+
     plotCount = 0
     for i in range(len(glob.glob("./data/models/*.ply"))):
-        plt.plot(pointLights, FPS[plotCount:plotCount + len(pointLights)], label = names[i])
+        row =  FPS[plotCount:plotCount + len(pointLights)]
+        writer.writerow(row)
+        plt.plot(pointLights, row, label = names[i])
         plt.legend()
         plotCount+= len(pointLights)
+    f.close()
     plt.xlabel('point lights')
     plt.ylabel('FPS')
 
 else:
     plt.bar(names, FPS)
     plt.title('FPS forward')
+    with open ('fps.CSV', 'w',encoding = 'UTF8', newline = '')as f :
+        writer = csv.writer(f)
+        writer.writerow(names)
+        writer.writerow(FPS)
 
 plt.show()
