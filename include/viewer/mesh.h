@@ -53,6 +53,7 @@ public:
 
 	bool HaveColors();
 	bool HaveMaterials();
+	bool IsSorted();
 
 	Eigen::AlignedBox3f GetBoundingBox();
 	Eigen::AlignedBox1i GetMaterialsRange();
@@ -71,12 +72,14 @@ public:
 private:
 	void Init(MeshData* data);
 
-	void CopyDataFromMeshData(MeshData* data);
+	void CopyDataFromMeshData(MeshData* data, bool forceUnsorted = false);
 	void ComputeNormals();
 	void ComputeRanges();
 
 	bool haveColors = false;
 	bool haveMaterials = false;
+
+	bool isSorted = false;
 
 	void* context = nullptr;
 

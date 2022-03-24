@@ -93,7 +93,8 @@ Mesh::Mesh(Mesh* mesh)
 		, haveColors(mesh->HaveColors())
 		, haveMaterials(mesh->HaveMaterials())
 		, boundingBox(mesh->GetBoundingBox())
-		, materialsRange(mesh->GetMaterialsRange()) {
+		, materialsRange(mesh->GetMaterialsRange())
+		, isSorted(mesh->IsSorted()) {
 	// Copy vertices’ data
 	this->verticesData = (Vertex*)
 			malloc(sizeof(struct Vertex) * this->nbVertices);
@@ -220,6 +221,10 @@ bool Mesh::HaveMaterials() {
 	return this->haveMaterials;
 }
 
+bool Mesh::IsSorted() {
+	return this->isSorted;
+}
+
 Eigen::AlignedBox3f Mesh::GetBoundingBox() {
 	return this->boundingBox;
 }
@@ -233,12 +238,15 @@ void* Mesh::GetContext() {
 }
 
 void Mesh::Init(MeshData* data) {
-	this->CopyDataFromMeshData(data);
+	bool forceUnsorted = false;
+	if (this->context != nullptr)
+		forceUnsorted = ((Context*) this->context)->GetForceUnsortedMesh();
+	this->CopyDataFromMeshData(data, forceUnsorted);
 	this->ComputeNormals();
 	this->ComputeRanges();
 }
 
-void Mesh::CopyDataFromMeshData(MeshData* data) {
+void Mesh::CopyDataFromMeshData(MeshData* data, bool forceUnsorted) {
 	int processingCurrent = 0;
 	int processingExpected = 1;
 	ProcessingMessageModule* processingMessage;
@@ -371,8 +379,8 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 
 	/* Faces data */
 
-	// Search the range of materials and check if its already ordered
-	bool indicesAreOrderedByMaterials = true;
+	// Search the range of materials and check if its already sorted
+	bool indicesAreSortedByMaterials = true;
 	if (this->haveMaterials) {
 		unsigned char minMatID = data->facesMaterials[0];
 		unsigned char maxMatID = data->facesMaterials[0];
@@ -382,7 +390,7 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 			if (maxMatID < data->facesMaterials[i])
 				maxMatID = data->facesMaterials[i];
 			if (data->facesMaterials[i] < data->facesMaterials[i - 1])
-				indicesAreOrderedByMaterials = false;
+				indicesAreSortedByMaterials = false;
 		}
 		this->nbMaterials = maxMatID - minMatID + 1;
 		this->materialsRange = Eigen::AlignedBox1i(minMatID, maxMatID);
@@ -390,6 +398,7 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 		this->nbMaterials = 1;
 		this->materialsRange = Eigen::AlignedBox1i(0, 0);
 	}
+	this->isSorted = (indicesAreSortedByMaterials || !forceUnsorted);
 
 	// Count the number of materials
 	this->nbFacesPerMaterial =
@@ -405,9 +414,9 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 	unsigned int nbElements = 3 * this->nbFaces;
 	this->facesVertices = (unsigned int*) malloc(sizeof(int) * nbElements);
 	if (unusedPoints.size()) {
-		if (indicesAreOrderedByMaterials) {
-			// If indices are already ordered by materials
-			// or there are no materials
+		if (indicesAreSortedByMaterials || forceUnsorted) {
+			// If indices are already sorted by materials,
+			// there are no materials or the user asked to force unsorted mesh
 			for (unsigned int i = 0; i < nbElements; i++) {
 				// Copy data
 				this->facesVertices[i] =
@@ -416,7 +425,7 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 				processingCurrent++;
 			}
 		} else {
-			// If indices need to be reordered
+			// If indices need to be re-sorted
 			unsigned int next = 0;
 			unsigned char currentMaterial = this->materialsRange.min()[0];
 			for (unsigned char m = 0; m < this->nbMaterials; m++) {
@@ -443,9 +452,9 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 		// Deallocate indice’s correspondance array
 		delete indiceCorrespondance;
 	} else {
-		if (indicesAreOrderedByMaterials) {
-			// If indices are already ordered by materials
-			// or there are no materials
+		if (indicesAreSortedByMaterials || forceUnsorted) {
+			// If indices are already sorted by materials,
+			// there are no materials and the user asked to force unsorted mesh
 			for (unsigned int i = 0; i < nbElements; i++) {
 				// Copy data
 				this->facesVertices[i] = data->facesVertices[i];
@@ -453,7 +462,7 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 				processingCurrent++;
 			}
 		} else {
-			// If indices need to be reordered
+			// If indices need to be re-sorted
 			unsigned int next = 0;
 			unsigned char currentMaterial = this->materialsRange.min()[0];
 			for (unsigned char m = 0; m < this->nbMaterials; m++) {
@@ -476,7 +485,7 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 		}
 	}
 
-	if (this->haveMaterials && indicesAreOrderedByMaterials) {
+	if (this->haveMaterials && indicesAreSortedByMaterials) {
 		unsigned char minMaterial = this->materialsRange.min()[0];
 		for (unsigned int i = 0; i < this->nbFaces; i++)
 			this->nbFacesPerMaterial[data->facesMaterials[i] - minMaterial]++;
@@ -486,16 +495,25 @@ void Mesh::CopyDataFromMeshData(MeshData* data) {
 	this->facesMaterials =
 			(unsigned char*) malloc(sizeof(char) * this->nbFaces);
 	if (this->haveMaterials) {
-		unsigned int next = 0;
-		unsigned char currentMaterial = this->materialsRange.min()[0];
-		for (unsigned char m = 0; m < this->nbMaterials; m++) {
-			for (unsigned int i = 0; i < this->nbFacesPerMaterial[m]; i++) {
+		if (forceUnsorted) {
+			for (unsigned int i = 0; i < this->nbFaces; i++) {
 				// Copy data
-				this->facesMaterials[next++] = currentMaterial;
+				this->facesMaterials[i] = data->facesMaterials[i];
 
 				processingCurrent++;
 			}
-			currentMaterial++;
+		} else {
+			unsigned int next = 0;
+			unsigned char currentMaterial = this->materialsRange.min()[0];
+			for (unsigned char m = 0; m < this->nbMaterials; m++) {
+				for (unsigned int i = 0; i < this->nbFacesPerMaterial[m]; i++) {
+					// Copy data
+					this->facesMaterials[next++] = currentMaterial;
+
+					processingCurrent++;
+				}
+				currentMaterial++;
+			}
 		}
 	} else {
 		for (unsigned int i = 0; i < this->nbFaces; i++) {

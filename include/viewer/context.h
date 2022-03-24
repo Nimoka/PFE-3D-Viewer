@@ -102,6 +102,9 @@ public:
 	void SetInputFile(std::string file);
 	std::string GetInputFile();
 
+	void SetForceUnsortedMesh(bool value);
+	bool GetForceUnsortedMesh();
+
 	void SetBenchmarkMode(bool benchmark);
 	bool GetBenchmarkMode();
 	void SetDebugMode(bool debug);
@@ -125,6 +128,7 @@ private:
 	std::string windowTitleForced;
 	std::string glslVersion;
 
+	bool forceUnsortedMeshMode = false;
 	bool benchmarkMode = false;
 	bool debugMode = false;
 	bool darkMode = false;

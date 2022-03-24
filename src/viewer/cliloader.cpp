@@ -17,7 +17,7 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	bool benchmarkMode = false, noBenchmarkMode = false, debugMode = false,
 			noDebugMode = false, darkMode = false, lightMode = false,
 			simpleShadingMode = false, forwardShadingMode = false,
-			deferredShadingMode = false;
+			deferredShadingMode = false, forceUnsortedMeshMode = false;
 
 	/* Set CLI options */
 
@@ -48,6 +48,10 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	// forwardShading->excludes(deferredShading);
 	// deferredShading->excludes(simpleShading);
 	// deferredShading->excludes(forwardShading);
+
+	CLI::Option *forceUnsortedMesh = app.add_flag("--fu, --force-unsorted",
+			forceUnsortedMeshMode,
+			"Force the program to don’t sort the input mesh if it needs to");
 
 	CLI::Option *benchmark = app.add_flag("-b, --benchmark",
 			benchmarkMode,
@@ -120,6 +124,10 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	// Set deferred shading
 	// if (deferredShadingMode)
 	// 	context->SetDeferredShading();
+
+	// Force unsorted mesh
+	if (forceUnsortedMeshMode)
+		context->SetForceUnsortedMesh(forceUnsortedMeshMode);
 
 	// Benchmark mode
 	if (benchmarkMode || noBenchmarkMode)

@@ -534,6 +534,13 @@ void Context::SetMesh(Mesh* mesh) {
 			this->viewer = new ViewerModule(this);
 		this->viewer->GetRenderer()->SetScene(this->scene);
 	}
+	if (this->viewer != nullptr) {
+		Renderer* renderer = this->viewer->GetRenderer();
+		if (renderer != nullptr) {
+			if (renderer->IsRenderingPerMaterial() && (!mesh->IsSorted()))
+				renderer->SetRenderingPerMaterial(false);
+		}
+	}
 	this->scene->SetMesh(mesh);
 }
 
@@ -590,6 +597,14 @@ void Context::SetInputFile(std::string file) {
 }
 std::string Context::GetInputFile() {
 	return this->inputFile;
+}
+
+void Context::SetForceUnsortedMesh(bool value) {
+	this->forceUnsortedMeshMode = value;
+}
+
+bool Context::GetForceUnsortedMesh() {
+	return this->forceUnsortedMeshMode;
 }
 
 void Context::SetBenchmarkMode(bool benchmark) {
@@ -651,6 +666,7 @@ void Context::RenderMenuBar() {
 		}
 		if (ImGui::BeginMenu("View")) {
 			Renderer* renderer = this->viewer->GetRenderer();
+			Mesh* mesh = this->viewer->GetMesh();
 			if (renderer != nullptr) {
 				if (ImGui::BeginMenu("Render method")) {
 					if (ImGui::MenuItem("Simple shading (no lights)", "",
@@ -678,7 +694,10 @@ void Context::RenderMenuBar() {
 									renderer->GetShaders());
 						}
 					} else if (ImGui::MenuItem("Per-material shading", "",
-							renderingPerMaterial)) {
+							renderingPerMaterial,
+							(mesh != nullptr
+									? mesh->IsSorted()
+									: !this->forceUnsortedMeshMode))) {
 						renderer->SetRenderingPerMaterial(true);
 						if (this->shadersContent != nullptr) {
 							this->shadersContent->SetShaders(
