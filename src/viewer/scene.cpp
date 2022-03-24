@@ -37,6 +37,9 @@ bool Scene::RenderMesh(ShadersReader* shaders, unsigned int material) {
 	if (this->nbVboFaces <= material)
 		return false;
 
+	if (this->vboFacesID[material] == 0)
+		return false;
+
 	glBindVertexArray(this->vaoID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vboFacesID[material]);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vboVerticesID);
@@ -288,6 +291,11 @@ void Scene::InitPerMaterialVbos() {
 	// For each material
 	unsigned int nbElements;
 	for (unsigned char i = 0; i < this->nbVboFaces; i++) {
+		if (this->mesh->nbFacesPerMaterial[i] == 0) {
+			this->vboFacesID[i] = 0;
+			continue;
+		}
+
 		// Copy the list of its faces’ vertices in its new VBO
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vboFacesID[i]);
 		nbElements = 3 * this->mesh->nbFacesPerMaterial[i];
