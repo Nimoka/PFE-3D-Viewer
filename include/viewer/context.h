@@ -56,6 +56,9 @@ public:
 	void ZoomCamera(float intensity);
 	void ReloadShaders();
 	void ResetDefaultMaterialsPaths();
+	void SetSimpleShading();
+	void SetForwardShading();
+	// void SetDeferredShading();
 	void ToggleDarkMode();
 	void ToggleDebugMode();
 	void Quit();
@@ -99,10 +102,6 @@ public:
 	void SetInputFile(std::string file);
 	std::string GetInputFile();
 
-	void SetForwardShadingMode(bool forwardShading);
-	bool GetForwardShadingMode();
-	void SetDeferredShadingMode(bool deferredShading);
-	bool GetDeferredShadingMode();
 	void SetBenchmarkMode(bool benchmark);
 	bool GetBenchmarkMode();
 	void SetDebugMode(bool debug);
@@ -127,8 +126,6 @@ private:
 	std::string glslVersion;
 
 	bool benchmarkMode = false;
-	bool forwardShadingMode = false;
-	bool deferredShadingMode =false;
 	bool debugMode = false;
 	bool darkMode = false;
 	bool mouseLeftPressed = false;

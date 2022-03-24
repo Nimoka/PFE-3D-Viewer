@@ -16,8 +16,8 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	std::string inputFile, configFile;
 	bool benchmarkMode = false, noBenchmarkMode = false, debugMode = false,
 			noDebugMode = false, darkMode = false, lightMode = false,
-			forwardShadingMode=false, noForwardShadingMode=false,
-			deferredShadingMode=false, nodeferredShadingMode=false;
+			simpleShadingMode = false, forwardShadingMode = false,
+			deferredShadingMode = false;
 
 	/* Set CLI options */
 
@@ -33,23 +33,21 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	app.add_option("--pl",pLight,"Configure the number of point light in the scene")
 			->check(CLI::PositiveNumber);
 
-	CLI::Option *forwardShading = app.add_flag("--fs",
+	CLI::Option *simpleShading = app.add_flag("--ss, --simple",
+			simpleShadingMode,
+			"Run the program with simple shading");
+	CLI::Option *forwardShading = app.add_flag("--fs, --forward",
 			forwardShadingMode,
-			"Run the program in forwardshading mode");
-	CLI::Option *noForwardShading = app.add_flag("--nfs, --no-forwardshading",
-			noForwardShadingMode,
-			"disable the forwardShading mode");
-	forwardShading->excludes(noForwardShading);
-	noForwardShading->excludes(forwardShading);
-
-	CLI::Option *deferredShading = app.add_flag("--ds",
-			deferredShadingMode,
-			"Run the program in deferredshading mode");
-	CLI::Option *nodeferredShading = app.add_flag("--nds, --no-deferredshading",
-			nodeferredShadingMode,
-			"disable the deferredShading mode");
-	deferredShading->excludes(nodeferredShading);
-	nodeferredShading->excludes(deferredShading);
+			"Run the program with forward shading");
+	// CLI::Option *deferredShading = app.add_flag("--ds, --deferred",
+	// 		deferredShadingMode,
+	// 		"Run the program with deferred shading");
+	simpleShading->excludes(forwardShading);
+	// simpleShading->excludes(deferredShading);
+	forwardShading->excludes(simpleShading);
+	// forwardShading->excludes(deferredShading);
+	// deferredShading->excludes(simpleShading);
+	// deferredShading->excludes(forwardShading);
 
 	CLI::Option *benchmark = app.add_flag("-b, --benchmark",
 			benchmarkMode,
@@ -111,15 +109,17 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	if(pLight>1)
 		context->SetPointLightNumber(pLight);
 
-	// ForwardShading mode
-	if(forwardShadingMode || noForwardShadingMode){
-		context->SetForwardShadingMode(forwardShadingMode);
-	}
+	// Set simple shading
+	if (simpleShadingMode)
+		context->SetSimpleShading();
 
-	// deferredShading mode
-	if(deferredShadingMode || nodeferredShadingMode){
-		context->SetDeferredShadingMode(deferredShadingMode);
-	}
+	// Set forward shading
+	if (forwardShadingMode)
+		context->SetForwardShading();
+
+	// Set deferred shading
+	// if (deferredShadingMode)
+	// 	context->SetDeferredShading();
 
 	// Benchmark mode
 	if (benchmarkMode || noBenchmarkMode)

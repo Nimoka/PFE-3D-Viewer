@@ -271,6 +271,18 @@ void Context::ResetDefaultMaterialsPaths() {
 	// delete [] paths;
 }
 
+void Context::SetSimpleShading() {
+	this->SwitchRenderer<SimpleRenderer>();
+}
+
+void Context::SetForwardShading() {
+	this->SwitchRenderer<ForwardRenderer>();
+}
+
+// void Context::SetDeferredShading() {
+// 	this->SwitchRenderer<DeferredRenderer>();
+// }
+
 void Context::ToggleDarkMode() {
 	this->SetDarkMode(!this->darkMode);
 }
@@ -287,9 +299,9 @@ template <class T>
 void Context::SwitchRenderer() {
 	Renderer* renderer = this->viewer->GetRenderer();
 	if (renderer == nullptr)
-		return;
-
-	renderer = new T(renderer);
+		renderer = new T(this, false);
+	else
+		renderer = new T(renderer);
 	this->viewer->SetRenderer(renderer);
 	if (this->shadersContent != nullptr) {
 		this->shadersContent->SetShaders(
@@ -580,22 +592,6 @@ std::string Context::GetInputFile() {
 	return this->inputFile;
 }
 
-void Context::SetForwardShadingMode(bool forwardShading){
-	this->forwardShadingMode =  forwardShading;
-}
-
-bool Context::GetForwardShadingMode(){
-	return this->forwardShadingMode;
-}
-
-void Context::SetDeferredShadingMode(bool deferredShading){
-	this->deferredShadingMode =  deferredShading;
-}
-
-bool Context::GetDeferredShadingMode(){
-	return this->deferredShadingMode;
-}
-
 void Context::SetBenchmarkMode(bool benchmark) {
 	this->benchmarkMode = benchmark;
 }
@@ -644,12 +640,6 @@ GLFWwindow* Context::GetWindow() {
 }
 
 void Context::RenderMenuBar() {
-	if(this->benchmarkMode && this->forwardShadingMode){
-		this->SwitchRenderer<ForwardRenderer>();
-	}
-	if(this->benchmarkMode && this->deferredShadingMode){
-		//this->SwitchRenderer<DeferredRenderer>();  //activate after implementation
-	}
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
 			if (ImGui::MenuItem("Open mesh...", "Ctrl+O"))
@@ -665,10 +655,10 @@ void Context::RenderMenuBar() {
 				if (ImGui::BeginMenu("Render method")) {
 					if (ImGui::MenuItem("Simple shading (no lights)", "",
 							dynamic_cast<SimpleRenderer*>(renderer))) {
-						this->SwitchRenderer<SimpleRenderer>();
+						this->SetSimpleShading();
 					} else if (ImGui::MenuItem("Forward shading", "",
 							dynamic_cast<ForwardRenderer*>(renderer))) {
-						this->SwitchRenderer<ForwardRenderer>();
+						this->SetForwardShading();
 					// } else if (ImGui::MenuItem("Deferred shading", "",
 					// 		dynamic_cast<DeferredRenderer*>(renderer))) {
 					// 	this->SwitchRenderer<DeferredRenderer>();
