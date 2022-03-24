@@ -37,7 +37,7 @@ bool Scene::RenderMesh(ShadersReader* shaders, unsigned char material) {
 	if (this->nbVboFaces <= material)
 		return false;
 
-	if (this->vboFacesID[material] == 0)
+	if (this->vboFacesNbElements[material] == 0)
 		return false;
 
 	glBindVertexArray(this->vaoID);
@@ -73,7 +73,8 @@ bool Scene::RenderMesh(ShadersReader* shaders, unsigned char material) {
 		glUniform1i(materialTexLocation, 0);
 	}
 
-	glDrawElements(GL_TRIANGLES, (3 * this->mesh->nbFaces), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, (3 * this->vboFacesNbElements[material]),
+			GL_UNSIGNED_INT, 0);
 
 	if (vertexLocation >= 0)
 		glDisableVertexAttribArray(vertexLocation);
@@ -252,7 +253,13 @@ void Scene::InitVbos(bool force) {
 }
 
 void Scene::InitAllFaceVbo() {
+	// Reset the numnber of face VBOs
 	this->nbVboFaces = 1;
+
+	// Reset the number of elements per face VBOs
+	CleanVboFacesNbElements();
+	this->vboFacesNbElements = new unsigned int[1];
+	this->vboFacesNbElements[0] = this->mesh->nbFaces;
 
 	// Allocate the list of VBO IDs (only 1 element)
 	this->vboFacesID = (GLuint*) malloc(sizeof(GLuint));
@@ -274,7 +281,12 @@ void Scene::InitAllFaceVbo() {
 }
 
 void Scene::InitPerMaterialVbos() {
+	// Reset the numnber of face VBOs
 	this->nbVboFaces = this->mesh->nbMaterials;
+
+	// Reset the number of elements per face VBOs
+	CleanVboFacesNbElements();
+	this->vboFacesNbElements = new unsigned int[this->mesh->nbMaterials];
 
 	// Allocate the list of VBO IDs (one per material)
 	this->vboFacesID = (GLuint*) malloc(sizeof(GLuint) * this->nbVboFaces);
@@ -291,6 +303,8 @@ void Scene::InitPerMaterialVbos() {
 	// For each material
 	unsigned int nbElements;
 	for (unsigned char i = 0; i < this->nbVboFaces; i++) {
+		this->vboFacesNbElements[i] = this->mesh->nbFacesPerMaterial[i];
+
 		if (this->mesh->nbFacesPerMaterial[i] == 0) {
 			glDeleteBuffers(1, (this->vboFacesID + i));
 			this->vboFacesID[i] = 0;
@@ -314,6 +328,8 @@ void Scene::InitPerMaterialVbos() {
 void Scene::Clean() {
 	glDeleteBuffers(1, &this->vboVerticesID);
 	glDeleteVertexArrays(1, &this->vaoID);
+	CleanFacesVbos();
+	CleanVboFacesNbElements();
 
 	if (this->camera != nullptr) {
 		delete this->camera;
@@ -324,4 +340,11 @@ void Scene::Clean() {
 void Scene::CleanFacesVbos() {
 	if (this->nbVboFaces)
 		glDeleteBuffers(this->nbVboFaces, this->vboFacesID);
+}
+
+void Scene::CleanVboFacesNbElements() {
+	if (this->vboFacesNbElements == nullptr)
+		return;
+	delete [] this->vboFacesNbElements;
+	this->vboFacesNbElements = nullptr;
 }

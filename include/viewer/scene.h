@@ -51,6 +51,7 @@ private:
 	void InitPerMaterialVbos();
 	void Clean();
 	void CleanFacesVbos();
+	void CleanVboFacesNbElements();
 
 	void* renderer = nullptr;
 
@@ -72,6 +73,7 @@ private:
 	GLuint tboMaterialsTex;
 
 	unsigned char nbVboFaces = 0;
+	unsigned int* vboFacesNbElements = nullptr;
 };
 
 #endif // SCENE_H
