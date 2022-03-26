@@ -4,6 +4,9 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <string>
+#include <fstream>
+#include <iostream>
+#include <istream>
 
 #include "camera.h"
 #include "filewithextension.h"
@@ -44,26 +47,28 @@ Context::~Context() {
 void Context::Launch() {
 	if(this->benchmarkMode){
 		glfwSwapInterval(0);
-	}
-	this->lastFrame = static_cast<float>(glfwGetTime());
-	this->beginTime = static_cast<float>(glfwGetTime());
+	}	
+	float beginTime = static_cast<float>(glfwGetTime());
+	
+	
 	int windowWidth, windowHeight;	
 	while (!glfwWindowShouldClose(window) && !this->readyToDie) {
 		this->frameCount ++;
 		/* Poll latest events */
 		glfwPollEvents();
 
-		/*Print the FPS for benchmarking*/
-		float currentFrame =  static_cast<float>(glfwGetTime());
-		this->deltaTime = currentFrame -lastFrame;
-		if(this->benchmarkMode && currentFrame-this->lastFrame >1){
-			std::cout<<this->frameCount<<std::endl;
-			this->frameCount =0;
-			lastFrame = currentFrame;
-			if(currentFrame-beginTime >=this->maxTime){
-				this->readyToDie = true;
-			}
+		/*Write the FPS to csv for benchmarking*/
+		float currentTime =  static_cast<float>(glfwGetTime());
+		float deltaTime   = currentTime - beginTime;
+		if(this->benchmarkMode && deltaTime >10){
+			std::fstream fpsFile;	
+			fpsFile.open("./out/fps.csv", std::ios::app);
+			fpsFile << this->frameCount / deltaTime;			
+			fpsFile.close();
+			this->readyToDie = true;
 		}
+					
+		
 		/* Start new ImGui frame */
 
 		ImGui_ImplOpenGL3_NewFrame();
