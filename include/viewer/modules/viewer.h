@@ -50,15 +50,28 @@ public:
 	void Render();
 
 	/**
-	 * \brief Getter of `mesh`
+	 * \brief Getter of `mesh`.
 	 * 
+	 * Return the pointer to the mesh rendered by `renderer` if any.
+	 * Return `nullptr` if either the `renderer` attribute, if the `scene`
+	 * attribute of `renderer` or the `mesh` attribute of the `scene` of the
+	 * `renderer` is `nullptr`.
 	 * 
+	 * \return Value returned by the getter of `mesh` of the renderer.
 	 */
 	Mesh* GetMesh();
+	/**
+	 * \brief Getter of `renderer`.
+	 * 
+	 * Return the value of the `renderer` attribute, a pointer corresponding to
+	 * the renderer whose result is displayed.
+	 * 
+	 * \return Value of the `renderer` attribute.
+	 */
 	Renderer* GetRenderer();
 
 	/**
-	 * \brief Setter of `renderer`
+	 * \brief Setter of `renderer`.
 	 * 
 	 * Set a new renderer.
 	 * The old one will be destructed.
