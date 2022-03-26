@@ -284,10 +284,6 @@ void Context::SetForwardShading() {
 	this->SwitchRenderer<ForwardRenderer>();
 }
 
-// void Context::SetDeferredShading() {
-// 	this->SwitchRenderer<DeferredRenderer>();
-// }
-
 void Context::ToggleDarkMode() {
 	this->SetDarkMode(!this->darkMode);
 }
@@ -362,8 +358,6 @@ void Context::ToggleImGuiFPSModule() {
 
 void Context::ProcessKeyboardInput(int key, int scancode, int action,
 		int mods) {
-	// TODO: Find a way to handle non-QWERTY keyboards
-
 	if (action == GLFW_PRESS) {
 		if (mods == GLFW_MOD_CONTROL) {
 			switch (key) {
@@ -515,7 +509,6 @@ void Context::ProcessMouseButton(int button, int action, int mods) {
 }
 
 void Context::ProcessMouseScroll(double x, double y) {
-	//this->scene->navigate3D = true;
 	this->ZoomCamera(-y);
 }
 
@@ -680,12 +673,6 @@ void Context::RenderMenuBar() {
 					} else if (ImGui::MenuItem("Forward shading", "",
 							dynamic_cast<ForwardRenderer*>(renderer))) {
 						this->SetForwardShading();
-					// } else if (ImGui::MenuItem("Deferred shading", "",
-					// 		dynamic_cast<DeferredRenderer*>(renderer))) {
-					// 	this->SwitchRenderer<DeferredRenderer>();
-					// } else if (ImGui::MenuItem("Clustured deferred shading", "",
-					// 		dynamic_cast<ClusturedRenderer*>(renderer))) {
-					// 	this->SwitchRenderer<ClusturedRenderer>();
 					}
 					ImGui::Separator();
 					bool renderingPerMaterial =

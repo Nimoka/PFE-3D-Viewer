@@ -23,10 +23,6 @@ MeshContentModule::MeshContentModule(MeshContentModule* module)
 
 MeshContentModule::~MeshContentModule() {}
 
-void MeshContentModule::Init() {
-	this->tableFlags = ImGuiTableFlags_Borders;
-}
-
 void MeshContentModule::Render() {
 	if (this->mesh != nullptr) {
 		if (ImGui::Begin(std::string(this->title + "###"
@@ -233,4 +229,8 @@ Mesh* MeshContentModule::GetMesh() {
 
 const std::string& MeshContentModule::GetFilename() {
 	return this->filename;
+}
+
+void MeshContentModule::Init() {
+	this->tableFlags = ImGuiTableFlags_Borders;
 }

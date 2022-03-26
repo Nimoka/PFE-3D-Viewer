@@ -45,12 +45,6 @@ void ViewerModule::Render() {
 	ImGui::PopStyleVar();
 }
 
-void ViewerModule::SetRenderer(Renderer* renderer) {
-	if (this->renderer != nullptr)
-		delete this->renderer;
-	this->renderer = renderer;
-}
-
 Renderer* ViewerModule::GetRenderer() {
 	return this->renderer;
 }
@@ -61,6 +55,12 @@ Mesh* ViewerModule::GetMesh() {
 			return this->renderer->GetScene()->GetMesh();
 	}
 	return nullptr;
+}
+
+void ViewerModule::SetRenderer(Renderer* renderer) {
+	if (this->renderer != nullptr)
+		delete this->renderer;
+	this->renderer = renderer;
 }
 
 void ViewerModule::Init() {

@@ -5,21 +5,15 @@ ShadersContentModule::ShadersContentModule(void* context,
 		: GUIModule(context) {
 	this->title = "Shaders content";
 	this->SetShaders(nbShaders, shaders);
-
-	this->Init();
 }
 
 ShadersContentModule::ShadersContentModule(ShadersContentModule* module)
 		: GUIModule(module->GetContext()) {
 	this->title = module->GetTitle();
 	this->SetShaders(module->GetNbShaders(), module->GetShaders());
-
-	this->Init();
 }
 
 ShadersContentModule::~ShadersContentModule() {}
-
-void ShadersContentModule::Init() {}
 
 void ShadersContentModule::Render() {
 	if (this->shaders != nullptr) {

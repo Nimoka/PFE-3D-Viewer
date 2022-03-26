@@ -78,7 +78,6 @@ bool PLYReader::Load() {
 			reader->extract_triangles(indexes[0],
 					meshData->verticesPositions, meshData->nbVertices,
 					miniply::PLYPropertyType::Int, meshData->facesVertices);
-			// TODO: Handle faces with more than 3 vertices
 
 			/* Faces ID materials */
 			uint32_t indexMaterials = reader->find_property("id");

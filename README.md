@@ -2,8 +2,8 @@
 
 This project was made as an end-of-study project of Master in Computer Science at the _University of Bordeaux_, on behalf of the _Manao team_ of the _Inria_. It was originally developped in February and March 2022.
 
-It contains three programs:
-- a **mesh simplifier**, to reduce the number of faces of a mesh using different parameters,
+The project consists on three programs:
+- a **mesh simplifier**, to reduce the number of faces of a mesh using different parameters (available [here](https://github.com/Nimoka/PFE-3D-Decimator)),
 - a **mesh viewer** called `3DViewer`, to display a mesh in a simple 3D scene,
 - and **benchmark synthesis**, a simple Python script that launch the simplifier then benchmarks using the viewer with different parameters, and export a synthesis of the results.
 
@@ -18,6 +18,7 @@ It contains three programs:
 		- [Install dependencies](#install-dependencies)
 		- [Compilation](#compilation)
 		- [Tests](#tests)
+		- [Generate documentation](#generate-documentation)
 	- [Troubleshooting](#troubleshooting)
 	- [Clang-format](#clang-format)
 	- [Benchmarking](#benchmarking)
@@ -30,6 +31,7 @@ This is a list of dependencies used in this project that you can install by your
 
 - `cmake` _(required)_
 - [`glbinding` (`v3.1.0`)](https://github.com/cginternals/glbinding/releases/tag/v3.1.0)
+- `doxygen` (for documentation generation)
 
 ## Usage
 
@@ -57,6 +59,15 @@ This is a list of dependencies used in this project that you can install by your
 		```
 		./test.sh
 		```
+
+### Generate documentation
+
+- **On Linux/macOS:**
+	- Run the command at the root of the directory:
+		```
+		./generate_docs.sh
+		```
+	- The documentation is created in the subfolder `docs/viewer/`.
 
 ## Troubleshooting
 
