@@ -28,10 +28,6 @@ FileDialogModule::~FileDialogModule() {
 	delete this->dialog;
 }
 
-void FileDialogModule::Init() {
-	this->dialog = new imgui_addons::ImGuiFileBrowser();
-}
-
 void FileDialogModule::Render() {
 	if (this->dialog->isClosed()) {
 		this->Kill();
@@ -47,15 +43,19 @@ void FileDialogModule::Render() {
 	}
 }
 
-void FileDialogModule::SendResults() {
-	if (this->mode == imgui_addons::ImGuiFileBrowser::DialogMode::OPEN)
-		((Context*) this->context)->LoadPLYFile(this->dialog->selected_path);
-}
-
 std::string FileDialogModule::GetFormats() {
 	return this->formats;
 }
 
 imgui_addons::ImGuiFileBrowser::DialogMode FileDialogModule::GetMode() {
 	return this->mode;
+}
+
+void FileDialogModule::Init() {
+	this->dialog = new imgui_addons::ImGuiFileBrowser();
+}
+
+void FileDialogModule::SendResults() {
+	if (this->mode == imgui_addons::ImGuiFileBrowser::DialogMode::OPEN)
+		((Context*) this->context)->LoadPLYFile(this->dialog->selected_path);
 }

@@ -43,26 +43,11 @@ public:
 	~FileDialogModule();
 
 	/**
-	 * \brief Initialize the module.
-	 * 
-	 * Initialize the module: create objects needed.
-	 * Will be automatically called during object construction.
-	 */
-	void Init();
-	/**
 	 * \brief Render the module.
 	 * 
 	 * Call _Dear ImGui_ instructions to render the module.
 	 */
 	void Render();
-
-	/**
-	 * \brief Send results.
-	 * 
-	 * Send the results of the dialog by directly calling methods from the
-	 * context provided.
-	 */
-	void SendResults();
 
 	/**
 	 * \brief Getter of `formats`.
@@ -84,6 +69,22 @@ public:
 	imgui_addons::ImGuiFileBrowser::DialogMode GetMode();
 
 private:
+	/**
+	 * \brief Initialize the module.
+	 * 
+	 * Initialize the module: create objects needed.
+	 * Will be automatically called during object construction.
+	 */
+	void Init();
+
+	/**
+	 * \brief Send results.
+	 * 
+	 * Send the results of the dialog by directly calling methods from the
+	 * context provided.
+	 */
+	void SendResults();
+
 	/**
 	 * \brief Formats accepted by the dialog.
 	 * 

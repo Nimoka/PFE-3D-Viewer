@@ -48,13 +48,6 @@ public:
 	~ShadersContentModule();
 
 	/**
-	 * \brief Initialize the module.
-	 * 
-	 * Initialize the module.
-	 * Will be automatically called during object construction.
-	 */
-	void Init();
-	/**
 	 * \brief Render the module.
 	 * 
 	 * Call _Dear ImGui_ instructions to render the module.
