@@ -17,10 +17,8 @@ std::string LoadTextFile(const std::string& path) {
 	std::string content = "";
 
 	std::ifstream file(path.c_str(), std::ios::in);
-	if (!file) {
-		// TODO: Throw an exception?
+	if (!file)
 		return content;
-	}
 
 	const int bufferSize = 2048;
 	char buffer[bufferSize];
@@ -34,10 +32,8 @@ std::string LoadTextFile(const std::string& path) {
 
 bool SaveTextFile(const std::string& path, const std::string& content) {
 	std::ofstream file(path.c_str(), std::ios::out);
-	if (!file) {
-		// TODO: Throw an exception?
+	if (!file)
 		return false;
-	}
 
 	file << content;
 	file.close();

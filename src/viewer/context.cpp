@@ -357,8 +357,6 @@ void Context::ToggleImGuiFPSModule() {
 
 void Context::ProcessKeyboardInput(int key, int scancode, int action,
 		int mods) {
-	// TODO: Find a way to handle non-QWERTY keyboards
-
 	if (action == GLFW_PRESS) {
 		if (mods == GLFW_MOD_CONTROL) {
 			switch (key) {
