@@ -1,72 +1,79 @@
 import subprocess as sub
 import matplotlib.pyplot as plt
 from pathlib import Path
-import glob
-import time
 import os
-import signal
-import sys
-import psutil
+import glob
 import csv
+import sys
 
-names=[]
-FPS =[]
+
+fileNames =[]
+filecount =0
+rowcount =0
 args = ""
+csvFilePath = './out/fps.csv'
+plyFilePath = './data/models/'
+fileNb = len(glob.glob(plyFilePath + '*.ply'))
 pointLights = [x*50 for x in range(1,6)]
 
 if((len(sys.argv))>1):
     for arg in sys.argv[1:]:
         args += arg+ " "
 
-for file in glob.glob("./data/models/*.ply"): 
-    count =0
-    sum =0
+if os.path.exists(csvFilePath):
+    os.remove(csvFilePath)
+
+
+
+for file in glob.glob(plyFilePath + '*.ply'):
     if(len(sys.argv)==2):
         for pl in pointLights:
             tmpArgs = args
             args += " --pl "+str(pl)
-            #print(args + file)
-            proc = sub.Popen("./build/3DViewer -b " + args +" -i " + file , shell=True, preexec_fn=os.setsid, stdout=sub.PIPE)
-            for line in iter(proc.stdout.readline, b''):
-                count += 1
-                sum += float(line)
+            if filecount%fileNb ==0 and filecount ==0:
+                fpsFile = open(csvFilePath, 'a')
+                fpsFile.write('')
+                fpsFile.close()
+            elif filecount%fileNb ==0 :
+                fpsFile = open(csvFilePath, 'a')
+                fpsFile.write('\n')
+                fpsFile.close()
+            else :
+                fpsFile = open(csvFilePath, 'a')
+                fpsFile.write(', ')
+                fpsFile.close()
+
+            proc = sub.Popen("./build/3DViewer -b " + args +" -i " + file)
+            filecount+=1
             args = tmpArgs
-            FPS.append(sum/count)
-            os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
-    else:
-        proc = sub.Popen("./build/3DViewer -b " + args +" -i " + file , shell=True, preexec_fn=os.setsid, stdout=sub.PIPE)
-        for line in iter(proc.stdout.readline, b''):
-            count += 1
-            sum += float(line)
-        FPS.append(sum/count)
-        os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+            proc.wait()
+    else:  
+        if filecount%fileNb !=0 :  
+            fpsFile = open(csvFilePath, 'a')
+            fpsFile.write(', ')
+            fpsFile.close()
+        proc = sub.Popen("./build/3DViewer -b " + args +" -i " + file)
+        filecount+=1
+        proc.wait()
 
-    names.append(Path(file).stem)
+    fileNames.append(Path(file).stem)
+
+file = open (csvFilePath)
+csvreader = csv.reader(file)
+rows = []
+for row in csvreader:
+    rows.append(row)
+    rowcount+= 1
 
 
-if(len(sys.argv)==2):
-
-    f = open('mltFps.csv','w',encoding = 'UTF8',newline = '')
-    writer = csv.writer(f)
-    writer.writerow(pointLights)
-
-    plotCount = 0
-    for i in range(len(glob.glob("./data/models/*.ply"))):
-        row =  FPS[plotCount:plotCount + len(pointLights)]
-        writer.writerow(row)
-        plt.plot(pointLights, row, label = names[i])
+indexCsvFile =0;
+if rowcount ==1 :
+    plt.bar(fileNames, rows[0])
+else :
+    for row in rows :       
+        plt.plot(pointLights,row, label = fileNames[indexCsvFile])
         plt.legend()
-        plotCount+= len(pointLights)
-    f.close()
+        indexCsvFile +=1
     plt.xlabel('point lights')
     plt.ylabel('FPS')
-
-else:
-    plt.bar(names, FPS)
-    plt.title('FPS forward')
-    with open ('fps.CSV', 'w',encoding = 'UTF8', newline = '')as f :
-        writer = csv.writer(f)
-        writer.writerow(names)
-        writer.writerow(FPS)
-
 plt.show()
