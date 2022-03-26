@@ -21,7 +21,7 @@ unsigned int GUIModule::GetID() {
 	return this->id;
 }
 
-std::string GUIModule::GetTitle() {
+const std::string& GUIModule::GetTitle() {
 	return this->title;
 }
 
@@ -29,6 +29,6 @@ void* GUIModule::GetContext() {
 	return this->context;
 }
 
-void GUIModule::SetTitle(std::string value) {
+void GUIModule::SetTitle(const std::string& value) {
 	this->title = value;
 }

@@ -21,7 +21,7 @@ void MessageModule::Render() {
 	ImGui::End();
 }
 
-std::string MessageModule::GetMessage() {
+const std::string& MessageModule::GetMessage() {
 	return this->message;
 }
 
