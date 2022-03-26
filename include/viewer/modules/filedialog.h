@@ -67,19 +67,19 @@ public:
 	/**
 	 * \brief Getter of `formats`.
 	 * 
-	 * Return the value of the `formats` attribute, corresponding to the list
-	 * of formats accepted by the dialog.
+	 * Return the value of the `formats` field, corresponding to the list of
+	 * formats accepted by the dialog.
 	 * 
-	 * \return Value of the `formats` attribute.
+	 * \return Value of the `formats` field.
 	 */
 	std::string GetFormats();
 	/**
 	 * \brief Getter of `mode`.
 	 * 
-	 * Return the value of the `mode` attribute, corresponding to the mode set
-	 * for the dialog.
+	 * Return the value of the `mode` field, corresponding to the mode set for
+	 * the dialog.
 	 * 
-	 * \return Value of the `mode` attribute.
+	 * \return Value of the `mode` field.
 	 */
 	imgui_addons::ImGuiFileBrowser::DialogMode GetMode();
 

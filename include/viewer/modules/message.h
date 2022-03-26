@@ -40,7 +40,7 @@ public:
 	/**
 	 * \brief Getter of `message`.
 	 * 
-	 * Return the value of the `message` attribute, corresponding to the text
+	 * Return the value of the `message` field, corresponding to the text
 	 * displayed as content of the subwindow.
 	 */
 	const std::string& GetMessage();

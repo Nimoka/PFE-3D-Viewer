@@ -64,21 +64,21 @@ public:
 	/**
 	 * \brief Getter of `nbShaders`
 	 * 
-	 * Return the value of the `nbShaders` attribute, corresponding to the
-	 * number of pairs of shaders whose content is displayed.
+	 * Return the value of the `nbShaders` field, corresponding to the number of
+	 * pairs of shaders whose content is displayed.
 	 * 
-	 * \return Value of the `nbShaders` attribute.
+	 * \return Value of the `nbShaders` field.
 	 */
 	unsigned char GetNbShaders();
 	/**
 	 * \brief Getter of `nbShaders`
 	 * 
-	 * Return the value of the `shaders` attribute, corresponding to an array
-	 * of pointer of pairs of shaders (directly to the `ShadersReader` objects)
+	 * Return the value of the `shaders` field, corresponding to an array of
+	 * pointer of pairs of shaders (directly to the `ShadersReader` objects)
 	 * whose content is displayed.
 	 * The size of the array can be accessed with `GetNbShaders()`.
 	 * 
-	 * \return Value of the `nbShaders` attribute.
+	 * \return Value of the `nbShaders` field.
 	 */
 	ShadersReader** GetShaders();
 

@@ -58,7 +58,7 @@ public:
 	/**
 	 * \brief Getter of `readyToDie`.
 	 * 
-	 * Return the value of the `readyToDie` attribute.
+	 * Return the value of the `readyToDie` field.
 	 * 
 	 * \return Module is ready to die (`true`) or not (`false`)
 	 */
@@ -67,38 +67,38 @@ public:
 	/**
 	 * \brief Getter of `id`.
 	 * 
-	 * Return the value of the `id` attribute, corresponding to the ID of the
+	 * Return the value of the `id` field, corresponding to the ID of the
 	 * subwindow created by the module.
 	 * 
-	 * \return Value of the `id` attribute.
+	 * \return Value of the `id` field.
 	 */
 	unsigned int GetID();
 	/**
 	 * \brief Getter of `title`.
 	 * 
-	 * Return the value of the `title` attribute, corresponding to the title of
-	 * the subwindow created by the module.
+	 * Return the value of the `title` field, corresponding to the title of the
+	 * subwindow created by the module.
 	 * 
-	 * \return Value of the `title` attribute.
+	 * \return Value of the `title` field.
 	 */
 	const std::string& GetTitle();
 	/**
 	 * \brief Getter of `context`.
 	 * 
-	 * Return the value of the `context` attribute, a pointer corresponding to
-	 * the application context that is using this module.
+	 * Return the value of the `context` field, a pointer corresponding to the
+	 * application context that is using this module.
 	 * 
-	 * \return Value of the `context` attribute.
+	 * \return Value of the `context` field.
 	 */
 	void* GetContext();
 
 	/**
 	 * \brief Setter of `title`.
 	 * 
-	 * Set a new value for the `title` attribute, corresponding to the title of
-	 * the subwindow created by the module.
+	 * Set a new value for the `title` field, corresponding to the title of the
+	 * subwindow created by the module.
 	 * 
-	 * \param value New value for the `title` attribute.
+	 * \param value New value for the `title` field.
 	 */
 	void SetTitle(const std::string& value);
 

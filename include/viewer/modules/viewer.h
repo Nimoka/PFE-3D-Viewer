@@ -53,9 +53,9 @@ public:
 	 * \brief Getter of `mesh`.
 	 * 
 	 * Return the pointer to the mesh rendered by `renderer` if any.
-	 * Return `nullptr` if either the `renderer` attribute, if the `scene`
-	 * attribute of `renderer` or the `mesh` attribute of the `scene` of the
-	 * `renderer` is `nullptr`.
+	 * Return `nullptr` if either the `renderer` field, if the `scene` field of
+	 * `renderer` or the `mesh` field of the `scene` of the `renderer` is
+	 * `nullptr`.
 	 * 
 	 * \return Value returned by the getter of `mesh` of the renderer.
 	 */
@@ -63,10 +63,10 @@ public:
 	/**
 	 * \brief Getter of `renderer`.
 	 * 
-	 * Return the value of the `renderer` attribute, a pointer corresponding to
-	 * the renderer whose result is displayed.
+	 * Return the value of the `renderer` field, a pointer corresponding to the
+	 * renderer whose result is displayed.
 	 * 
-	 * \return Value of the `renderer` attribute.
+	 * \return Value of the `renderer` field.
 	 */
 	Renderer* GetRenderer();
 

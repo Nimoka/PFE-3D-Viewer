@@ -60,17 +60,17 @@ public:
 	/**
 	 * \brief Getter of `mesh`.
 	 * 
-	 * Return the value of the `mesh` attribute, a pointer corresponding to the
-	 * mesh whose content is displayed.
+	 * Return the value of the `mesh` field, a pointer corresponding to the mesh
+	 * whose content is displayed.
 	 * 
-	 * \return Value of the `mesh` attribute.
+	 * \return Value of the `mesh` field.
 	 */
 	Mesh* GetMesh();
 	/**
 	 * \brief Getter of `filename`.
 	 * 
-	 * Return the value of the `filename` attribute, corresponding to the
-	 * filename of the mesh as it was passed during construction.
+	 * Return the value of the `filename` field, corresponding to the filename
+	 * of the mesh as it was passed during construction.
 	 */
 	const std::string& GetFilename();
 
