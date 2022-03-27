@@ -13,9 +13,10 @@ FileWithExtension::FileWithExtension(std::string extension,
 
 	func_ = [extension, capitalized](std::string &input) {
 		std::string newExtension = "." + extension;
-		// TRICKY: If there's a difference between the extension and the end of
-		// the file, compare will return a number greater than 0, which is seen
-		// as the boolean true, while 0 is seen as the boolean false
+		// TRICKY: If there's a difference between the current file's extension
+		// and the file extension to check for, compare will return a number
+		// greater than 0, which is seen as the boolean true, while 0 is seen
+		// as the boolean false
 		if (input.compare(input.length() - newExtension.length(),
 				newExtension.length(), newExtension)) {
 			return "The file '" + input + "' is not a " + capitalized
