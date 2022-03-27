@@ -43,7 +43,7 @@ for file in glob.glob(plyFilePath + '*.ply'):
             fpsFile = open(csvFilePath, 'a')
             if filecount ==0:
                 pass
-            elif filecount%fileNb ==0 :
+            elif filecount% len(pointLights) ==0 :
                 fpsFile.write('\n')
             else:
                 fpsFile.write(', ')
