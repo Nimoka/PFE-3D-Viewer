@@ -6,7 +6,7 @@
 #include "filewithextension.h"
 
 /**
- * @brief Class handling everything related to command line argument parsing.
+ * @brief Handles everything related to command line argument parsing.
  * 
  * This class compounds all actions related to command line argument parsing,
  * including the validity of said arguments, by being a bridge with the `CLI11`

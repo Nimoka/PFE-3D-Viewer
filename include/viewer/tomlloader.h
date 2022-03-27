@@ -4,7 +4,7 @@
 #include <toml.hpp>
 
 /**
- * @brief Class handling everything related to TOML config file parsing.
+ * @brief Handles everything related to TOML config file parsing.
  * 
  * This class compounds all actions related to TOML config file parsing,
  * including the validity of the file's contents, by being a bridge with the
