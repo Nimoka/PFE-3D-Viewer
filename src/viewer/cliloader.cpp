@@ -17,7 +17,7 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	bool benchmarkMode = false, noBenchmarkMode = false, debugMode = false,
 			noDebugMode = false, darkMode = false, lightMode = false,
 			simpleShadingMode = false, forwardShadingMode = false,
-			deferredShadingMode = false, forceUnsortedMeshMode = false;
+			forceUnsortedMeshMode = false;
 
 	/* Set CLI options */
 
@@ -39,15 +39,8 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	CLI::Option *forwardShading = app.add_flag("--fs, --forward",
 			forwardShadingMode,
 			"Run the program with forward shading");
-	// CLI::Option *deferredShading = app.add_flag("--ds, --deferred",
-	// 		deferredShadingMode,
-	// 		"Run the program with deferred shading");
 	simpleShading->excludes(forwardShading);
-	// simpleShading->excludes(deferredShading);
 	forwardShading->excludes(simpleShading);
-	// forwardShading->excludes(deferredShading);
-	// deferredShading->excludes(simpleShading);
-	// deferredShading->excludes(forwardShading);
 
 	CLI::Option *forceUnsortedMesh = app.add_flag("--fu, --force-unsorted",
 			forceUnsortedMeshMode,
@@ -120,10 +113,6 @@ int CLILoader::LoadContext(void *c, int argc, char **argv) {
 	// Set forward shading
 	if (forwardShadingMode)
 		context->SetForwardShading();
-
-	// Set deferred shading
-	// if (deferredShadingMode)
-	// 	context->SetDeferredShading();
 
 	// Force unsorted mesh
 	if (forceUnsortedMeshMode)
