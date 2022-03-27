@@ -263,6 +263,8 @@ void ShadersReader::Clean() {
 std::string ShadersReader::GetFileContent(const std::string& path) {
 	std::string content = LoadTextFile(path);
 
+	bool defineMaterialID = true;
+
 	// Prepare materials
 	std::vector<std::string> materialsCalls;
 	unsigned char nbMaterials = 0;
@@ -342,8 +344,11 @@ std::string ShadersReader::GetFileContent(const std::string& path) {
 					newContent += this->PrepareMaterialCallArgument(
 							argument, materialsCalls[0]);
 				} else {
-					newContent += "uint material = uint(texelFetch("
-							"face_material, gl_PrimitiveID).r);\n";
+					if (defineMaterialID) {
+						newContent += "uint material = uint(texelFetch("
+								"face_material, gl_PrimitiveID).r);\n";
+						defineMaterialID = false;
+					}
 					for (unsigned char i = 0; i < nbMaterials; i++) {
 						newContent += "if (material == "
 								+ std::to_string((unsigned int)
