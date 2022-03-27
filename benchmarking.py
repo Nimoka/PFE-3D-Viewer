@@ -17,7 +17,7 @@ plyFilePath = './data/models/'
 fileNb = len(glob.glob(plyFilePath + '*.ply'))
 pointLights = [x*50 for x in range(1,6)]
 
-def load_subProcess(args, file):  
+def load_subProcess(args, file):
     if platform == "win32":
         proc = sub.Popen("./build/3DViewer -b " + args +" -i " + file)
     else:
@@ -28,9 +28,13 @@ def load_subProcess(args, file):
 if((len(sys.argv))>1):
     for arg in sys.argv[1:]:
         args += arg+ " "
+        
+if (not os.path.exists("./out/")):
+    os.mkdir("./out/")
 
 if os.path.exists(csvFilePath):
     os.remove(csvFilePath)
+
 
 
 
