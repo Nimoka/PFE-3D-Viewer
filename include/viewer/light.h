@@ -47,11 +47,9 @@ public:
 	Eigen::Vector3f GetPosition();
 
 	void SetPosition(const Eigen::Vector3f& position);
-	void SetIntensity(const Eigen::Vector3f &intensity);
 
 private:
 	Eigen::Vector3f position;
-	Eigen::Vector3f intensity;
 };
 
 #endif // LIGHT_H

@@ -44,7 +44,6 @@ PointLight::PointLight(const Eigen::Vector3f& intensity,
 		const Eigen::Vector3f& position)
 		: Light(intensity) {
 	this->SetPosition(position);
-	this->SetIntensity(intensity);
 }
 
 PointLight::PointLight(PointLight* light)
@@ -60,8 +59,4 @@ Eigen::Vector3f PointLight::GetPosition() {
 
 void PointLight::SetPosition(const Eigen::Vector3f& position) {
 	this->position = position;
-}
-
-void PointLight::SetIntensity(const Eigen::Vector3f& intensity) {
-	this->intensity = intensity;
 }
