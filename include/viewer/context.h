@@ -43,6 +43,7 @@ public:
 	~Context();
 
 	void Launch();
+	void LaunchBenchmark();
 
 	/* Initialization */
 	int Init();

@@ -91,16 +91,6 @@ int main(int argc, char** argv) {
 	context = new Context(glslVersion);
 	context->Init();
 
-	/* Set GLFW callback functions */
-
-	{
-		GLFWwindow* window = context->GetWindow();
-		glfwSetKeyCallback(window, ProcessKeyboardInput);
-		glfwSetCursorPosCallback(window, ProcessMouseMovement);
-		glfwSetMouseButtonCallback(window, ProcessMouseButton);
-		glfwSetScrollCallback(window, ProcessMouseScroll);
-	}
-
 	/* Load context from CLI and configuration files */
 
 	{
@@ -111,7 +101,21 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	context->Launch();
+	if (context->GetBenchmarkMode()) {
+		context->LaunchBenchmark();
+	} else {
+		/* Set GLFW callback functions */
+
+		GLFWwindow* window = context->GetWindow();
+		glfwSetKeyCallback(window, ProcessKeyboardInput);
+		glfwSetCursorPosCallback(window, ProcessMouseMovement);
+		glfwSetMouseButtonCallback(window, ProcessMouseButton);
+		glfwSetScrollCallback(window, ProcessMouseScroll);
+
+		/* Launch the main loop */
+
+		context->Launch();
+	}
 
 	CleanupEverything();
 

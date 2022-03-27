@@ -45,30 +45,12 @@ Context::~Context() {
 }
 
 void Context::Launch() {
-	if(this->benchmarkMode){
-		glfwSwapInterval(0);
-	}	
-	float beginTime = static_cast<float>(glfwGetTime());
-	
-	
-	int windowWidth, windowHeight;	
+	int windowWidth, windowHeight;
 	while (!glfwWindowShouldClose(window) && !this->readyToDie) {
-		this->frameCount ++;
 		/* Poll latest events */
+
 		glfwPollEvents();
 
-		/*Write the FPS to csv for benchmarking*/
-		float currentTime =  static_cast<float>(glfwGetTime());
-		float deltaTime   = currentTime - beginTime;
-		if(this->benchmarkMode && deltaTime >10){
-			std::fstream fpsFile;	
-			fpsFile.open("./out/fps.csv", std::ios::app);
-			fpsFile << this->frameCount / deltaTime;			
-			fpsFile.close();
-			this->readyToDie = true;
-		}
-					
-		
 		/* Start new ImGui frame */
 
 		ImGui_ImplOpenGL3_NewFrame();
@@ -94,6 +76,66 @@ void Context::Launch() {
 		/* Swap frame buffers */
 
 		glfwSwapBuffers(window);
+
+		this->frameCount++;
+	}
+}
+
+void Context::LaunchBenchmark() {
+	glfwSwapInterval(0);
+	float beginTime = static_cast<float>(glfwGetTime());
+
+	int windowWidth, windowHeight;
+
+	while (!glfwWindowShouldClose(window) && !this->readyToDie) {
+		/* Poll latest events */
+
+		glfwPollEvents();
+
+		/* Animate the scene */
+
+		this->viewer->GetRenderer()->GetScene()->GetCamera()
+				->MoveCameraPolar(Eigen::Vector2f(.02, 0));
+
+		/* Start new ImGui frame */
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		/* Render the mesh */
+
+		this->viewer->Render();
+
+		/* Render ImGui frame */
+
+		ImGui::Render();
+		glfwGetFramebufferSize(this->window, &windowWidth, &windowHeight);
+		glViewport(0, 0, windowWidth, windowHeight);
+		glClearColor(this->windowClearColor.x * this->windowClearColor.w,
+				this->windowClearColor.y * this->windowClearColor.w,
+				this->windowClearColor.z * this->windowClearColor.w,
+				this->windowClearColor.w);
+		glClear(GL_COLOR_BUFFER_BIT);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		/* Swap frame buffers */
+
+		glfwSwapBuffers(window);
+
+		this->frameCount++;
+
+		/* Write the FPS to CSV for benchmarking */
+
+		float currentTime = static_cast<float>(glfwGetTime());
+		float deltaTime = currentTime - beginTime;
+		if (deltaTime > 10) {
+			std::fstream fpsFile;
+			fpsFile.open("out/fps.csv", std::ios::app);
+			fpsFile << this->frameCount / deltaTime;
+			fpsFile.close();
+			this->readyToDie = true;
+		}
 	}
 }
 
