@@ -291,7 +291,7 @@ public:
 	 * This array lists the material ID of each of the mesh's faces, if any
 	 * material was found during load time. 
 	 */
-	unsigned int* facesMaterials = nullptr;
+	unsigned char* facesMaterials = nullptr;
 
 	/**
 	 * @brief Number of vertices of the mesh.
