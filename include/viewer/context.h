@@ -58,7 +58,6 @@ public:
 	void ResetDefaultMaterialsPaths();
 	void SetSimpleShading();
 	void SetForwardShading();
-	// void SetDeferredShading();
 	void ToggleDarkMode();
 	void ToggleDebugMode();
 	void Quit();
