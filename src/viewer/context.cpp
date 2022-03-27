@@ -226,12 +226,12 @@ int Context::LoadOptions(int argc, char** argv) {
 	if (res)
 		return res;
 
-	//Update number of point light
-	if(this->benchmarkMode && nbPointLight>DEFAULT_NB_POINT_LIGHT){
-		for(int i =1; i<this->nbPointLight;i++){
+	// Update number of point light
+	if (this->benchmarkMode && (nbPointLight > DEFAULT_NB_POINT_LIGHT)) {
+		for (int i = 1; i < this->nbPointLight; i++){
 			this->scene->AddRandomPointLight(
-				new PointLight(Eigen::Vector3f(1.0f, 1.0f, 1.0f),
-				Eigen::Vector3f(1.0f,1.0f,1.0f)));
+					new PointLight(Eigen::Vector3f(1.f, 1.f, 1.f),
+							Eigen::Vector3f(1.f, 1.f, 1.f)));
 		}
 	}
 
