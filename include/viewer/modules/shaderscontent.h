@@ -28,9 +28,11 @@ public:
 	 *      `ShadersReader` objects). Some of data displayed are directly
 	 *      accessed from theseobjects, so they must be alive while this module
 	 *      is rendered.
+	 * \param firstMaterial ID of the first material (default: `0`).
 	 */
 	ShadersContentModule(void* context,
-			unsigned char nbShaders, ShadersReader** shaders);
+			unsigned char nbShaders, ShadersReader** shaders,
+			unsigned char firstMaterial = 0);
 	/**
 	 * \brief Constructor by duplication.
 	 * 
@@ -74,6 +76,16 @@ public:
 	 * \return Value of the `nbShaders` field.
 	 */
 	ShadersReader** GetShaders();
+	/**
+	 * \brief Getter of `firstMaterial`
+	 * 
+	 * Return the value of the `firstMaterial` field, corresponding to the ID of
+	 * the first material, used to tell for which material is used a pair of
+	 * shaders.
+	 * 
+	 * \return Value of the `firstMaterial` field.
+	 */
+	unsigned char GetFirstMaterial();
 
 	/**
 	 * \brief Setter of `shaders`
@@ -89,8 +101,10 @@ public:
 	 *      `ShadersReader` objects). Some of data displayed are directly
 	 *      accessed from theseobjects, so they must be alive while this module
 	 *      is rendered.
+	 * \param firstMaterial ID of the first material (default: `0`).
 	 */
-	void SetShaders(unsigned char nbShaders, ShadersReader** shaders);
+	void SetShaders(unsigned char nbShaders, ShadersReader** shaders,
+			unsigned char firstMaterial = 0);
 
 private:
 	/**
@@ -117,6 +131,13 @@ private:
 	 * Its size must not be less than `nbShaders` value.
 	 */
 	ShadersReader** shaders = nullptr;
+	/**
+	 * \brief ID of the first material.
+	 * 
+	 * ID of the first material, used to tell for which material is used a pair
+	 * of shaders.
+	 */
+	unsigned char firstMaterial = 0;
 };
 
 #endif // MODULES_SHADERSCONTENT_H

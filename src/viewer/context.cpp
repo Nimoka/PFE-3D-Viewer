@@ -305,8 +305,16 @@ void Context::SwitchRenderer() {
 		renderer = new T(renderer);
 	this->viewer->SetRenderer(renderer);
 	if (this->shadersContent != nullptr) {
+		unsigned char nbMaterials = 0;
+		Scene* scene = renderer->GetScene();
+		if (scene != nullptr) {
+			Mesh* mesh = scene->GetMesh();
+			if (mesh != nullptr)
+				nbMaterials = mesh->GetMaterialsRange().min()[0];
+		}
+
 		this->shadersContent->SetShaders(
-				renderer->GetNbShaders(), renderer->GetShaders());
+				renderer->GetNbShaders(), renderer->GetShaders(), nbMaterials);
 	}
 }
 
@@ -336,9 +344,19 @@ void Context::ToggleMeshContentModule() {
 void Context::ToggleShadersContentModule() {
 	if (this->shadersContent == nullptr) {
 		Renderer* renderer = this->viewer->GetRenderer();
+		if (renderer == nullptr)
+			return;
+
+		unsigned char nbMaterials = 0;
+		Scene* scene = renderer->GetScene();
+		if (scene != nullptr) {
+			Mesh* mesh = scene->GetMesh();
+			if (mesh != nullptr)
+				nbMaterials = mesh->GetMaterialsRange().min()[0];
+		}
+
 		this->shadersContent = new ShadersContentModule(this,
-				renderer->GetNbShaders(),
-				renderer->GetShaders());
+				renderer->GetNbShaders(), renderer->GetShaders(), nbMaterials);
 		this->AddModule(this->shadersContent);
 	} else {
 		this->shadersContent->Kill();
@@ -681,9 +699,18 @@ void Context::RenderMenuBar() {
 							(!renderingPerMaterial))) {
 						renderer->SetRenderingPerMaterial(false);
 						if (this->shadersContent != nullptr) {
+							unsigned char nbMaterials = 0;
+								Scene* scene = renderer->GetScene();
+								if (scene != nullptr) {
+									Mesh* mesh = scene->GetMesh();
+									if (mesh != nullptr)
+										nbMaterials = mesh
+												->GetMaterialsRange().min()[0];
+								}
+
 							this->shadersContent->SetShaders(
 									renderer->GetNbShaders(),
-									renderer->GetShaders());
+									renderer->GetShaders(), nbMaterials);
 						}
 					} else if (ImGui::MenuItem("Per-material shading", "",
 							renderingPerMaterial,
@@ -692,9 +719,18 @@ void Context::RenderMenuBar() {
 									: !this->forceUnsortedMeshMode))) {
 						renderer->SetRenderingPerMaterial(true);
 						if (this->shadersContent != nullptr) {
+							unsigned char nbMaterials = 0;
+								Scene* scene = renderer->GetScene();
+								if (scene != nullptr) {
+									Mesh* mesh = scene->GetMesh();
+									if (mesh != nullptr)
+										nbMaterials = mesh
+												->GetMaterialsRange().min()[0];
+								}
+
 							this->shadersContent->SetShaders(
 									renderer->GetNbShaders(),
-									renderer->GetShaders());
+									renderer->GetShaders(), nbMaterials);
 						}
 					}
 					ImGui::EndMenu();

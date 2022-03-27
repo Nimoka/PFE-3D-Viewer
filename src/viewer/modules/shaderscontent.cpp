@@ -1,16 +1,18 @@
 #include "modules/shaderscontent.h"
 
 ShadersContentModule::ShadersContentModule(void* context,
-		unsigned char nbShaders, ShadersReader** shaders)
+		unsigned char nbShaders, ShadersReader** shaders,
+		unsigned char firstMaterial)
 		: GUIModule(context) {
 	this->title = "Shaders content";
-	this->SetShaders(nbShaders, shaders);
+	this->SetShaders(nbShaders, shaders, firstMaterial);
 }
 
 ShadersContentModule::ShadersContentModule(ShadersContentModule* module)
 		: GUIModule(module->GetContext()) {
 	this->title = module->GetTitle();
-	this->SetShaders(module->GetNbShaders(), module->GetShaders());
+	this->SetShaders(module->GetNbShaders(), module->GetShaders(),
+			module->GetFirstMaterial());
 }
 
 ShadersContentModule::~ShadersContentModule() {}
@@ -34,7 +36,8 @@ void ShadersContentModule::Render() {
 				ImGui::TextWrapped("  Fragment shader: %s",
 						currentShaders->GetFragmentShaderPath().c_str());
 				if (this->nbShaders > 1)
-					ImGui::Text("  Used for material: %u", ((unsigned int) i));
+					ImGui::Text("  Used for material: %u",
+							((unsigned int) this->firstMaterial + i));
 				ImGui::Separator();
 				if (currentShaders->AreLoaded()) {
 					if (ImGui::CollapsingHeader("Vertex shader source code")) {
@@ -65,14 +68,20 @@ ShadersReader** ShadersContentModule::GetShaders() {
 	return this->shaders;
 }
 
+unsigned char ShadersContentModule::GetFirstMaterial() {
+	return this->firstMaterial;
+}
+
 void ShadersContentModule::SetShaders(
-		unsigned char nbShaders, ShadersReader** shaders) {
+		unsigned char nbShaders, ShadersReader** shaders,
+		unsigned char firstMaterial) {
 	this->CleanShaders();
 
 	this->nbShaders = nbShaders;
 	this->shaders = (ShadersReader**) malloc(sizeof(void*) * nbShaders);
 	for (unsigned int i = 0; i < nbShaders; i++)
 		this->shaders[i] = shaders[i];
+	this->firstMaterial = firstMaterial;
 }
 
 void ShadersContentModule::CleanShaders() {
