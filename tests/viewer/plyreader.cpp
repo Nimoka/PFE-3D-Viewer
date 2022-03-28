@@ -41,9 +41,21 @@ int expectedVertices[36] = {
 		3, 4, 0,
 		7, 3, 2,
 		7, 2, 6 };
+int expectedVerticesOrdered[36] = {
+		1, 6, 2,
+		1, 5, 6,
+		6, 5, 7,
+		7, 5, 4,
+		3, 7, 4,
+		3, 4, 0,
+		0, 1, 2,
+		0, 2, 3,
+		7, 3, 2,
+		7, 2, 6,
+		5, 1, 0,
+		0, 4, 5 };
 int expectedMaterials[12] = {
-		1, 2, 3, 4, 5, 6,
-		6, 5, 4, 3, 2, 1 };
+		1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6 };
 
 static void TestRealFilePLYReaderCreation() {
 	std::string filepath = DATA_DIR "models/cube_rgbm.ply";
@@ -241,7 +253,7 @@ static void TestDifferentHeadersLoadingData() {
 			REQUIRE(mesh->verticesData[i / 3].color[i % 3] == expectedColors[i]);
 		REQUIRE(mesh->nbFaces == expectedNbFaces);
 		for (int i = 0; i < 32; i++)
-			REQUIRE(mesh->facesVertices[i] == expectedVertices[i]);
+			REQUIRE(mesh->facesVertices[i] == expectedVerticesOrdered[i]);
 		for (int i = 0; i < 12; i++)
 			REQUIRE(mesh->facesMaterials[i] == expectedMaterials[i]);
 
@@ -281,7 +293,7 @@ static void TestDifferentHeadersLoadingData() {
 			REQUIRE(mesh->verticesData[i / 3].position[i % 3] == expectedPositions[i]);
 		REQUIRE(mesh->nbFaces == expectedNbFaces);
 		for (int i = 0; i < 32; i++)
-			REQUIRE(mesh->facesVertices[i] == expectedVertices[i]);
+			REQUIRE(mesh->facesVertices[i] == expectedVerticesOrdered[i]);
 		for (int i = 0; i < 12; i++)
 			REQUIRE(mesh->facesMaterials[i] == expectedMaterials[i]);
 
