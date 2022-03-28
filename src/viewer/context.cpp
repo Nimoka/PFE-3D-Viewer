@@ -592,14 +592,16 @@ void Context::SetMesh(Mesh* mesh) {
 			this->viewer = new ViewerModule(this);
 		this->viewer->GetRenderer()->SetScene(this->scene);
 	}
+	this->scene->SetMesh(mesh);
 	if (this->viewer != nullptr) {
 		Renderer* renderer = this->viewer->GetRenderer();
 		if (renderer != nullptr) {
 			if (renderer->IsRenderingPerMaterial() && (!mesh->IsSorted()))
 				renderer->SetRenderingPerMaterial(false);
+			else
+				renderer->InitShaders();
 		}
 	}
-	this->scene->SetMesh(mesh);
 }
 
 void Context::SetWindowTitle(std::string title) {
