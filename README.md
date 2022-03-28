@@ -13,6 +13,7 @@ The project consists on three programs:
 
 - [Dependencies](#dependencies)
 - [Usage](#usage)
+	- [Clone the project](#clone-the-project)
 	- [Install dependencies](#install-dependencies)
 	- [Compilation](#compilation)
 	- [Launch the viewer](#launch-the-viewer)
@@ -36,6 +37,15 @@ This is a list of dependencies used in this project that you can install by your
 - `doxygen` (for documentation generation)
 
 ## Usage
+
+### Clone the project
+
+- **On Linux/macOS:**
+	- Run the command:
+		```
+		git clone https://github.com/Nimoka/PFE-3D-Viewer.git --recursive
+		```
+		(Some folders are submodules, they will be cloned as well with `--recursive`.)
 
 ### Install dependencies
 
