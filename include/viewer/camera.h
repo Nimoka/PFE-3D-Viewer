@@ -1,7 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#define MAX_PITCH 89.0
 /* ************************************************************
  * A part of this class (and his implementation) come from    *
  * files `trackball.h`, `trackball.cpp`, `camera.h` and       *
@@ -12,79 +11,78 @@
  * trackball: Copyright 2015 Simon Boyé.                      *
  ************************************************************ */
 
-
-
 #include <Eigen/Geometry>
 
+#define MAX_PITCH 89.0
+
 /**
- * @brief the orthographic projection matrix of camera
+ * @brief Orthographic projection matrix.
  *
- * @param l left, Number farthest left on the x-axis
- * @param r right, Number Farthest right on the x-axis
- * @param b bottom, Number Farthest down on the y-axis
- * @param t top, Number Farthest up on the y-axis
- * @param n near, Number distance to the near clipping plane along the -z axis
- * @param f far, Number distance to the far clipping plane along the -z axis
- * @return Eigen::Matrix4f, the orthographic transformation matrix
+ * @param l Left, number farthest left on the x-axis.
+ * @param r Right, number farthest right on the x-axis.
+ * @param b Bottom, number farthest down on the y-axis.
+ * @param t Top, number Farthest up on the y-axis.
+ * @param n Near, number distance to the near clipping plane along the -z axis.
+ * @param f Far, number distance to the far clipping plane along the -z axis.
+ * @return Orthographic transformation matrix.
  */
 Eigen::Matrix4f OrthographicProjection(float l, float r, float b, float t,
 		float n, float f);
 
 /**
- * @brief the perspective projection matrix of camera
+ * @brief Perspective projection matrix.
  *
- * @param l left, Number farthest left on the x-axis
- * @param r right, Number Farthest right on the x-axis
- * @param b bottom, Number Farthest down on the y-axis
- * @param t top, Number Farthest up on the y-axis
- * @param n near, Number distance to the near clipping plane along the -z axis
- * @param f far, Number distance to the far clipping plane along the -z axis
- * @return Eigen::Matrix4f, the perspective transformation matrix
+ * @param l Left, number farthest left on the x-axis.
+ * @param r Right, number farthest right on the x-axis.
+ * @param b Bottom, number farthest down on the y-axis.
+ * @param t Top, number farthest up on the y-axis.
+ * @param n Near, number distance to the near clipping plane along the -z axis.
+ * @param f Far, number distance to the far clipping plane along the -z axis.
+ * @return Perspective transformation matrix.
  */
 Eigen::Matrix4f PerspectiveProjection(float l, float r, float b, float t,
 		float n, float f);
 
 /**
- * @brief the perspective matrix of camera (for first person navigation)
+ * @brief Perspective matrix (for first person navigation).
  *
- * @param fovy the fovy of camera
- * @param aspect the aspect of camera
- * @param zNear the near of camera
- * @param zFar  the far of camera
- * @return Eigen::Matrix4f the perspective matrix
+ * @param fovy Fovy of camera.
+ * @param aspect Aspect of camera.
+ * @param zNear Near of camera.
+ * @param zFar Far of camera.
+ * @return Eigen::Matrix4f the perspective matrix.
  */
 static Eigen::Matrix4f Perspective(float fovy, float aspect,
 		float zNear, float zFar);
 
 /**
- * @brief the camera view
+ * @brief Camera view.
  *
- * @param position the position of camera
- * @param target the position of target
- * @param up the angle of up of camera
- * @return Eigen::Matrix4f the view matrix
+ * @param position Position of camera.
+ * @param target Position of target.
+ * @param up Angle of up of camera.
+ * @return View matrix pointing to the target.
  */
 static Eigen::Matrix4f LookAt(const Eigen::Vector3f& position,
 		const Eigen::Vector3f& target, const Eigen::Vector3f& up);
 
 /**
- * @brief computer the cartesian form polar
+ * @brief Get cartesian coordinates from polar coordinates
  *
- * @param coordinates  the coordinate
- * @param center  the center
- * @param distance  the distance
- * @return Eigen::Vector3f
+ * @param coordinates Polar coordinate on the sphere.
+ * @param center Center of the sphere.
+ * @param distance Radius of the sphere.
+ * @return Cartesian coordinates.
  */
 Eigen::Vector3f PolarToCartesian(Eigen::Vector2f coordinates,
 		Eigen::Vector3f center, float distance);
 
 /**
- * \brief camera class.
+ * \brief Camera class.
  *
  * Reprensent a camera in the 3D world.
  * Should be able to move in the scene around the objects.
  */
-
 class Camera
 {
 public:
@@ -98,270 +96,256 @@ public:
 	/**
 	 * @brief Move camera in trackball mode.
 	 *
-	 * @param corrdinates. the coordinate on the trackball.
-	 *
+	 * @param coordinates Coordinate on the trackball.
 	 */
 	void MoveCameraPolar(Eigen::Vector2f coordinates);
 
 	/**
 	 * @brief Zoom camera in trackball mode.
 	 *
-	 * @param intensity. change the intensity to zoom the camera.
+	 * @param intensity Change the intensity to zoom the camera.
 	 */
 	void ZoomCameraPolar(float intensity);
 
 	/**
-	 * @brief compute the view matrix in trackball mode
+	 * @brief Compute the view matrix in trackball mode.
 	 *
-	 * @return Eigen::Matrix4f the 4 * 4 matrix of view
+	 * @return View matrix.
 	 */
 	Eigen::Matrix4f ComputeViewMatrix() const;
 
 	/**
-	 * @brief compute the view matrix in first person mode
+	 * @brief Compute the view matrix in first person mode.
 	 *
-	 * @return Eigen::Matrix4f the 4 * 4 matrix of view
+	 * @return View matrix of free mode…
 	 */
 	Eigen::Matrix4f Compute3DViewMatrix() const;
 
 	/**
-	 * @brief compute the projection matrix in the 3d scene
+	 * @brief Compute the projection matrix in the 3D scene.
 	 *
-	 * @return Eigen::Matrix4f  the 4*4 projection matrix
+	 * @return Projection matrix.
 	 */
 	Eigen::Matrix4f ComputeProjectionMatrix() const;
 
 	/**
-	 * @brief Get the minimum screen viewport size
+	 * @brief Get the minimum screen viewport size.
 	 *
-	 * @return float, value of the size
+	 * @return Minimum screen viewport size
 	 */
 	float MinScreenViewportSize() const;
 
 	/**
-	 * @brief check if the camera is orthographic
+	 * @brief Check if the camera is orthographic.
 	 *
-	 * @return true , the camera is orthographic
-	 * @return false , the camera is perspective
+	 * @return Either if the camera is orthographic (`true`) or orthographic
+	 *      (`false`).
 	 */
 	bool IsOrthographic() const;
 
 	/**
-	 * @brief check if the camera is perspective
+	 * @brief Check if the camera is perspective.
 	 *
-	 * @return true, the camera is perspective
-	 * @return false, the camera is orthographic
+	 * @return Either if the camera is perspective (`true`) or orthographic
+	 *      (`false`).
 	 */
 	bool IsPerspective() const;
 
 	/**
-	 * @brief Get the scene radius
+	 * @brief Get the scene radius.
 	 *
-	 * @return float, the value of radius
+	 * @return Scene radius.
 	 */
 	float GetSceneRadius() const;
 
 	/**
-	 * @brief Get the yaw of camera
+	 * @brief Get the yaw of camera.
 	 *
-	 * @return float, the value of yaw
+	 * @return Yaw value.
 	 */
 	float GetYaw() const;
 
 	/**
-	 * @brief Get the pitch of camera
+	 * @brief Get the pitch of camera.
 	 *
-	 * @return float, the value of pitch
+	 * @return Pitch value.
 	 */
 	float GetPitch() const;
 
 	/**
-	 * @brief Get the last x coordinate of mouse
+	 * @brief Get the last X coordinate of mouse.
 	 *
-	 * @return float, the last x value
+	 * @return Last X value.
 	 */
 	float GetLastX() const;
 
 	/**
-	 * @brief Get the last y  coordinate of mouse
+	 * @brief Get the last Y coordinate of mouse.
 	 *
-	 * @return float, the last y value
+	 * @return Last Y value.
 	 */
 	float GetLastY() const;
 
 	/**
-	 * @brief Set the last x coordinate of mouse
+	 * @brief Set the last X coordinate of mouse.
 	 *
-	 * @param positionX , the last x coordinate
+	 * @param positionX Last X coordinate.
 	 */
 	void SetLastX(float positionX);
 
 	/**
-	 * @brief Set last y  coordinate of mouse
+	 * @brief Set last Y coordinate of mouse.
 	 *
-	 * @param positionY, the last y coordinate
+	 * @param positionY Last Y coordinate.
 	 */
 	void SetLastY(float positionY);
 
 	/**
-	 * @brief change the yaw of camera
+	 * @brief Change the yaw of camera.
 	 *
-	 * @param degree, the degree to change
+	 * @param degree Degree to change.
 	 */
 	void MoveYaw(float degree);
 
 	/**
-	 * @brief change the pitch of camera
+	 * @brief Change the pitch of camera.
 	 *
-	 * @param degree, the degree to change
+	 * @param degree Degree to change.
 	 */
 	void MovePitch(float degree);
 
 	/**
-	 * @brief Set the scene center
+	 * @brief Set the scene center.
 	 *
-	 * @param sceneCenter, the center position of scene
+	 * @param sceneCenter Center position of scene.
 	 */
 	void SetSceneCenter(const Eigen::Vector3f& sceneCenter);
 
 	/**
-	 * @brief Set the distance of the scene
+	 * @brief Set the distance of the scene.
 	 *
-	 * @param sceneDistance, the value of distance
+	 * @param sceneDistance Value of scene distance.
 	 */
 	void SetSceneDistance(float sceneDistance);
 
 	/**
-	 * @brief Set the scene radius
+	 * @brief Set the scene radius.
 	 *
-	 * @param sceneRadius, the value of radius
+	 * @param sceneRadius Value of scene radius.
 	 */
 	void SetSceneRadius(float sceneRadius);
 
 	/**
-	 * @brief Set the screen viewport
+	 * @brief Set the screen viewport.
 	 *
-	 * @param screenViewport, the vector of viewport
+	 * @param screenViewport Vector of viewport.
 	 */
 	void SetScreenViewport(const Eigen::AlignedBox2f& screenViewport);
 
 	/**
-	 * @brief Set the min near of the camera
+	 * @brief Set the min near of the camera.
 	 *
-	 * @param minNear, the distance value
+	 * @param minNear Distance value.
 	 */
 	void SetMinNear(float minNear);
 
 	/**
-	 * @brief Set the near/far Offsets values
+	 * @brief Set the near/far offsets values.
 	 *
-	 * @param nearOffset, the value of nearoffset
-	 * @param farOffset, the value of far offset
+	 * @param nearOffset Value of near offset.
+	 * @param farOffset Value of far offset.
 	 */
 	void SetNearFarOffsets(float nearOffset, float farOffset);
 
 	/**
-	 * @brief navigation first person with movement up and down
-	 *
+	 * @brief Navigation first person with movement up and down.
 	 */
 	bool navigation3DUpDown = true;
 
 	/**
-	 * @brief the coordinate of camera in the scene 3D
-	 *
+	 * @brief Coordinate of camera in the scene 3D.
 	 */
 	Eigen::Vector3f camera3DCoordinates;
 
 	/**
-	 * @brief the coordinate of camera front
-	 *
+	 * @brief Coordinate of camera front.
 	 */
 	Eigen::Vector3f cameraFront;
 
 	/**
-	 * @brief the coordinate of camera up
-	 *
+	 * @brief Coordinate of camera up.
 	 */
 	Eigen::Vector3f up;
 private:
 	/**
-	 * @brief the coordinate of scenecenter
-	 *
+	 * @brief Coordinate of scene center.
 	 */
 	Eigen::Vector3f sceneCenter;
 
 	/**
-	 * @brief the value of scene disntance
-	 *
+	 * @brief Value of scene distance.
 	 */
 	float sceneDistance;
 
 	/**
-	 * @brief the value of scene orientation
-	 *
+	 * @brief Value of scene orientation.
 	 */
 	Eigen::Quaternionf sceneOrientation;
 
 	/**
-	 * @brief the value of scene radius
-	 *
+	 * @brief Value of scene radius.
 	 */
 	float sceneRadius;
 
 	/**
-	 * @brief the value of scenen view port
+	 * @brief Value of screen viewport.
 	 *
 	 */
 	Eigen::AlignedBox2f screenViewport;
 
 	/**
-	 * @brief the value of min near
-	 *
+	 * @brief Value of min near.
 	 */
 	float minNear;
 
 	/**
-	 * @brief the value of near offset
-	 * @brief the value of far offset
+	 * @brief Value of near offset.
 	 */
-	float nearOffset, farOffset;
+	float nearOffset;
+	/**
+	 * @brief Value of far offset.
+	 */
+	float farOffset;
 
 	/**
-	 * @brief the camera matrix
-	 *
+	 * @brief Camera matrix.
 	 */
 	Eigen::Matrix4f cameraMatrix;
 
 	/**
-	 * @brief the polar coordinates of camera
-	 *
-	 *
+	 * @brief Polar coordinates of camera.
 	 */
 	Eigen::Vector2f cameraPolarCoordinates;
 
 	/**
-	 * @brief the initial yaw value of camera
-	 *
+	 * @brief Yaw value of camera.
 	 */
 	float yaw   = -90.0f;
 
 	/**
-	 * @brief the initial pitch of camera
-	 *
+	 * @brief Pitch of camera.
 	 */
 	float pitch = 0.0f;
 
 	/**
-	 * @brief the initial last x of mouse
-	 *
+	 * @brief Last X of mouse.
 	 */
-	float lastX = 1280.0 / 2.0;
+	float lastX = 0.;
 
 	/**
-	 * @brief the initial last y of mouse
-	 *
+	 * @brief Last Y of mouse.
 	 */
-	float lastY = 800 / 2.0;
+	float lastY = 0.;
 	
 };
 
