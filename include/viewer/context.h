@@ -36,141 +36,144 @@
 #define PI_DEGREE				180.0
 
 /**
- * @brief Context class
- * Contains all the context necessary for rendering
+ * @brief Main class of the app
+ * 
+ * Core of the app, used to connect most of the app's modules and to hold data
+ * shared between them.
  */
 
 class Context
 {
 public:
 	/**
-	 * @brief Construct a new Context object
+	 * @brief Constructs a new Context object
 	 * 
-	 * @param glslVersion , the version of glsl
+	 * @param glslVersion Version of GLSL used by the project
 	 */
 	Context(std::string glslVersion);
 
 	/**
-	 * @brief Destroy the Context object
+	 * @brief Destroys the Context object
 	 * 
 	 */
 	~Context();
 
 	/**
-	 * @brief languch the rendering
+	 * @brief Initializes various `ImGui` modules used by the application.
 	 * 
 	 */
 	void Launch();
 
 	/**
-	 * @brief lauch in benchmarking mode
+	 * @brief Initializes the application in `benchmark` mode.
 	 * 
 	 */
 	void LaunchBenchmark();
 
 	/**
-	 * @brief initialize the rendering window
+	 * @brief Initializes the rendering window.
 	 * 
 	 */
-	/* Initialization */
 	int Init();
 
 	/**
-	 * @brief load the options passing by command line
+	 * @brief Loads the various options of the app.
 	 * 
-	 * @param argc number of arguments
-	 * @param argv vector of arguments
-	 * @return int value of return , 0 if success
+	 * Both command line arguments and the TOML config file.
+	 * 
+	 * @param argc Number of arguments.
+	 * @param argv List of arguments.
+	 * @return int Returns 0 if successful, an error code otherwise.
 	 */
 	int LoadOptions(int argc, char** argv);
 
 	/* Commands */
 
 	/**
-	 * @brief Create a open PLY file selection dialog
+	 * @brief Creates a open PLY file selection dialog.
 	 * 
 	 */
 	void CreateOpenPLYFileSelectionDialog();
 
 	/**
-	 * @brief Create a save ply file selection dialog
+	 * @brief Creates a save PLY file selection dialog.
 	 * 
 	 */
 	void CreateSavePLYFileSelectionDialog();
 
 	/**
-	 * @brief load ply file
+	 * @brief Loads a PLY file.
 	 * 
-	 * @param filepath the path of file
+	 * @param filepath Path to the file to load.
 	 */
 	void LoadPLYFile(std::string filepath);
 
 	/**
-	 * @brief move camera in trackball mode
+	 * @brief Moves the camera in trackball mode.
 	 * 
-	 * @param polarAngle value of polar angle
-	 * @param azimutalAngle value of azimutal angle
+	 * @param polarAngle Value of the polar angle.
+	 * @param azimutalAngle Value of the azimutal angle.
 	 */
 	void MoveCamera(float polarAngle, float azimutalAngle);
 
 	/**
-	 * @brief zoom the camera
+	 * @brief Zooms the camera in or out.
 	 * 
-	 * @param intensity value of intensity
+	 * @param intensity Zoom's intensity.
 	 */
 	void ZoomCamera(float intensity);
 
 	/**
-	 * @brief reload the shaders
+	 * @brief Reload the shaders.
 	 * 
 	 */
 	void ReloadShaders();
 
 	/**
-	 * @brief reset default materials paths
+	 * @brief Resets the list of paths to default materials.
 	 * 
 	 */
 	void ResetDefaultMaterialsPaths();
 
 	/**
-	 * @brief set the simple shading
+	 * @brief Sets the shading type as simple shading.
 	 * 
 	 */
 	void SetSimpleShading();
 
 	/**
-	 * @brief set the forward shading
+	 * @brief Sets the shading type as forward shading.
 	 * 
 	 */
 	void SetForwardShading();
 
 	/**
-	 * @brief set the dark mode
+	 * @brief Toggles dark mode on or off.
 	 * 
 	 */
 	void ToggleDarkMode();
 
 	/**
-	 * @brief set the debug mode in imgui
+	 * @brief Toggle's `ImGui`'s debug mode on or off.
 	 * 
 	 */
 	void ToggleDebugMode();
 
 	/**
-	 * @brief leave the rendering process
+	 * @brief Prepares for application exit.
 	 * 
 	 */
 	void Quit();
 
 	/**
-	 * @brief template class
+	 * @brief Template class.
 	 * 
 	 * @tparam T
 	 */
 	template<class T>
 
 	/**
-	 * @brief change to another renderer
+	 * @brief Switches the visualiser to another renderer.
 	 * 
 	 */
 	void SwitchRenderer();
@@ -178,25 +181,25 @@ public:
 	/* Debug commands */
 
 	/**
-	 * @brief load and show the ImGui demo module
+	 * @brief Toggles the ImGui demo module on or off.
 	 * 
 	 */
 	void ToggleImGuiDemoModule();
 
 	/**
-	 * @brief load and show the mesh content mudule
+	 * @brief Toggles the mesh content module on or off.
 	 * 
 	 */
 	void ToggleMeshContentModule();
 
 	/**
-	 * @brief load and show the shaders content module
+	 * @brief Toggles the shaders content module on or off.
 	 * 
 	 */
 	void ToggleShadersContentModule();
 
 	/**
-	 * @brief load and show the fps module
+	 * @brief Toggles the FPS module on or off.
 	 * 
 	 */
 	void ToggleImGuiFPSModule();
@@ -204,448 +207,449 @@ public:
 	/* Callbacks */
 
 	/**
-	 * @brief process the input key
+	 * @brief Processes all keyboard inputs.
 	 * 
-	 * @param key the key
-	 * @param scancode  the key code
-	 * @param action  the key action
-	 * @param mods the key mods
+	 * @param key Last key caught.
+	 * @param scancode Scan code of the last key caught.
+	 * @param action State of the key (pressed, released, held).
+	 * @param mods Whether Shift, Ctrl or Alt is pressed.
 	 */
 	void ProcessKeyboardInput(int key, int scancode, int action, int mods);
 
 	/**
-	 * @brief process the mouse movement
+	 * @brief Processes all mouse movements.
 	 * 
-	 * @param x x position
-	 * @param y y position
+	 * @param x Mouse's X position.
+	 * @param y Mouse's Y positio.
 	 */
 	void ProcessMouseMovement(double x, double y);
 
 	/**
-	 * @brief process the mouse button
+	 * @brief Processes all mouse clicks.
 	 * 
-	 * @param button which button
-	 * @param action button action
-	 * @param mods button mods
+	 * @param button Button which was pressed.
+	 * @param action State of the button (pressed, released, held).
+	 * @param mods Whether Shift, Ctrl or Alt is pressed.
 	 */
 	void ProcessMouseButton(int button, int action, int mods);
 
 	/**
-	 * @brief process mouse scroll
+	 * @brief Processes all mouse wheel scrolls.
 	 * 
-	 * @param x x change
-	 * @param y y change
+	 * @param x X scroll.
+	 * @param y Y scroll.
 	 */
 	void ProcessMouseScroll(double x, double y);
 
 	/**
-	 * @brief get the new module ID
+	 * @brief Get the new module ID.
 	 * 
-	 * @return int the value of ID
+	 * @return int New module ID.
 	 */
 	int GetNewModuleID();
 
 	/**
-	 * @brief ask for update
+	 * @brief Signals the class that it needs to update.
 	 * 
 	 */
 	void AskForUpdate();
 
 	/**
-	 * @brief add module
+	 * @brief Adds a module to the class.
 	 * 
-	 * @param module the module to be added
+	 * @param module Module to be added.
 	 */
 	void AddModule(GUIModule* module);
 
 	/* Getters & Setters */
 	/**
-	 * @brief Set the mesh
+	 * @brief Sets the mesh.
 	 * 
-	 * @param mesh the mesh to be set up
+	 * @param mesh Mesh to be set.
 	 */
 	void SetMesh(Mesh* mesh);
 
 
 	/**
-	 * @brief Set the window title
+	 * @brief Sets the window's title.
 	 * 
-	 * @param title the title in window
+	 * @param title Title of the window.
 	 */
 	void SetWindowTitle(std::string title);
 
 	/**
-	 * @brief Set the forced window title
+	 * @brief Sets the window's forced title.
 	 * 
-	 * @param title the title to be set up
+	 * @param title Title of the window.
 	 */
 	void SetForcedWindowTitle(std::string title);
 
 	/**
-	 * @brief Get the window title
+	 * @brief Gets the window's title.
 	 * 
-	 * @return std::string  the title
+	 * @return std::string The window's title.
 	 */
 	std::string GetWindowTitle();
 
 	/**
-	 * @brief Set the window size
+	 * @brief Sets the window's size.
 	 * 
-	 * @param width window width
-	 * @param height window height
+	 * @param width Window's new width.
+	 * @param height Window's new height.
 	 */
 	void SetWindowSize(int width, int height);
 
 	/**
-	 * @brief wet the window width
+	 * @brief Gets the window's width.
 	 * 
-	 * @return int window width value
+	 * @return int The window's width.
 	 */
 	int GetWindowWidth();
 
 	/**
-	 * @brief Get the window height
+	 * @brief Gets the window's height.
 	 * 
-	 * @return int window height value
+	 * @return int The window's height.
 	 */
 	int GetWindowHeight();
 
 	/**
-	 * @brief Set the point light number
+	 * @brief Sets the number of points lights in the scene.
 	 * 
-	 * @param nbPointLight the number of point light
+	 * @param nbPointLight Number of point lights.
 	 */
 	void SetPointLightNumber(int nbPointLight);
 
 	/**
-	 * @brief Get the point light number
+	 * @brief Gets the number of point lights in the scene.
 	 * 
-	 * @return int the number of point light
+	 * @return int The number of point lights.
 	 */
 	int GetPointLightNumber();
 
 	/**
-	 * @brief set the config file
+	 * @brief Sets the app's current TOML config file to load.
 	 * 
-	 * @param file the file to be set up
+	 * @param file Path to the config file to load.
 	 */
 	void SetConfigFile(std::string file);
 
 	/**
-	 * @brief Get the config file
+	 * @brief Gets the TOML config file's path.
 	 * 
-	 * @return std::string file name
+	 * @return std::string The path to the config file.
 	 */
 	std::string GetConfigFile();
 
 	/**
-	 * @brief Set the input file
+	 * @brief Sets the path to the PLY input file.
 	 * 
-	 * @param file the file name
+	 * @param file Path to the input file.
 	 */
 	void SetInputFile(std::string file);
 
 	/**
-	 * @brief Get the input file
+	 * @brief Gets the path to the PLY input file.
 	 * 
-	 * @return std::string file name
+	 * @return std::string The path to the input file.
 	 */
 	std::string GetInputFile();
 
 	/**
-	 * @brief Set the force unsorted mesh
+	 * @brief Sets whether the mesh must be sorted by material ID or not.
 	 * 
-	 * @param value the mode is on or not
+	 * @param value Whether the mesh must be sorted by material ID or not.
 	 */
 	void SetForceUnsortedMesh(bool value);
 
 	/**
-	 * @brief Get the force unsorted mesh
+	 * @brief Gets whether the mesh must be sorted by material ID or not.
 	 * 
-	 * @return true the mode is on
-	 * @return false the mode is off
+	 * @return true The mesh must be sorted by material ID.
+	 * @return false The mesh will not be sorted.
 	 */
 	bool GetForceUnsortedMesh();
 
 	/**
-	 * @brief Set the benchmark mode
+	 * @brief Sets benchmark mode.
 	 * 
-	 * @param benchmark the mode is on or not
+	 * @param benchmark Whether benchmark mode is on or not.
 	 */
 	void SetBenchmarkMode(bool benchmark);
 
 	/**
-	 * @brief Get the benchmark mode
+	 * @brief Gets benchmark mode.
 	 * 
-	 * @return true mode is on
-	 * @return false mode is off
+	 * @return true Benchmark mode is on.
+	 * @return false Benchmark mode is off.
 	 */
 	bool GetBenchmarkMode();
 
 	/**
-	 * @brief Set the debug mode object
+	 * @brief Sets `ImGui`'s debug mode.
 	 * 
-	 * @param debug the mode is on or not
+	 * @param debug Whether `InGui`'s bedug mode is on or off.
 	 */
 	void SetDebugMode(bool debug);
 
 	/**
-	 * @brief Get the debug mode
+	 * @brief Gets `ImGui`'s debug mode.
 	 * 
-	 * @return true the mode is on
-	 * @return false the mode is off
+	 * @return true `ImGui`'s debug mode is on
+	 * @return false `ImGui`'s debug mode is off
 	 */
 	bool GetDebugMode();
 
 	/**
-	 * @brief Set the dark mode object
+	 * @brief Sets whether the app is in dark mode or not.
 	 * 
-	 * @param darkMode the mode is on or not
+	 * @param darkMode Whether le app is in dark (true) or light (false) mode.
 	 */
 	void SetDarkMode(bool darkMode);
 
 	/**
-	 * @brief Get the dark mode
+	 * @brief Gets whether the app is in dark mode or not.
 	 * 
-	 * @return true the mode is on
-	 * @return false the mode is off
+	 * @return true The app is in dark mode.
+	 * @return false The app is in light mode.
 	 */
 	bool GetDarkMode();
 
 	/**
-	 * @brief load the command line interface
+	 * @brief Gets the command line data parser.
 	 * 
-	 * @return CLILoader command line interface
+	 * @return CLILoader Command line data parser.
 	 */
 	CLILoader GetCLI();
 
 	/**
-	 * @brief load the toml
+	 * @brief Gets the TOML config file parser.
 	 * 
-	 * @return TOMLLoader
+	 * @return TOMLLoader TOML config file parser.
 	 */
 	TOMLLoader GetTOML();
 
 	/**
-	 * @brief Get the window object
+	 * @brief Gets the GLFWWindow object.
 	 * 
-	 * @return GLFWwindow* the window
+	 * @return GLFWwindow* The GLFWWindow object.
 	 */
 	GLFWwindow* GetWindow();
 
 private:
 	/**
-	 * @brief render the imgui menu bar
+	 * @brief Render `ImGui`'s menu bar.
 	 * 
 	 */
 	void RenderMenuBar();
 
 	/**
-	 * @brief rendering
+	 * @brief Main rendering function of the app.
 	 * 
 	 */
 	void Render();
 
 	/**
-	 * @brief update
+	 * @brief Main update function of the app.
 	 * 
 	 */
 	void Update();
 
 	/**
-	 * @brief window initialized as null
+	 * @brief Pointer to the GLFW window manager.
 	 * 
 	 */
 	GLFWwindow* window = nullptr;
 
 	/**
-	 * @brief the title of window
+	 * @brief Window's title.
 	 * 
 	 */
 	std::string windowTitle;
 
 	/**
-	 * @brief the forced title
+	 * @brief Window's title if forced by the config file or by a command line
+	 * argument.
 	 * 
 	 */
 	std::string windowTitleForced;
 
 	/**
-	 * @brief the glsl version
+	 * @brief Current GLSL version in use.
 	 * 
 	 */
 	std::string glslVersion;
 
 	/**
-	 * @brief force unsrted mesh mode off
+	 * @brief Whether meshes are sorted by material ID when loaded or not.
 	 * 
 	 */
 	bool forceUnsortedMeshMode = false;
 
 	/**
-	 * @brief benchmark mode off
+	 * @brief Whether the app is in benchmark mode or not
 	 * 
 	 */
 	bool benchmarkMode = false;
 
 	/**
-	 * @brief debug mode off
+	 * @brief Whether `ImGui`'s debug mode is on or off.
 	 * 
 	 */
 	bool debugMode = false;
 
 	/**
-	 * @brief dark mode off
+	 * @brief Whether the app is in dark mode (true) or light mode (false).
 	 * 
 	 */
 	bool darkMode = false;
 
 	/**
-	 * @brief mouse not pressed
+	 * @brief Whether the mouse's left button has been pressed or not.
 	 * 
 	 */
 	bool mouseLeftPressed = false;
 
 	/**
-	 * @brief is the first time that the mouse is clicked
+	 * @brief Whether it's the first time the mouse has been clicked or not.
 	 * 
 	 */
 	bool firstMouse = true;
 
 	/**
-	 * @brief initialize viewer
+	 * @brief ViewerModule used to display the application's mesh.
 	 * 
 	 */
 	ViewerModule* viewer = nullptr;
 
 	/**
-	 * @brief initialize reader
+	 * @brief PLY file reader.
 	 * 
 	 */
 	PLYReader* reader = nullptr;
 
 	/**
-	 * @brief initialize scene
+	 * @brief Scene object.
 	 * 
 	 */
 	Scene* scene = nullptr;
 
 	/**
-	 * @brief initialize materialsPath
+	 * @brief List of paths to the various materials to use.
 	 * 
 	 */
 	MaterialList* materialsPaths = nullptr;
 
 	/**
-	 * @brief initialize models vector
+	 * @brief List of active `ImGui` modules.
 	 * 
 	 */
 	std::vector<GUIModule*> modules;
 
 	/**
-	 * @brief initialze filedialoger
+	 * @brief File browsing dialog.
 	 * 
 	 */
 	imgui_addons::ImGuiFileBrowser* fileDialog = nullptr;
 
 	/**
-	 * @brief initialize mesh content
+	 * @brief Mesh content module.
 	 * 
 	 */
 	MeshContentModule* meshContent = nullptr;
 
 	/**
-	 * @brief initialize imguiDemo module
+	 * @brief Imgui Demo module.
 	 * 
 	 */
 	ImGuiDemoModule* imguiDemo = nullptr;
 
 	/**
-	 * @brief initializw imguiFPS module
+	 * @brief ImGui FPS module.
 	 * 
 	 */
 	ImGuiFPSModule* imguiFPS = nullptr;
 
 	/**
-	 * @brief initialize shader content module
+	 * @brief Shaders content module.
 	 * 
 	 */
 	ShadersContentModule* shadersContent = nullptr;
 
 	/**
-	 * @brief initialize config file path
+	 * @brief Path to the current config file.
 	 * 
 	 */
 	std::string configFile = DATA_DIR "configs/default.toml";
 
 	/**
-	 * @brief declare a input file name
+	 * @brief Path to the PLY input file.
 	 * 
 	 */
 	std::string inputFile;
 
 	/**
-	 * @brief set next module ID as 0
+	 * @brief ID of the next module to load.
 	 * 
 	 */
 	int nextModuleID = 0;
 
 	/**
-	 * @brief set windows width as default
+	 * @brief Window's width.
 	 * 
 	 */
 	int windowWidth = DEFAULT_WINDOW_WIDTH;
 
 	/**
-	 * @brief set windows height as default
+	 * @brief Window's height.
 	 * 
 	 */
 	int windowHeight = DEFAULT_WINDOW_HEIGHT;
 
 	/**
-	 * @brief set number of point lights as default
+	 * @brief Defalt number of point lights in the scene.
 	 * 
 	 */
 	int nbPointLight = DEFAULT_NB_POINT_LIGHT;
 
 	/**
-	 * @brief initialize delta time
+	 * @brief Delta time.
 	 * 
 	 */
 	float deltaTime = 0.0;
 
 	/**
-	 * @brief initialize last frame time
+	 * @brief Time since last frame.
 	 * 
 	 */
 	float lastFrame = 0.0;
 
 	/**
-	 * @brief initialize begin time
+	 * @brief Time atthe beginning of the application.
 	 * 
 	 */
 	float beginTime = 0.0;
 
 	/**
-	 * @brief initialize max time
+	 * @brief Maximum time.
 	 * 
 	 */
 	float maxTime = 10.0;
 
 	/**
-	 * @brief initilizw frame count
+	 * @brief Frame count since the beginning of the application.
 	 * 
 	 */
 	int frameCount = 0;
 
 	/**
-	 * @brief declare command line interface
+	 * @brief Command line parser.
 	 * 
 	 */
 	CLILoader cli;
 
 	/**
-	 * @brief declare toml
+	 * @brief TOML config file parser.
 	 * 
 	 */
 	TOMLLoader toml;
