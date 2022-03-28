@@ -107,17 +107,6 @@ else ()
 	find_package(glbinding REQUIRED)
 endif ()
 
-## globjects ----------------------------------------------------
-#
-#if (BUILD_LIBS)
-#	set(GLOBJECTS_DIR ${ROOT_DIR}/${EXTERNAL}/globjects)
-#	set(GLOBJECTS_INCLUDE ${GLOBJECTS_DIR}/source/globjects/include)
-#	add_subdirectory(${GLOBJECTS_DIR})
-#	include_directories(${GLOBJECTS_INCLUDE})
-#else ()
-#	find_package(globjects REQUIRED)
-#endif ()
-
 # OpenGL -------------------------------------------------------
 
 find_package(OpenGL REQUIRED)
