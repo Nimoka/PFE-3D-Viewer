@@ -94,3 +94,5 @@ This is a list of dependencies used in this project that you can install by your
   - python3 benchmarking.py --fs --pl 200
 - **Lanch the benchmarking in deferred shading mode with 50 point lights**
   - python3 benchmarking.py --ds --pl 50
+- **Lanch the benchmarking in forward shading mode with from 50 to 250 point lights**
+  - python3 benchmarking.py --fs
